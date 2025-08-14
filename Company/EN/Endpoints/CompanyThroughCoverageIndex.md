@@ -33,11 +33,14 @@ None.
 | `slug` | `string` | No | Company slug. |
 | `fiscal_document_type` | `FiscalDocumentTypeEnum` | No | Type of fiscal document. |
 | `fiscal_document_value` | `string` | No | Value of fiscal document. |
-| `no_paginate` | `boolean` | No | Disable pagination when `true`. |
+| `relations` | `array` | No | Include extra relations: `logos`, `contacts`, `fiscalDocuments`, `address`. |
+| `no_paginate` | `boolean` | No | Disable pagination. Accepts `true`, `false`, `0`, or `1`. |
 | `per_page` | `integer` | No | Items per page when paginated. |
+| `page` | `integer` | No | Page number when paginated. |
 | `sort_by` | `string` | No | Column to sort by. |
 | `order_by` | `string` | No | Sort direction (`ASC` or `DESC`). |
-| `with_count` | `array` | No | Relationships for count aggregation. |
+| `with_count` | `array` | No | Relationships to count (e.g., `complaints`, `reviews`). |
+| `with_exists` | `array` | No | Relationships to check existence (e.g., `complaints`, `reviews`). |
 | `no_complaints` | `boolean` | No | Companies without complaints. |
 | `has_complaints` | `boolean` | No | Companies with complaints. |
 | `no_reviews` | `boolean` | No | Companies without reviews. |
@@ -57,19 +60,49 @@ None.
   "data": [
     {
       "created_by": null,
-      "uuid": "5ca829a0-aab2-3991-a8de-817d33b7dbcf",
-      "name": "1 Empresa XPTO",
-      "assumed_name": null,
-      "slug": "1-empresa-xpto",
-      "created_at": "2025-06-30T05:11:58-03:00",
-      "address": "General Cabañas, 233, Juan León Mallorquín, Encarnación, Itapuá, PY",
+      "uuid": "00000000-0000-0000-0000-000000000000",
+      "name": "Example Company",
+      "assumed_name": "Example Trade Name",
+      "slug": "example-company",
+      "created_at": "2025-01-01T00:00:00-03:00",
+      "address": "123 Example St, Sample City, EX",
       "fiscal_documents": [
         {
-          "id": 1002,
+          "id": 1,
           "type": "ruc",
-          "value": "123561"
+          "value": "00000001"
         }
-      ]
+      ],
+      "logos": [
+        {
+          "unique_id": "123456",
+          "usage": "logo",
+          "url": "https://example.com/logo.svg",
+          "name": "logo.svg",
+          "slug": "logo",
+          "width": 250,
+          "height": 250,
+          "creation_date": "2025-01-01 00:00:00"
+        }
+      ],
+      "contacts": [
+        {
+          "id": 1,
+          "type": "email",
+          "email": "contact@example.com"
+        },
+        {
+          "id": 2,
+          "type": "telephone",
+          "phone": "+1 234 567 8900",
+          "country_code": "+1",
+          "number": "234 567 8900"
+        }
+      ],
+      "complaints_count": 0,
+      "reviews_count": 0,
+      "complaints_exists": false,
+      "reviews_exists": false
     }
   ]
 }
@@ -87,16 +120,23 @@ None.
 | `data[].slug` | `string` | URL-friendly slug. |
 | `data[].assumed_name` | `string` | Trade name, if any. |
 | `data[].created_at` | `datetime` | Creation timestamp. |
-| `data[].address` | `string` | Company address. |
-| `data[].fiscal_documents[]` | `array` | List of fiscal documents. |
+| `data[].address` | `string` | Company address when `relations` includes `address`. |
+| `data[].fiscal_documents[]` | `array` | Fiscal documents when `relations` includes `fiscalDocuments`. |
 | `data[].fiscal_documents[].id` | `integer` | Fiscal document ID. |
 | `data[].fiscal_documents[].type` | `string` | Type of fiscal document. |
 | `data[].fiscal_documents[].value` | `string` | Value of fiscal document. |
+| `data[].logos[]` | `array` | Company logos when `relations` includes `logos`. |
+| `data[].contacts[]` | `array` | Company contacts when `relations` includes `contacts`. |
+| `data[].complaints_count` | `integer` | Complaints count when `with_count` includes `complaints`. |
+| `data[].reviews_count` | `integer` | Reviews count when `with_count` includes `reviews`. |
+| `data[].complaints_exists` | `boolean` | Indicates if complaints exist when `with_exists` includes `complaints`. |
+| `data[].reviews_exists` | `boolean` | Indicates if reviews exist when `with_exists` includes `reviews`. |
 
 ---
 
 ## Notes
 
-* Pagination metadata is omitted when `no_paginate=true`.
+* Pagination metadata is omitted when `no_paginate` is truthy.
+* Additional relations, counts, and existence flags appear only when requested.
 * String filters are case-insensitive partial matches unless otherwise noted.
 

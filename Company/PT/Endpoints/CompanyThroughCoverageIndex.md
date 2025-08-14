@@ -33,11 +33,14 @@ Nenhuma.
 | `slug` | `string` | Não | Slug da empresa. |
 | `fiscal_document_type` | `FiscalDocumentTypeEnum` | Não | Tipo de documento fiscal. |
 | `fiscal_document_value` | `string` | Não | Valor do documento fiscal. |
-| `no_paginate` | `boolean` | Não | Desativa a paginação quando `true`. |
+| `relations` | `array` | Não | Inclui relações adicionais: `logos`, `contacts`, `fiscalDocuments`, `address`. |
+| `no_paginate` | `boolean` | Não | Desativa a paginação. Aceita `true`, `false`, `0` ou `1`. |
 | `per_page` | `integer` | Não | Itens por página quando paginado. |
+| `page` | `integer` | Não | Número da página quando paginado. |
 | `sort_by` | `string` | Não | Coluna para ordenação. |
 | `order_by` | `string` | Não | Direção da ordenação (`ASC` ou `DESC`). |
-| `with_count` | `array` | Não | Relacionamentos para agregação de contagem. |
+| `with_count` | `array` | Não | Relações para contagem (ex.: `complaints`, `reviews`). |
+| `with_exists` | `array` | Não | Relações para verificar existência (ex.: `complaints`, `reviews`). |
 | `no_complaints` | `boolean` | Não | Empresas sem reclamações. |
 | `has_complaints` | `boolean` | Não | Empresas com reclamações. |
 | `no_reviews` | `boolean` | Não | Empresas sem avaliações. |
@@ -57,19 +60,49 @@ Nenhuma.
   "data": [
     {
       "created_by": null,
-      "uuid": "5ca829a0-aab2-3991-a8de-817d33b7dbcf",
-      "name": "1 Empresa XPTO",
-      "assumed_name": null,
-      "slug": "1-empresa-xpto",
-      "created_at": "2025-06-30T05:11:58-03:00",
-      "address": "General Cabañas, 233, Juan León Mallorquín, Encarnación, Itapuá, PY",
+      "uuid": "00000000-0000-0000-0000-000000000000",
+      "name": "Empresa Exemplo",
+      "assumed_name": "Nome Fantasia Exemplo",
+      "slug": "empresa-exemplo",
+      "created_at": "2025-01-01T00:00:00-03:00",
+      "address": "Rua Exemplo 123, Cidade Exemplo, EX",
       "fiscal_documents": [
         {
-          "id": 1002,
+          "id": 1,
           "type": "ruc",
-          "value": "123561"
+          "value": "00000001"
         }
-      ]
+      ],
+      "logos": [
+        {
+          "unique_id": "123456",
+          "usage": "logo",
+          "url": "https://example.com/logo.svg",
+          "name": "logo.svg",
+          "slug": "logo",
+          "width": 250,
+          "height": 250,
+          "creation_date": "2025-01-01 00:00:00"
+        }
+      ],
+      "contacts": [
+        {
+          "id": 1,
+          "type": "email",
+          "email": "contato@exemplo.com"
+        },
+        {
+          "id": 2,
+          "type": "telephone",
+          "phone": "+1 234 567 8900",
+          "country_code": "+1",
+          "number": "234 567 8900"
+        }
+      ],
+      "complaints_count": 0,
+      "reviews_count": 0,
+      "complaints_exists": false,
+      "reviews_exists": false
     }
   ]
 }
@@ -87,16 +120,23 @@ Nenhuma.
 | `data[].slug` | `string` | Slug amigável para URL. |
 | `data[].assumed_name` | `string` | Nome fantasia, se houver. |
 | `data[].created_at` | `datetime` | Data de criação. |
-| `data[].address` | `string` | Endereço da empresa. |
-| `data[].fiscal_documents[]` | `array` | Lista de documentos fiscais. |
+| `data[].address` | `string` | Endereço da empresa quando `relations` inclui `address`. |
+| `data[].fiscal_documents[]` | `array` | Documentos fiscais quando `relations` inclui `fiscalDocuments`. |
 | `data[].fiscal_documents[].id` | `integer` | ID do documento fiscal. |
 | `data[].fiscal_documents[].type` | `string` | Tipo do documento fiscal. |
 | `data[].fiscal_documents[].value` | `string` | Valor do documento fiscal. |
+| `data[].logos[]` | `array` | Logos da empresa quando `relations` inclui `logos`. |
+| `data[].contacts[]` | `array` | Contatos da empresa quando `relations` inclui `contacts`. |
+| `data[].complaints_count` | `integer` | Contagem de reclamações quando `with_count` inclui `complaints`. |
+| `data[].reviews_count` | `integer` | Contagem de avaliações quando `with_count` inclui `reviews`. |
+| `data[].complaints_exists` | `boolean` | Indica se há reclamações quando `with_exists` inclui `complaints`. |
+| `data[].reviews_exists` | `boolean` | Indica se há avaliações quando `with_exists` inclui `reviews`. |
 
 ---
 
 ## Notas
 
-* Metadados de paginação são omitidos quando `no_paginate=true`.
+* Metadados de paginação são omitidos quando `no_paginate` for verdadeiro.
+* Relações, contagens e verificações de existência aparecem apenas quando solicitadas.
 * Filtros de string são correspondências parciais sem distinção entre maiúsculas e minúsculas, salvo indicação em contrário.
 
