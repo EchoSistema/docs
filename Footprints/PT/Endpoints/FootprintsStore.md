@@ -10,7 +10,7 @@ Registra um rastro de navegação ou interação do visitante.
 
 ## Autenticação
 
-Nenhuma.
+Nenhuma. Ainda assim, o cabeçalho `X-PUBLIC-KEY` deve ser enviado.
 
 ---
 
@@ -68,10 +68,50 @@ Nenhuma.
 
 ```json
 {
-  "session_id": "abc123",
+  "echo_id": null,
+  "session_id": "ec6db9bd-c4b2-414e-b354-be31760a4979",
   "event": "page_view",
-  "event_time": "2025-01-01T12:00:00Z",
-  "page": "/home"
+  "event_time": "2025-08-17T23:56:02.827Z",
+  "page": "https://encarnacion.defensadelconsumidor.online/laws",
+  "referrer": null,
+  "title": "Libro de Quejas - Leis",
+  "utm": {
+    "source": null,
+    "medium": null,
+    "campaign": null,
+    "term": null,
+    "content": null
+  },
+  "browser": {
+    "name": "Edge",
+    "version": "140.0.0.0"
+  },
+  "os": {
+    "name": "Linux",
+    "version": null
+  },
+  "device": {
+    "type": "desktop",
+    "brand": null,
+    "model": null
+  },
+  "screen": {
+    "w": 1920,
+    "h": 1080,
+    "dpr": 1
+  },
+  "viewport": {
+    "w": 1912,
+    "h": 964
+  },
+  "timezone_offset": 180,
+  "connection_type": "4g",
+  "language": "pt-BR",
+  "platform_id": 7,
+  "platform_uuid": "649914d2-f6ba-3b3f-87f3-ad3f55e0c0f6",
+  "platform_language": "pt-BR",
+  "platform_currency": "BRL",
+  "visitor_ip": "181.120.47.200"
 }
 ```
 
