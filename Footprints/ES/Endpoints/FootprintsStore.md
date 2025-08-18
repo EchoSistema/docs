@@ -69,12 +69,12 @@ Ninguna. Aun así, se debe enviar el encabezado `X-PUBLIC-KEY`.
 ```json
 {
   "echo_id": null,
-  "session_id": "ec6db9bd-c4b2-414e-b354-be31760a4979",
+  "session_id": "00000000-0000-0000-0000-000000000000",
   "event": "page_view",
-  "event_time": "2025-08-17T23:56:02.827Z",
-  "page": "https://encarnacion.defensadelconsumidor.online/laws",
+  "event_time": "2025-01-01T00:00:00.000Z",
+  "page": "https://example.com/laws",
   "referrer": null,
-  "title": "Libro de Quejas - Leis",
+  "title": "Título de Página de Ejemplo",
   "utm": {
     "source": null,
     "medium": null,
@@ -106,12 +106,12 @@ Ninguna. Aun así, se debe enviar el encabezado `X-PUBLIC-KEY`.
   },
   "timezone_offset": 180,
   "connection_type": "4g",
-  "language": "pt-BR",
-  "platform_id": 7,
-  "platform_uuid": "649914d2-f6ba-3b3f-87f3-ad3f55e0c0f6",
-  "platform_language": "pt-BR",
-  "platform_currency": "BRL",
-  "visitor_ip": "181.120.47.200"
+  "language": "es-ES",
+  "platform_id": 1,
+  "platform_uuid": "00000000-0000-0000-0000-000000000000",
+  "platform_language": "es-ES",
+  "platform_currency": "EUR",
+  "visitor_ip": "203.0.113.1"
 }
 ```
 
