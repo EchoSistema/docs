@@ -45,41 +45,41 @@ The endpoint requires authentication.
 ```json
 {
   "data": {
-    "id": 813,
-    "session_id": "8e007f7f-b9bb-4376-b675-8ade018dfdd3",
+    "id": 1,
+    "session_id": "11111111-2222-3333-4444-555555555555",
     "event": "page_view",
-    "event_time": "2025-08-17T00:44:24-03:00",
-    "page": "http://localhost:5173/my-messages",
-    "title": "Libro de Quejas - Mensajes",
+    "event_time": "2024-01-01T12:00:00-03:00",
+    "page": "https://example.com/messages",
+    "title": "Messages Page",
     "timezone_offset": 180,
-    "language": "es",
+    "language": "en",
     "connection_type": null,
-    "created_at": "2025-08-16T21:44:24-03:00",
-    "ip_address": "181.120.47.200",
+    "created_at": "2024-01-01T09:00:00-03:00",
+    "ip_address": "203.0.113.42",
     "is_banned": 0,
     "is_robot": 0,
     "platform": {
-      "uuid": "9bcf5ae4-f7e6-3276-9755-3b3ef52ef03d",
-      "name": "Defensa del Consumidor - Encarnación",
-      "public_key": "c43864ce-efae-31c9-bb66-82dceefbc996",
+      "uuid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "name": "Example Platform",
+      "public_key": "example-public-key",
       "domain_area": {
-        "uuid": "9a87934f-4adb-56a5-8c3f-34efc1b91881",
-        "name": "ReputationBook",
-        "slug": "reputationbook",
+        "uuid": "11111111-2222-3333-4444-555555555555",
+        "name": "Example Domain",
+        "slug": "example-domain",
         "is_active": 1
       },
       "regional_information": {
         "currency": 1,
-        "language": "pt-BR"
+        "language": "en-US"
       }
     },
     "user": {
-      "uuid": "c1f1f474-4346-3118-83c5-2b5a6e6aff48",
-      "name": "Ewerton Girardi",
-      "age": 39,
+      "uuid": "ffffffff-1111-2222-3333-444444444444",
+      "name": "Jane Doe",
+      "age": 30,
       "regional_information": {
         "currency": 1,
-        "language": "pt-BR"
+        "language": "en-US"
       }
     },
     "os_name": "Linux",
@@ -87,7 +87,7 @@ The endpoint requires authentication.
     "browser_name": "Firefox",
     "browser_version": "128.0",
     "device_type": "desktop",
-    "device_brand": "0",
+    "device_brand": "Generic",
     "device_model": null,
     "screen": null,
     "viewport": null
@@ -102,24 +102,24 @@ Returned when `is_index=true`.
 ```json
 {
   "data": {
-    "id": 813,
-    "event_time": "2025-08-17T00:44:24-03:00",
+    "id": 1,
+    "event_time": "2024-01-01T12:00:00-03:00",
     "event": "page_view",
-    "page": "http://localhost:5173/my-messages",
-    "title": "Libro de Quejas - Mensajes",
-    "session_id": "8e007f7f-b9bb-4376-b675-8ade018dfdd3",
-    "ip_address": "181.120.47.200",
+    "page": "https://example.com/messages",
+    "title": "Messages Page",
+    "session_id": "11111111-2222-3333-4444-555555555555",
+    "ip_address": "203.0.113.42",
     "is_banned": 0,
     "is_robot": 0,
     "platform": {
-      "uuid": "9bcf5ae4-f7e6-3276-9755-3b3ef52ef03d",
-      "name": "Defensa del Consumidor - Encarnación"
+      "uuid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "name": "Example Platform"
     },
     "user": {
-      "uuid": "c1f1f474-4346-3118-83c5-2b5a6e6aff48",
-      "name": "Ewerton Girardi"
+      "uuid": "ffffffff-1111-2222-3333-444444444444",
+      "name": "Jane Doe"
     },
-    "created_at": "2025-08-16T21:44:24-03:00"
+    "created_at": "2024-01-01T09:00:00-03:00"
   }
 }
 ```
