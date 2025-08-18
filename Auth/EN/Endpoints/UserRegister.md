@@ -1,4 +1,6 @@
-# Auth – Register User
+<!-- markdownlint-disable MD013 -->
+
+# User – Register User
 
 ## Endpoint
 
@@ -111,7 +113,7 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
   "data": {
     "user": {
       "uuid": "00000000-0000-0000-0000-000000000000",
-      "echo_uuid": "e000000000000000000000000000000000000",
+      "echo_uuid": "e1c1h1o1111111111111111111111111111",
       "name": "User Example",
       "email": "user@example.com",
       "avatar": {
@@ -147,3 +149,5 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
 Returns an object with validation error messages.
 
 ---
+
+<!-- markdownlint-enable MD013 -->

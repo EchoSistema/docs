@@ -1,4 +1,6 @@
-# Auth – Registrar Usuário
+<!-- markdownlint-disable MD013 -->
+
+# User – Registrar Usuário
 
 ## Endpoint
 
@@ -111,7 +113,7 @@ Nenhuma. Ainda assim, o cabeçalho `X-PUBLIC-KEY` deve ser enviado.
   "data": {
     "user": {
       "uuid": "00000000-0000-0000-0000-000000000000",
-      "echo_uuid": "e000000000000000000000000000000000000",
+      "echo_uuid": "e1c1h1o1111111111111111111111111111",
       "name": "Usuário Exemplo",
       "email": "usuario@example.com",
       "avatar": {
@@ -147,3 +149,5 @@ Nenhuma. Ainda assim, o cabeçalho `X-PUBLIC-KEY` deve ser enviado.
 Retorna um objeto com mensagens de erro de validação.
 
 ---
+
+<!-- markdownlint-enable MD013 -->
