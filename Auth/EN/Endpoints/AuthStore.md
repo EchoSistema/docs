@@ -57,7 +57,7 @@ Content-Type: application/json
   "data": {
     "user": {
       "uuid": "00000000-0000-0000-0000-000000000000",
-      "echo_uuid": "11111111-1111-1111-1111-111111111111",
+      "echo_uuid": "e1c1h1o11111111111111111111111111111",
       "name": "Sample User",
       "email": "sample.user@domain.com",
       "avatar": {
