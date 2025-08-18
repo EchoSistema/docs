@@ -17,6 +17,7 @@ Requer um token Sanctum válido.
 | Cabeçalho | Tipo | Descrição |
 | --------- | ---- | --------- |
 | **Authorization** | `string` | `Bearer <token>` obrigatório. |
+| **X-PUBLIC-KEY** | `string` | Chave pública para identificar a plataforma. Obrigatória. |
 | **Accept-Language** | `string` | Locale para campos traduzíveis. Opcional. |
 
 ---

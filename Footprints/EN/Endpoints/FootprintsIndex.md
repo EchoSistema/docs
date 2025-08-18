@@ -17,6 +17,7 @@ Requires a valid Sanctum token.
 | Header | Type | Description |
 | ------ | ---- | ----------- |
 | **Authorization** | `string` | `Bearer <token>` required. |
+| **X-PUBLIC-KEY** | `string` | Public key identifying the platform. Required. |
 | **Accept-Language** | `string` | Locale for translatable fields. Optional. |
 
 ---
