@@ -1,4 +1,6 @@
-# Auth – Authenticate User
+<!-- markdownlint-disable MD013 -->
+
+# Authentication – Authenticate User
 
 ## Endpoint
 
@@ -34,7 +36,7 @@ Basic Auth. Send the header `Authorization: Basic <credentials>`, where `<creden
 
 ## Request Example
 
-```
+```http
 POST /auth HTTP/1.1
 Authorization: Basic am9hbzpzZW5oYQ==
 X-PUBLIC-KEY: 00000000-0000-0000-0000-000000000000
@@ -57,7 +59,7 @@ Content-Type: application/json
   "data": {
     "user": {
       "uuid": "00000000-0000-0000-0000-000000000000",
-      "echo_uuid": "e1c1h1o11111111111111111111111111111",
+      "echo_uuid": "e1c1h1o1111111111111111111111111111",
       "name": "Sample User",
       "email": "sample.user@domain.com",
       "avatar": {
@@ -116,3 +118,5 @@ Content-Type: application/json
 
 * The token must be sent in future authenticated requests.
 * The `device` field helps identify the accessing device.
+
+<!-- markdownlint-enable MD013 -->

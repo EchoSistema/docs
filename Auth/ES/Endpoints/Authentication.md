@@ -1,4 +1,6 @@
-# Auth – Autenticar Usuario
+<!-- markdownlint-disable MD013 -->
+
+# Authentication – Autenticar Usuario
 
 ## Endpoint
 
@@ -34,7 +36,7 @@ Basic Auth. Envíe el encabezado `Authorization: Basic <credenciales>`, donde `<
 
 ## Ejemplo de Solicitud
 
-```
+```http
 POST /auth HTTP/1.1
 Authorization: Basic am9hbzpzZW5oYQ==
 X-PUBLIC-KEY: 00000000-0000-0000-0000-000000000000
@@ -57,7 +59,7 @@ Content-Type: application/json
   "data": {
     "user": {
       "uuid": "00000000-0000-0000-0000-000000000000",
-      "echo_uuid": "11111111-1111-1111-1111-111111111111",
+      "echo_uuid": "e1c1h1o1111111111111111111111111111",
       "name": "Usuario Ejemplo",
       "email": "usuario.ejemplo@dominio.com",
       "avatar": {
@@ -116,3 +118,5 @@ Content-Type: application/json
 
 * El token debe enviarse en futuras solicitudes autenticadas.
 * El campo `device` ayuda a identificar el dispositivo de acceso.
+
+<!-- markdownlint-enable MD013 -->
