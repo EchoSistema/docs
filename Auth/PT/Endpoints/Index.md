@@ -1,3 +1,3 @@
 # Endpoints
 
-Lista de endpoints da API.
+Lista de endpoints de autenticação.
