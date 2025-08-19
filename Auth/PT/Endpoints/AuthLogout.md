@@ -2,7 +2,7 @@
 
 ## Endpoint
 
-`POST /auth/logout`
+`POST /api/v1/auth/logout`
 
 Encerra a sessão do usuário invalidando o token de acesso.
 
