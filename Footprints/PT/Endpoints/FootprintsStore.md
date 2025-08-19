@@ -2,7 +2,7 @@
 
 ## Endpoint
 
-`POST /footprints`
+`POST /api/v1/footprints`
 
 Registra um rastro de navegação ou interação do visitante.
 

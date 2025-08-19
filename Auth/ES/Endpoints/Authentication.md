@@ -4,7 +4,7 @@
 
 ## Endpoint
 
-`POST /auth`
+`POST /api/v1/auth`
 
 Realiza la autenticación de un usuario.
 
@@ -37,7 +37,7 @@ Basic Auth. Envíe el encabezado `Authorization: Basic <credenciales>`, donde `<
 ## Ejemplo de Solicitud
 
 ```http
-POST /auth HTTP/1.1
+POST /api/v1/auth HTTP/1.1
 Authorization: Basic am9hbzpzZW5oYQ==
 X-PUBLIC-KEY: 00000000-0000-0000-0000-000000000000
 Accept-Language: es

@@ -4,7 +4,7 @@
 
 ## Endpoint
 
-`POST auth/register`
+`POST /api/v1/auth/register`
 
 Registra un nuevo usuario en la plataforma.
 
