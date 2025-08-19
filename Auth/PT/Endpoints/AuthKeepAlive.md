@@ -2,7 +2,7 @@
 
 ## Endpoint
 
-`GET /auth/keep-alive`
+`GET /api/v1/auth/keep-alive`
 
 Verifica se o token fornecido é válido e mantém a sessão do usuário ativa.
 

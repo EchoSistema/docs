@@ -2,7 +2,7 @@
 
 ## Endpoint
 
-`GET /footprints/{footprint}`
+`GET /api/v1/footprints/{footprint}`
 
 Obtiene información detallada sobre un footprint específico.
 
