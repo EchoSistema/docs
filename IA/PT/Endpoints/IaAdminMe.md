@@ -4,7 +4,7 @@
 
 ## Endpoint
 
-`GET /api/v1/ia/admin/me`
+`GET /api/v1/ia/me`
 
 Retorna o perfil do usuário autenticado para a plataforma atual.
 
