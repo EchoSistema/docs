@@ -1,0 +1,66 @@
+# Pigeons – Users (Update Role)
+
+## Endpoint
+
+`PUT /api/v1/pigeons/users/{user}/roles/{role}`
+
+Updates the user's role for the current platform and/or the role status.
+
+---
+
+## Authentication
+
+Required – Bearer token with `backoffice` ability.
+
+---
+
+## Headers
+
+| Header | Type | Required | Description |
+| ------ | ---- | -------- | ----------- |
+| Authorization | `string` | Yes | `Bearer {token}`. |
+| X-PUBLIC-KEY | `string` | Yes | Platform public key. |
+| Accept-Language | `string` | Recommended | Language for translatable fields. |
+
+---
+
+## Parameters
+
+### Path
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user` | `int|uuid|string` | Yes | User identifier. |
+| `role` | `int|uuid|string` | Yes | Role identifier (ID, UUID, or name). |
+
+### Body (JSON)
+
+| Field | Type | Required | Description |
+| ----- | ---- | -------- | ----------- |
+| `status` | `string` | No | One of: `approved`, `disapproved`, `requested`. |
+
+---
+
+## Example
+
+```bash
+curl -X PUT \
+  "/api/v1/pigeons/users/123/roles/admin" \
+  -H "Authorization: Bearer {token}" \
+  -H "X-PUBLIC-KEY: {public_key}" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "approved"}'
+```
+
+---
+
+## HTTP Status
+
+- 200, 401, 403, 404, 409, 422
+
+---
+
+## Notes
+
+- Uses PUT and behaves as upsert: creates the user↔role link when absent; updates status when present. Idempotent for the same payload.
