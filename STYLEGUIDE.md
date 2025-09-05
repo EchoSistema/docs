@@ -10,17 +10,16 @@ This guide defines how to write and organize documentation in `docs/` to keep co
 ## Folder Structure
 ```
 docs/
-  <Domain>/                # e.g., Auth, Shared, Company, AI, Pigeons
-    README.md              # Domain description (short, EN by default)
-    PT/ EN/ ES/            # Supported languages
-      README.md            # Domain description in that language
-      Endpoints/           # Endpoint documents
-        README.md          # Domain endpoint index
+  EN/ ES/ PT/            # Languages first
+    <Domain>/            # e.g., Auth, Shared, Company, IA, Pigeons
+      README.md          # Domain description in that language
+      Endpoints/         # Endpoint documents
+        README.md        # Domain endpoint index
         <Resource><Action>.md
-  _templates/              # Ready-to-use templates for new docs
-    endpoint.pt.md | endpoint.en.md | endpoint.es.md
-  README.md                # Overview and common headers
-  STYLEGUIDE.md            # This document
+  Postman/               # Postman collections per domain
+  _templates/            # Ready-to-use templates for new docs
+  README.md              # Overview and common headers
+  STYLEGUIDE.md          # This document
 ```
 
 ## File Naming
@@ -94,4 +93,4 @@ Recommended section order (all sections below are H2 `##`):
 
 ---
 
-Questions or suggestions? Update this guide and cite existing examples (e.g., `docs/Shared/PT/Endpoints/RoleIndex.md`).
+Questions or suggestions? Update this guide and cite existing examples (e.g., `docs/PT/Shared/Endpoints/RoleIndex.md`).
