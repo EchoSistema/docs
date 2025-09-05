@@ -98,3 +98,10 @@ No query parameters are supported.
 * `403 Forbidden` when the user lacks a non-guest role on the platform.
 
 <!-- markdownlint-enable MD013 -->
+
+---
+
+## Related
+
+- docs/PT/IA/Endpoints/IaAdminMe.md
+- docs/ES/IA/Endpoints/IaAdminMe.md

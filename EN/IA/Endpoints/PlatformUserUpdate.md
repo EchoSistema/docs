@@ -112,3 +112,7 @@ Same structure as “Admin Users (Show)”. Short example:
 - docs/EN/IA/Endpoints/PlatformUserShow.md
 - docs/EN/IA/Endpoints/PlatformUserUpdateRole.md
 
+- docs/PT/IA/Endpoints/PlatformUserShow.md
+- docs/PT/IA/Endpoints/PlatformUserUpdateRole.md
+- docs/ES/IA/Endpoints/PlatformUserShow.md
+- docs/ES/IA/Endpoints/PlatformUserUpdateRole.md

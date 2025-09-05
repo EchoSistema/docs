@@ -45,3 +45,10 @@ Identical to the Shared Users Counter response. Example:
 For more details, see:
 
 - docs/EN/Shared/Endpoints/PlatformUserCounter.md
+
+---
+
+## Related
+
+- docs/PT/IA/Endpoints/PlatformUserCounter.md
+- docs/ES/IA/Endpoints/PlatformUserCounter.md

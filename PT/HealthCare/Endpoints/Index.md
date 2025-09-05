@@ -1,3 +1,3 @@
 # Endpoints
 
-- [Usuários (Atualizar Papel)](PlatformUserUpdateRole.md)
+- [Usuários (Atualizar Role)](PlatformUserUpdateRole.md)

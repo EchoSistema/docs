@@ -66,3 +66,6 @@ Identical to the Shared Platform User Index response. Example and detailed struc
 - docs/EN/IA/Endpoints/PlatformUserCounter.md
 - docs/EN/IA/Endpoints/PlatformUserShow.md
 - docs/EN/IA/Endpoints/PlatformUserStore.md
+
+- docs/PT/IA/Endpoints/PlatformUserIndex.md
+- docs/ES/IA/Endpoints/PlatformUserIndex.md

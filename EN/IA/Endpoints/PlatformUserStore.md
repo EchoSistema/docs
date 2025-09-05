@@ -131,3 +131,6 @@ Note: this endpoint does not return a `token` (admin/internal usage); it include
 
 - docs/EN/IA/Endpoints/PlatformUserIndex.md
 - docs/EN/IA/Endpoints/PlatformUserShow.md
+
+- docs/PT/IA/Endpoints/PlatformUserStore.md
+- docs/ES/IA/Endpoints/PlatformUserStore.md

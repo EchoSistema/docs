@@ -95,6 +95,6 @@ Nenhum parâmetro de consulta é suportado.
 ## Notas
 
 * `401 Unauthorized` para token ausente ou inválido.
-* `403 Forbidden` se o usuário não possuir papel diferente de convidado na plataforma.
+* `403 Forbidden` se o usuário não possuir role diferente de convidado na plataforma.
 
 <!-- markdownlint-enable MD013 -->

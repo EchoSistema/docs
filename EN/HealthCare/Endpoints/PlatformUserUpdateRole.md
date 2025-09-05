@@ -31,7 +31,7 @@ Required – Bearer token with `backoffice` ability and `domain:healthcare`.
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `user` | `int|uuid|string` | Yes | User identifier. |
-| `role` | `int|uuid|string` | Yes | Role identifier (ID, UUID, or name). |
+| `role` | `uuid|int|string` | Yes | Role identifier (UUID, ID, or name). |
 
 ### Body (JSON)
 

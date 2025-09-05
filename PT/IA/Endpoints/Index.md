@@ -7,4 +7,4 @@ Lista de endpoints da API.
 - [Usuários Admin (Criar)](PlatformUserStore.md)
 - [Contador de Usuários Admin](PlatformUserCounter.md)
  - [Usuários Admin (Atualizar)](PlatformUserUpdate.md)
- - [Usuários Admin (Atualizar Papel)](PlatformUserUpdateRole.md)
+ - [Usuários Admin (Atualizar Role)](PlatformUserUpdateRole.md)

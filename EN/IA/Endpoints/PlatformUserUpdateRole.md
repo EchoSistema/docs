@@ -31,7 +31,7 @@ Required – Bearer token with `backoffice` ability.
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `user` | `uuid` | Yes | User UUID. |
-| `role` | `string|uuid|int` | Yes | Role identifier (name, UUID, or ID). |
+| `role` | `uuid|int|string` | Yes | Role identifier (UUID, ID, or name). |
 
 ### Body (JSON)
 
@@ -99,3 +99,10 @@ Returns the same profile structure as “Admin Users (Show)”, with roles loade
 
 - Role updates are restricted to the current platform.
 - Uses PUT and behaves as upsert: creates the user↔role link when absent; updates status when present. Idempotent for the same payload.
+
+---
+
+## Related
+
+- docs/PT/IA/Endpoints/PlatformUserUpdateRole.md
+- docs/ES/IA/Endpoints/PlatformUserUpdateRole.md

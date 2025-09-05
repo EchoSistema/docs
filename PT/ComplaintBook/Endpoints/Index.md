@@ -2,4 +2,4 @@
 
 Lista de endpoints da API.
 
-- [Usuários (Atualizar Papel)](PlatformUserUpdateRole.md)
+- [Usuários (Atualizar Role)](PlatformUserUpdateRole.md)

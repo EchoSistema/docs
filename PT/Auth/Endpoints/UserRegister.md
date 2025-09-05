@@ -41,7 +41,7 @@ Nenhuma. Ainda assim, o cabeçalho `X-PUBLIC-KEY` deve ser enviado.
 | `password` | `string` | Sim | Senha (mínimo 8 caracteres). |
 | `password_confirmation` | `string` | Sim | Confirmação da senha; deve coincidir com `password`. |
 | `roles` | `array` | Condicional | Papéis do usuário; obrigatório com `collaborator`. |
-| `roles.*` | `RoleEnum` | Condicional | Cada papel deve ser válido. |
+| `roles.*` | `RoleEnum` | Condicional | Cada role deve ser válido. |
 | `nationalities` | `array` | Condicional | Nacionalidades do usuário; obrigatório com `collaborator`. |
 | `address` | `array` | Condicional | Endereço do usuário; obrigatório com `collaborator`. |
 | `address.city` | `string` | Não | Cidade. |

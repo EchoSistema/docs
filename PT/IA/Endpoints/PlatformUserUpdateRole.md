@@ -1,10 +1,10 @@
-# IA – Usuários Admin (Atualizar Papel)
+# IA – Usuários Admin (Atualizar Role)
 
 ## Endpoint
 
 `PUT /api/v1/ia/admin/users/{user:uuid}/roles/{role}`
 
-Atualiza o papel do usuário na plataforma atual e/ou o status do papel.
+Atualiza o role do usuário na plataforma atual e/ou o status do role.
 
 ---
 
@@ -31,7 +31,7 @@ Obrigatória – Bearer token com habilidade `backoffice`.
 | Parâmetro | Tipo | Obrigatório | Descrição |
 | --------- | ---- | ----------- | --------- |
 | `user` | `uuid` | Sim | UUID do usuário. |
-| `role` | `string|uuid|int` | Sim | Identificador do papel (nome, UUID ou ID). |
+| `role` | `uuid|int|string` | Sim | Pode ser o UUID, ID ou o nome. |
 
 ### Body (JSON)
 
@@ -43,4 +43,4 @@ Obrigatória – Bearer token com habilidade `backoffice`.
 
 ## Notas
 
-- Usa PUT e funciona como upsert: cria o vínculo usuário↔papel quando ausente; atualiza o status quando presente. Idempotente para o mesmo payload.
+- Usa PUT e funciona como upsert: cria o vínculo usuário↔role quando ausente; atualiza o status quando presente. Idempotente para o mesmo payload.

@@ -1,10 +1,10 @@
-# Pigeons – Usuários (Atualizar Papel)
+# Pigeons – Usuários (Atualizar Role)
 
 ## Endpoint
 
 `PUT /api/v1/pigeons/users/{user}/roles/{role}`
 
-Atualiza o papel do usuário na plataforma atual e/ou o status do papel.
+Atualiza o role do usuário na plataforma atual e/ou o status do role.
 
 ---
 
@@ -31,7 +31,7 @@ Obrigatória – Bearer token com habilidade `backoffice`.
 | Parâmetro | Tipo | Obrigatório | Descrição |
 | --------- | ---- | ----------- | --------- |
 | `user` | `int|uuid|string` | Sim | Identificador do usuário. |
-| `role` | `int|uuid|string` | Sim | Identificador do papel (ID, UUID ou nome). |
+| `role` | `uuid|int|string` | Sim | Pode ser o UUID, ID ou o nome. |
 
 ### Body (JSON)
 
@@ -43,4 +43,4 @@ Obrigatória – Bearer token com habilidade `backoffice`.
 
 ## Notas
 
-- Usa PUT e funciona como upsert: cria o vínculo usuário↔papel quando ausente; atualiza o status quando presente. Idempotente para o mesmo payload.
+- Usa PUT e funciona como upsert: cria o vínculo usuário↔role quando ausente; atualiza o status quando presente. Idempotente para o mesmo payload.

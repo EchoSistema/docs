@@ -45,3 +45,15 @@ Ao menos um dos campos abaixo deve ser enviado.
 | `password` | `string` | Não | Mín. 8 caracteres. Requer `password_confirmation`. |
 | `password_confirmation` | `string` | Não | Deve coincidir com `password`. |
 
+---
+
+## Notas
+
+- Atualizações de role não são permitidas aqui. Use “Usuários Admin (Atualizar Role)”.
+
+---
+
+## Relacionados
+
+- docs/PT/IA/Endpoints/PlatformUserShow.md
+- docs/PT/IA/Endpoints/PlatformUserUpdateRole.md

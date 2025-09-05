@@ -114,3 +114,6 @@ Required – Bearer token with `backoffice` ability.
 
 - docs/EN/IA/Endpoints/PlatformUserIndex.md
 - docs/EN/IA/Endpoints/PlatformUserStore.md
+
+- docs/PT/IA/Endpoints/PlatformUserShow.md
+- docs/ES/IA/Endpoints/PlatformUserShow.md
