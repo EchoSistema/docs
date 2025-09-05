@@ -31,7 +31,7 @@ Obligatoria – Token Bearer con habilidad `backoffice`.
 | Parámetro | Tipo | Obligatorio | Descripción |
 | --------- | ---- | ----------- | ----------- |
 | `user` | `uuid` | Sí | UUID del usuario. |
-| `role` | `uuid|int|string` | Sí | Identificador del rol (UUID, ID o nombre). |
+| `role` | `uuid, int, string` | Sí | Identificador del rol (UUID, ID o nombre). |
 
 ### Body (JSON)
 

@@ -30,8 +30,8 @@ Obligatoria – Token Bearer con habilidad `backoffice` y `domain:reputationbook
 
 | Parámetro | Tipo | Obligatorio | Descripción |
 | --------- | ---- | ----------- | ----------- |
-| `user` | `int|uuid|string` | Sí | Identificador del usuario. |
-| `role` | `uuid|int|string` | Sí | Identificador del rol (UUID, ID o nombre). |
+| `user` | `uuid` | Sí | UUID del usuario. |
+| `role` | `uuid, int, string` | Sí | Identificador del rol (UUID, ID o nombre). |
 
 ### Body (JSON)
 

@@ -28,10 +28,10 @@ Obrigatória – Bearer token com habilidade `backoffice`.
 
 ### Path
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-| --------- | ---- | ----------- | --------- |
-| `user` | `uuid` | Sim | UUID do usuário. |
-| `role` | `uuid|int|string` | Sim | Pode ser o UUID, ID ou o nome. |
+| Parâmetro | Tipo                | Obrigatório  | Descrição |
+| --------- |---------------------|--------------| --------- |
+| `user` | `uuid`              | Sim          | UUID do usuário. |
+| `role` | `uuid, int, string` | Sim | Pode ser o UUID, ID ou o nome. |
 
 ### Body (JSON)
 

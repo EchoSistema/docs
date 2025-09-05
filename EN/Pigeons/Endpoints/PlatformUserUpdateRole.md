@@ -30,8 +30,8 @@ Required – Bearer token with `backoffice` ability.
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `user` | `int|uuid|string` | Yes | User identifier. |
-| `role` | `uuid|int|string` | Yes | Role identifier (UUID, ID, or name). |
+| `user` | `uuid` | Yes | User UUID. |
+| `role` | `uuid, int, string` | Yes | Role identifier (UUID, ID, or name). |
 
 ### Body (JSON)
 
