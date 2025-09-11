@@ -2,6 +2,7 @@
 
 API endpoint list.
 
+- [Health](Health.md)
 - [Role Index](RoleIndex.md)
 - [Platform User Index](PlatformUserIndex.md)
 - [Platform User Counter](PlatformUserCounter.md)
