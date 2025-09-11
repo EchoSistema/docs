@@ -7,3 +7,4 @@ API endpoint list.
 - [Platform User Counter](PlatformUserCounter.md)
 - [Platform Email Index](PlatformEmailIndex.md)
 - [Platform Email Show](PlatformEmailShow.md)
+- [Platform Email Settings](PlatformEmailSettings.md)

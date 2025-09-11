@@ -7,3 +7,4 @@ Lista de endpoints de la API.
 - [Contador de Usuarios de la Plataforma](PlatformUserCounter.md)
 - [Listado de Correos de la Plataforma](PlatformEmailIndex.md)
 - [Visualización de Correo de la Plataforma](PlatformEmailShow.md)
+- [Configuración de Correo de la Plataforma](PlatformEmailSettings.md)
