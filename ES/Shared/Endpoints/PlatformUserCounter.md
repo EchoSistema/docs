@@ -6,7 +6,7 @@
 
 Devuelve el número total de usuarios de la plataforma por rol que coinciden con los filtros aplicados en el área administrativa de Inteligencia Artificial. El comportamiento y los filtros coinciden con el endpoint Shared Users Counter.
 
-Véase también: docs/ES/IA/Endpoints/PlatformUserCounter.md
+Véase también: docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
 
 ---
 
@@ -20,8 +20,8 @@ Requerida – Token Bearer con capacidad `backoffice`.
 
 Acepta los mismos parámetros de filtro que el AI Users Index (y el Shared Users Index). Consulte:
 
-- docs/ES/IA/Endpoints/PlatformUserIndex.md
-- docs/ES/Shared/Endpoints/PlatformUserIndex.md
+- docs/domain/artificial-intelligence/http/controllers/platform-user-controller.index.md
+- docs/domain/shared/http/controllers/platform/platform-user-controller.index.md
 
 ---
 
@@ -44,4 +44,4 @@ Idéntica a la respuesta de Shared Users Counter. Ejemplo:
 
 Para más detalles, consulte:
 
-- docs/ES/IA/Endpoints/PlatformUserCounter.md
+- docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md

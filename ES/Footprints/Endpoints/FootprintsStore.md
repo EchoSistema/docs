@@ -128,3 +128,9 @@ Ninguna. Aun así, se debe enviar el encabezado `X-PUBLIC-KEY`.
 ### Error `400 Bad Request`
 
 Devuelve un objeto con el mensaje de error.
+
+---
+
+## Notas
+
+* Localización: los mensajes de error pueden seguir `Accept-Language` cuando se proporciona.

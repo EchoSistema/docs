@@ -58,11 +58,6 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
 | `timezone_offset` | `integer` | No | Timezone offset in minutes. |
 | `connection_type` | `string` | No | Connection type. |
 | `language` | `string` | No | Browser language. |
-| `public_key` | `uuid` | No | Associated public key. |
-| `platform_id` | `integer` | No | Platform ID. |
-| `platform_uuid` | `uuid` | No | Platform UUID. |
-| `platform_language` | `string` | No | Platform language. |
-| `platform_currency` | `string` | No | Platform currency. |
 
 ### Body Example
 
@@ -128,3 +123,9 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
 ### Error `400 Bad Request`
 
 Returns an object with the error message.
+
+---
+
+## Notes
+
+* Localisation: error messages may follow `Accept-Language` when provided.

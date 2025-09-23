@@ -132,3 +132,8 @@ Se devuelve cuando el footprint no existe.
 
 Se devuelve cuando la autenticación falla.
 
+---
+
+## Notas
+
+* Localización: los campos traducibles siguen `Accept-Language` cuando se proporciona.
