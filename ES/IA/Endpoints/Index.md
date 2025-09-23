@@ -2,6 +2,7 @@
 
 Lista de endpoints de la API.
 
+- [IA Admin — Calculadora de Datos (Procesar)](DataCalculatorProcess.md)
 - [Usuarios Admin (Índice)](PlatformUserIndex.md)
 - [Usuarios Admin (Detalle)](PlatformUserShow.md)
 - [Usuarios Admin (Crear)](PlatformUserStore.md)
