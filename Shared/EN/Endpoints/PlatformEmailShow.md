@@ -104,3 +104,4 @@ Request: `GET /platform/app/emails/{uid}?include_headers=1&include_attachment_co
 - IMAP flags are not fetched in show to reduce latency.
 - Avoid requesting headers and attachment count when not necessary.
 - Date normalization aims for ISO‑8601; some servers may return different formats.
+- Localisation: text fields may reflect the `Accept-Language` header when applicable; otherwise defaults are returned.

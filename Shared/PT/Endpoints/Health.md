@@ -35,3 +35,4 @@ Sem Bearer token. Requer cabeçalho da plataforma.
 
 * Nome da rota: `api.v1.health`.
 * `X-PUBLIC-KEY` ausente ou inválido é rejeitado pelo middleware `platform` (401/403 conforme configuração).
+* Localização: mensagens de resposta podem seguir o `Accept-Language`.

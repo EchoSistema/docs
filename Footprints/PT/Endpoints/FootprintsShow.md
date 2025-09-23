@@ -124,6 +124,12 @@ Retornado quando `is_index=true`.
 }
 ```
 
+---
+
+## Observações
+
+* Localização: campos traduzíveis seguem o `Accept-Language` quando fornecido.
+
 ### Erro `404 Não Encontrado`
 
 Retornado quando o footprint não existe.
@@ -131,4 +137,3 @@ Retornado quando o footprint não existe.
 ### Erro `401 Não Autorizado`
 
 Retornado quando a autenticação falha.
-

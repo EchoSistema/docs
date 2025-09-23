@@ -107,3 +107,4 @@ Sin `fields`, se pueden devolver más campos (to/cc/bcc/reply_to, tamaño, flags
 - `seen` y otros flags solo se obtienen cuando se solicitan, ahorrando llamadas IMAP.
 - `attachments_count` puede ser costoso; actívelo solo cuando sea necesario.
 - Las fechas se normalizan a ISO‑8601 cuando es posible.
+- Localización: los campos de texto pueden reflejar el encabezado `Accept-Language` cuando aplique; de lo contrario, se devuelven valores por defecto.

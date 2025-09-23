@@ -104,3 +104,4 @@ Solicitud: `GET /platform/app/emails/{uid}?include_headers=1&include_attachment_
 - No se consultan flags IMAP en show para reducir la latencia.
 - Evite solicitar encabezados y conteo de adjuntos cuando no sean necesarios.
 - La normalización de fechas intenta mantener ISO‑8601; algunos servidores pueden devolver formatos distintos.
+- Localización: los campos de texto pueden reflejar `Accept-Language` cuando aplique; en caso contrario, valores por defecto.

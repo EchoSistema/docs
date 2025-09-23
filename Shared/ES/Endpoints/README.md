@@ -9,3 +9,5 @@ Lista de endpoints de la API.
 - [Listado de Correos de la Plataforma](PlatformEmailIndex.md)
 - [Visualización de Correo de la Plataforma](PlatformEmailShow.md)
 - [Configuración de Correo de la Plataforma](PlatformEmailSettings.md)
+- [Direcciones](Address.md)
+- [Contactos](Contact.md)

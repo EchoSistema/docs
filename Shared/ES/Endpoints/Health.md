@@ -35,3 +35,4 @@ No requiere token Bearer. Requiere cabecera de plataforma.
 
 * Nombre de la ruta: `api.v1.health`.
 * La ausencia o invalidez de `X-PUBLIC-KEY` es rechazada por el middleware `platform` (401/403 según configuración).
+* Localización: los mensajes de respuesta pueden seguir `Accept-Language`.

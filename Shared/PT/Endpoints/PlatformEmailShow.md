@@ -104,3 +104,4 @@ Requisição: `GET /platform/app/emails/{uid}?include_headers=1&include_attachme
 - Flags IMAP não são recuperadas no show para reduzir latência.
 - Evite solicitar cabeçalhos e contagem de anexos quando não forem necessários.
 - A normalização de data tenta manter ISO‑8601; alguns servidores podem retornar formatos diferentes.
+- Localização: campos de texto podem refletir `Accept-Language` quando aplicável; caso contrário, retornos padrão.

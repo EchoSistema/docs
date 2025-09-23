@@ -56,6 +56,7 @@ Requires a valid Sanctum token.
 
 | Parameter | Type | Description |
 | --------- | ---- | ----------- |
+| `has_user` | `boolean` | When `true`, returns only footprints with a related user; when `false`, returns only those without a user. |
 | `user_id` | `integer` | User ID. |
 | `user_uuid` | `uuid` | User UUID. |
 | `user_email` | `email` | User email. |
@@ -208,4 +209,4 @@ Requires a valid Sanctum token.
 
 * Hidden footprints are returned only to master users.
 * Pagination metadata is omitted when `no_paginate` is truthy.
-
+* Localisation: translatable fields follow `Accept-Language` when available; otherwise defaults are used.

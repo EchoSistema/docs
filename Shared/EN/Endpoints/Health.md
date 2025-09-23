@@ -35,3 +35,4 @@ No Bearer token required. Requires platform header.
 
 * Route name: `api.v1.health`.
 * Missing or invalid `X-PUBLIC-KEY` is rejected by the `platform` middleware (401/403 as configured).
+* Localisation: response messages may be localised according to `Accept-Language`.

@@ -9,3 +9,5 @@ API endpoint list.
 - [Platform Email Index](PlatformEmailIndex.md)
 - [Platform Email Show](PlatformEmailShow.md)
 - [Platform Email Settings](PlatformEmailSettings.md)
+- [Addresses](Address.md)
+- [Contacts](Contact.md)

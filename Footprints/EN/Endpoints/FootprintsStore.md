@@ -123,3 +123,9 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
 ### Error `400 Bad Request`
 
 Returns an object with the error message.
+
+---
+
+## Notes
+
+* Localisation: error messages may follow `Accept-Language` when provided.
