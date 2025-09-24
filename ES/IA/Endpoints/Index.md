@@ -9,3 +9,8 @@ Lista de endpoints de la API.
 - [Contador de Usuarios Admin](PlatformUserCounter.md)
  - [Usuarios Admin (Actualizar)](PlatformUserUpdate.md)
  - [Usuarios Admin (Actualizar Rol)](PlatformUserUpdateRole.md)
+ - [IA Admin — Precio por Byte (Índice)](BytePricingIndex.md)
+ - [IA Admin — Precio por Byte (Detalle)](BytePricingShow.md)
+ - [IA Admin — Precio por Byte (Crear)](BytePricingStore.md)
+ - [IA Admin — Precio por Byte (Actualizar)](BytePricingUpdate.md)
+ - [IA Admin — Precio por Byte (Eliminar)](BytePricingDestroy.md)

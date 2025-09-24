@@ -34,13 +34,15 @@ None.
 ```json
 {
   "price": 100,
+  "currency": "USD",
   "description": "Price per byte"
 }
 ```
 
 | Field        | Type    | Required | Description |
 | ------------ | ------- | -------- | ----------- |
-| price        | integer | Yes      | Price value (smallest unit; e.g., cents). Saved as USD default. |
+| price        | integer | Yes      | Price value (smallest unit; e.g., cents). |
+| currency     | string  | Yes      | Currency code (USD, EUR, BRL, PYG). |
 | description  | string  | No       | Default description content. |
 
 ## Examples

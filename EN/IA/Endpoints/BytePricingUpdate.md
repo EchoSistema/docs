@@ -32,13 +32,15 @@ Required — Bearer {token} with Sanctum.
 ```json
 {
   "price": 150,
+  "currency": "EUR",
   "description": "New description"
 }
 ```
 
 | Field       | Type    | Required | Description |
 | ----------- | ------- | -------- | ----------- |
-| price       | integer | No       | New price value (smallest unit; e.g., cents). Saved as USD default. |
+| price       | integer | No       | New price value (smallest unit; e.g., cents). |
+| currency    | string  | No (required with price) | Currency code (USD, EUR, BRL, PYG). |
 | description | string  | No       | New default description. |
 
 ## Examples
