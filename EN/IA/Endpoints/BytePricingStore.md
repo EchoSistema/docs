@@ -2,49 +2,113 @@
 
 ## Endpoint
 
-`POST /ia/admin/pricing/bytes`
+```
+POST /ia/admin/pricing/bytes
+```
 
-Creates a product measured in BYTE with title, description and prices for all currencies.
-
----
+Creates a product measured in BYTE with localized title, optional description, and a single price.
 
 ## Authentication
 
-Required — `auth:sanctum`.
+Required — Bearer {token} with Sanctum.
 
-### Required Headers
-| Header | Type | Description |
-| ------ | ---- | ----------- |
-| Authorization | `string` | `Bearer <token>` required. |
-| Accept-Language | `string` | Optional locale. |
+## Headers
 
----
+| Header          | Type   | Required | Description |
+| --------------- | ------ | -------- | ----------- |
+| Authorization   | string | Yes      | `Bearer {token}` |
+| Accept-Language | string | No       | IETF locale |
 
-## Body (JSON)
-| Field | Type | Required | Description |
-| ----- | ---- | -------- | ----------- |
-| `title` | `string` | Yes | Default title. |
-| `description` | `string` | No | Default description. |
-| `prices` | `array<object>` | Yes | Each item must have `currency` (BRL/USD/EUR/PYG) and `value` (integer, cents). Must include all currencies. |
+## Parameters
 
-### Example
+### Path parameters
+
+None.
+
+### Query parameters
+
+None.
+
+### Request body
+
 ```json
 {
-  "title": "Payload Pricing",
-  "description": "Price per byte",
-  "prices": [
-    { "currency": "USD", "value": 100 },
-    { "currency": "EUR", "value": 90 },
-    { "currency": "BRL", "value": 500 },
-    { "currency": "PYG", "value": 70000 }
-  ]
+  "price": 100,
+  "description": "Price per byte"
 }
 ```
 
-### Response (201)
-```json
-{ "data": { "uuid": "...", "measurement_type": "byte" } }
+| Field        | Type    | Required | Description |
+| ------------ | ------- | -------- | ----------- |
+| price        | integer | Yes      | Price value (smallest unit; e.g., cents). Saved as USD default. |
+| description  | string  | No       | Default description content. |
+
+## Examples
+
+### Request (curl)
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{"price":100,"description":"Price per byte"}' \
+  "https://sandbox.your-domain.com/ia/admin/pricing/bytes"
 ```
 
-### Validation Error (422)
-Missing currencies or invalid values.
+### Response (201)
+
+```json
+{
+  "data": {
+    "uuid": "...",
+    "measurement_type": "byte",
+    "title": { "content": "Price per Byte" },
+    "text": { "content": "Price per byte" },
+    "prices": [ { "currency_id": 2, "value": 100, "is_default": true } ]
+  }
+}
+```
+
+## JSON Structure Explained
+
+| Field                  | Type    | Description |
+| ---------------------- | ------- | ----------- |
+| data.uuid              | string  | Product identifier |
+| data.measurement_type  | string  | Measurement type (`byte`) |
+| data.title.content     | string  | Localized default title |
+| data.text.content      | string  | Default description |
+| data.prices[]          | array   | Prices attached to product |
+
+## HTTP Status
+
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 422: Unprocessable Entity
+- 500: Internal Server Error
+
+## Errors
+
+```json
+{
+  "message": "The given data was invalid.",
+  "errors": { "price": ["The price field is required."] }
+}
+```
+
+## Notes
+
+- Title is created for all available languages from translation key `common.byte_price` and slug fixed to `byte_price`.
+- Title is immutable for Byte Pricing endpoints.
+
+## Related
+
+- docs/EN/IA/Endpoints/BytePricingIndex.md
+- docs/EN/IA/Endpoints/BytePricingShow.md
+- docs/EN/IA/Endpoints/BytePricingUpdate.md
+- docs/EN/IA/Endpoints/BytePricingDestroy.md
+
+## Changelog
+
+- 2025-09-23: Aligned with single-price input and immutable title.
