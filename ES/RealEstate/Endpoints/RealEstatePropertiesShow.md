@@ -1,5 +1,8 @@
 # Bienes Raíces — Propiedades: Detalle
 
+Devuelve el documento bruto de la propiedad almacenado en MongoDB y conserva el
+envoltorio estándar `{ data: ... }` utilizado por los endpoints de RealEstate.
+
 ## Endpoint
 
 ```
@@ -70,7 +73,8 @@ curl -X GET "https://api.ejemplo.com/real-estate/properties/e2c9c1c6-4cac-4c41-8
 
 ## Notas
 
-- Se devuelve el documento bruto almacenado en la colección `properties` (MongoDB).
+- Se devuelve el documento de MongoDB (`properties`) encapsulado dentro de
+  `data`.
 - Incluir `public_key` evita mostrar datos de otras plataformas.
 
 ## Changelog

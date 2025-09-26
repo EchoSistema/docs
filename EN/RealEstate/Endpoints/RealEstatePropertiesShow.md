@@ -1,5 +1,8 @@
 # Real Estate — Properties: Detail
 
+Returns the raw property document stored in MongoDB while preserving the
+standard `{ data: ... }` response envelope used across RealEstate endpoints.
+
 ## Endpoint
 
 ```
@@ -70,7 +73,8 @@ curl -X GET "https://api.example.com/real-estate/properties/e2c9c1c6-4cac-4c41-8
 
 ## Notes
 
-- The payload returns the raw MongoDB document stored in `properties`.
+- The payload returns the MongoDB document stored in `properties`, wrapped in
+  the `{ data: ... }` envelope.
 - `public_key` is optional but helps avoid leaking cross-platform listings.
 
 ## Changelog

@@ -1,5 +1,8 @@
 # Imobiliário — Imóveis: Detalhe
 
+Retorna o documento bruto do imóvel armazenado no MongoDB e mantém o envelope
+padrão `{ data: ... }` utilizado pelos demais endpoints de RealEstate.
+
 ## Endpoint
 
 ```
@@ -70,7 +73,8 @@ curl -X GET "https://api.exemplo.com/real-estate/properties/e2c9c1c6-4cac-4c41-8
 
 ## Notas
 
-- O payload retorna o documento bruto do MongoDB (`properties`).
+- O payload retorna exatamente o documento persistido no MongoDB (`properties`)
+  encapsulado sob `data`.
 - Envie `public_key` para evitar acesso cruzado entre plataformas diferentes.
 
 ## Changelog

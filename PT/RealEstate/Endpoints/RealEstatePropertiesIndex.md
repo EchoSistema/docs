@@ -1,5 +1,10 @@
 # Imobiliário — Imóveis: Listagem
 
+Expõe o catálogo público de imóveis mantido no MongoDB, aplicando os mesmos
+critérios do `PropertyFilter` (locale, valores, agência/corretor e faixas
+numéricas). Quando `per_page` não é informado, a paginação retorna 9 registros
+por padrão.
+
 ## Endpoint
 
 ```
@@ -27,13 +32,21 @@ Não é necessária. Informe o `public_key` para limitar a listagem à plataform
 | sort_by   | string | Não         | Campo para ordenação. Aceita `created_at`, `size`, `rooms`, `bed`, `bath`, `garage`, `is_featured`, `direct_from_owner`, `value`. | `createdAt` |
 | direction | string | Não         | `asc` ou `desc` (case insensitive). | `DESC` |
 
+### Localização
+
+| Parâmetro | Tipo   | Obrigatório | Descrição | Padrão |
+| --------- | ------ | ----------- | --------- | ------ |
+| language  | string | Não         | Locale utilizado ao aplicar `search` em campos multilíngues (`en`, `es`, `pt-BR`, …). | — |
+
 ### Identificadores e Propriedade
 
 | Parâmetro     | Tipo   | Obrigatório | Descrição |
 | ------------- | ------ | ----------- | --------- |
 | public_key[]  | string | Não         | Filtra pelo(s) `pbk` da plataforma. |
 | uuid[]        | uuid   | Não         | Filtra por UUID(s) do imóvel. |
+| agency[]      | string | Não         | Filtra pelo nome da imobiliária (ex.: `Delta Offices`). |
 | agency_uuid[] | uuid   | Não         | Filtra por UUID(s) da imobiliária. |
+| agent[]       | string | Não         | Filtra pelo nome do corretor. |
 | agent_uuid[]  | uuid   | Não         | Filtra por UUID(s) do corretor. |
 
 ### Localização e Tipologia
@@ -44,16 +57,16 @@ Não é necessária. Informe o `public_key` para limitar a listagem à plataform
 | region[]        | string | Não         | Filtra por estado/região. |
 | country[]       | string | Não         | Filtra por país (código ISO). |
 | rent_type[]     | string | Não         | Filtra por tipo de negociação. |
-| property_type[] | string | Não         | Filtra por tipo de imóvel. |
+| property_type[] | string | Não         | Filtra por tipo de imóvel (case insensitive). |
 
 ### Capacidade e Comodidades
 
 | Parâmetro | Tipo | Obrigatório | Descrição |
 | --------- | ---- | ----------- | --------- |
 | rooms / rooms_min / rooms_max | int | Não | Filtro por número de cômodos. |
-| bed / bed_min / bed_max       | int | Não | Filtro por dormitórios. |
-| bath / bath_min / bath_max    | int | Não | Filtro por banheiros. |
-| size_min / size_max           | int | Não | Faixa de metragem. |
+| bed / bed_min / bed_max       | int | Não | Filtro por dormitórios (por padrão `bed_min = 1`). |
+| bath / bath_min / bath_max    | int | Não | Filtro por banheiros (por padrão `bath_min = 1`). |
+| size_min / size_max           | int | Não | Faixa de metragem (padrões `size_min = 1` e `size_max = 10000`). |
 | garage                        | int | Não | Número exato de vagas. |
 
 ### Destaques e Valor
@@ -63,8 +76,9 @@ Não é necessária. Informe o `public_key` para limitar a listagem à plataform
 | is_featured       | boolean | Não         | Apenas imóveis destacados. |
 | direct_from_owner | boolean | Não         | Apenas imóveis direto com o proprietário. |
 | search            | string  | Não         | Busca textual em campos diversos. |
-| value_currency    | string  | Não         | Código da moeda (`BRL`, `USD`, …). |
-| value_min/max     | number  | Não         | Faixa de valor. |
+| value_currency    | string  | Não         | Código da moeda (`BRL`, `USD`, …). Obrigatório ao ordenar por `value`. |
+| currency          | string  | Não         | Alias para `value_currency`, útil quando apenas deseja ordenar pelo preço. |
+| value_min/max     | number  | Não         | Faixa de valor aplicada apenas quando enviada junto com `value_currency`. |
 
 ### Datas
 
@@ -138,8 +152,11 @@ curl -X GET \
 
 - Quando informado, o `public_key` limita automaticamente os resultados.
 - Alias em camelCase ou snake_case são aceitos no `sort_by`.
+- Os filtros mapeiam exatamente o comportamento do `PropertyFilter`, incluindo
+  regionalização de textos, moeda e metadata de agência/corretor.
 - A resposta segue o formato padrão do `LengthAwarePaginator` do Laravel.
 
 ## Changelog
 
 - 2025-09-25 — Documentação inicial.
+- 2025-09-25 — Documentados filtros padrão, suporte a `language` e filtros por nome de agência/corretor.

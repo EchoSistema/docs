@@ -1,5 +1,10 @@
 # Real Estate — Properties: List
 
+Publishes the public property catalogue backed by MongoDB using the same
+criteria enforced by `PropertyFilter` (locale-aware search, pricing currency,
+agency/agent metadata, numeric ranges). When `per_page` is omitted the
+pagination falls back to 9 records per page.
+
 ## Endpoint
 
 ```
@@ -27,13 +32,21 @@ Not required. Pass the public platform key via `public_key` when you need to sco
 | sort_by    | string | No       | Field alias for ordering. Supports `created_at`, `size`, `rooms`, `bed`, `bath`, `garage`, `is_featured`, `direct_from_owner`, `value`. | `createdAt` |
 | direction  | string | No       | `asc` or `desc` (case-insensitive). | `DESC` |
 
+### Localization
+
+| Parameter | Type   | Required | Description | Default |
+| --------- | ------ | -------- | ----------- | ------- |
+| language  | string | No       | Locale used to resolve multilanguage fields when applying `search` (`en`, `es`, `pt-BR`, …). | — |
+
 ### Identifiers & Ownership
 
 | Parameter     | Type        | Required | Description |
 | ------------- | ----------- | -------- | ----------- |
 | public_key[]  | string      | No       | Filter by one or more public keys (`pbk`). |
 | uuid[]        | uuid        | No       | Filter by property UUID(s). |
+| agency[]      | string      | No       | Filter by agency name(s) (e.g. `Delta Offices`). |
 | agency_uuid[] | uuid        | No       | Filter by agency UUID(s). |
+| agent[]       | string      | No       | Filter by agent name(s). |
 | agent_uuid[]  | uuid        | No       | Filter by agent UUID(s). |
 
 ### Location & Typing
@@ -44,7 +57,7 @@ Not required. Pass the public platform key via `public_key` when you need to sco
 | region[]       | string | No       | Filter by state/region. |
 | country[]      | string | No       | Filter by ISO country code. |
 | rent_type[]    | string | No       | Filter by rent type slug/value. |
-| property_type[]| string | No       | Filter by property type slug/value. |
+| property_type[]| string | No       | Filter by property type slug/value (case-insensitive). |
 
 ### Capacity & Amenities
 
@@ -53,10 +66,10 @@ Not required. Pass the public platform key via `public_key` when you need to sco
 | rooms     | int   | No       | Exact room count. |
 | rooms_min | int   | No       | Minimum rooms. |
 | rooms_max | int   | No       | Maximum rooms. |
-| bed / bed_min / bed_max | int | No | Bedroom filters. |
-| bath / bath_min / bath_max | int | No | Bathroom filters. |
-| size_min  | int   | No       | Minimum size (sqft/m² based on dataset). |
-| size_max  | int   | No       | Maximum size. |
+| bed / bed_min / bed_max | int | No | Bedroom filters (defaults enforce `bed_min = 1`). |
+| bath / bath_min / bath_max | int | No | Bathroom filters (defaults enforce `bath_min = 1`). |
+| size_min  | int   | No       | Minimum size (default `1`). |
+| size_max  | int   | No       | Maximum size (default `10000`). |
 | garage    | int   | No       | Exact garage slots. |
 
 ### Highlight & Pricing
@@ -66,8 +79,9 @@ Not required. Pass the public platform key via `public_key` when you need to sco
 | is_featured         | boolean | No       | Filter featured properties. |
 | direct_from_owner   | boolean | No       | Filter exclusive owner listings. |
 | search              | string  | No       | Full-text search across metadata. |
-| value_currency      | string  | No       | Currency code (`USD`, `EUR`, …). |
-| value_min / value_max | number | No     | Value range filter. |
+| value_currency      | string  | No       | Currency code (`USD`, `EUR`, …). Required when sorting by `value`. |
+| currency            | string  | No       | Alias for `value_currency`, useful when only sorting by price. |
+| value_min / value_max | number | No     | Price range applied only when provided alongside `value_currency`. |
 
 ### Date Filters
 
@@ -141,8 +155,11 @@ curl -X GET \
 
 - Results are automatically scoped to the provided `public_key` when present.
 - Sorting accepts camelCase or snake_case aliases as shown above.
+- The available filters mirror the backend `PropertyFilter` behaviour (locale,
+  currency, agency/agent metadata, numeric ranges).
 - The paginator uses Laravel's default structure (`LengthAwarePaginator`).
 
 ## Changelog
 
 - 2025-09-25 — Initial documentation.
+- 2025-09-25 — Documented default numeric filters, `language` search support, and agency/agent name filters.
