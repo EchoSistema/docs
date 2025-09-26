@@ -1,0 +1,180 @@
+{
+  "info": {
+    "name": "Users – By Domain",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "IA",
+      "item": [
+        {
+          "name": "Update User (Profile)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ia/admin/users/{{user}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","ia","admin","users","{{user}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"name\": \"Jane Doe\"\n}"}
+          }
+        },
+        {
+          "name": "Update User (Role)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/ia/admin/users/{{user}}/roles/{{role}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","ia","admin","users","{{user}}","roles","{{role}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"status\": \"approved\"\n}"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pigeons",
+      "item": [
+        {
+          "name": "Update User (Profile)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/pigeons/users/{{user}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","pigeons","users","{{user}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"name\": \"Jane Doe\"\n}"}
+          }
+        },
+        {
+          "name": "Update User (Role)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/pigeons/users/{{user}}/roles/{{role}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","pigeons","users","{{user}}","roles","{{role}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"status\": \"approved\"\n}"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health-Care",
+      "item": [
+        {
+          "name": "Update User (Profile)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health-care/users/{{user}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","health-care","users","{{user}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"name\": \"Jane Doe\"\n}"}
+          }
+        },
+        {
+          "name": "Update User (Role)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health-care/users/{{user}}/roles/{{role}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","health-care","users","{{user}}","roles","{{role}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"status\": \"approved\"\n}"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Complaint Book",
+      "item": [
+        {
+          "name": "Update User (Profile)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/complaint-book/users/{{user}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","complaint-book","users","{{user}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"name\": \"Jane Doe\"\n}"}
+          }
+        },
+        {
+          "name": "Update User (Role)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-PUBLIC-KEY", "value": "{{public_key}}" },
+              { "key": "Accept-Language", "value": "{{language}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/complaint-book/users/{{user}}/roles/{{role}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","complaint-book","users","{{user}}","roles","{{role}}"]
+            },
+            "body": {"mode":"raw","raw":"{\n  \"status\": \"approved\"\n}"}
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {"key":"baseUrl","value":"http://localhost"},
+    {"key":"token","value":""},
+    {"key":"public_key","value":""},
+    {"key":"language","value":"en"},
+    {"key":"user","value":"00000000-0000-0000-0000-000000000000"},
+    {"key":"role","value":"admin"}
+  ]
+}
