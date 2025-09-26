@@ -1,0 +1,2530 @@
+echosistema-app:{
+  "name": "EchoSistema Api",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "Auth",
+      "filename": "Auth",
+      "root": {
+        "meta": {
+          "name": "Auth"
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "Abintel - User Login",
+          "filename": "Abintel - User Login.bru",
+          "seq": 4,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "https://sandbox.quantumlink.online/api/v1/auth?device=Bruno 2.1.0 ©2025 Bruno Software Inc",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "device",
+                "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {
+              "res": "const body = res.getBody();\nbru.setEnvVar('token', body.token)"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "basic",
+              "basic": {
+                "username": "vitorvargasdev@proton.me",
+                "password": "123#Mudar"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Keep Alive",
+          "filename": "Keep Alive.bru",
+          "seq": 5,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{sandboxUrl}}/auth/keep-alive",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "{{pbkComplaintBook}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "multipartForm",
+              "formUrlEncoded": [],
+              "multipartForm": [
+                {
+                  "type": "text",
+                  "name": "device",
+                  "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                  "enabled": false
+                }
+              ],
+              "file": []
+            },
+            "script": {
+              "res": "const body = res.getBody();\nbru.setEnvVar('token', body.token)"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{token}}"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Login",
+          "filename": "Login.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{sandboxUrl}}/auth",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "{{pbkEchoSistema}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "multipartForm",
+              "formUrlEncoded": [],
+              "multipartForm": [
+                {
+                  "type": "text",
+                  "name": "device",
+                  "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                  "enabled": true
+                }
+              ],
+              "file": []
+            },
+            "script": {
+              "res": "const body = res.getBody();\nbru.setEnvVar('token', body.token)"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "basic",
+              "basic": {
+                "username": "echosistema@ewertondaniel.work",
+                "password": "123stage321"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Register",
+          "filename": "Register.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{sandboxUrl}}/auth/register",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                "enabled": true
+              },
+              {
+                "name": "",
+                "value": "",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "multipartForm",
+              "formUrlEncoded": [],
+              "multipartForm": [
+                {
+                  "type": "text",
+                  "name": "device",
+                  "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "name",
+                  "value": "Yusuke Urameshi",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "email",
+                  "value": "yusuke_urameshi_2@yuyuhakusho.com",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "currency",
+                  "value": "BRL",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "language",
+                  "value": "pt-BR",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "password",
+                  "value": "123#Mudar",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "password_confirmation",
+                  "value": "123#Mudar",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "gender",
+                  "value": "m",
+                  "enabled": true
+                },
+                {
+                  "type": "text",
+                  "name": "mail_confirmation",
+                  "value": "no",
+                  "enabled": true
+                }
+              ],
+              "file": []
+            },
+            "script": {
+              "res": "const body = res.getBody();\nbru.setEnvVar('token', body.token)"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "User Login",
+          "filename": "User Login.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{sandboxUrl}}/auth?device=Bruno 2.1.0 ©2025 Bruno Software Inc",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "{{pbkComplaintBook}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "device",
+                "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {
+              "res": "const body = res.getBody();\nbru.setEnvVar('token', body.token)"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "basic",
+              "basic": {
+                "username": "adrian.portillo@defensadelconsumidor.online",
+                "password": "123#Cambiar"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Domain",
+      "filename": "Domain",
+      "root": {
+        "meta": {
+          "name": "Domain"
+        }
+      },
+      "items": [
+        {
+          "type": "folder",
+          "name": "Complaint Book",
+          "filename": "Complaint Book",
+          "root": {
+            "meta": {
+              "name": "Complaint Book"
+            }
+          },
+          "items": [
+            {
+              "type": "folder",
+              "name": "Collaborator",
+              "filename": "Collaborator",
+              "seq": 4,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Collaborator",
+                  "seq": 4
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "me",
+                  "filename": "me.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/complaint-book/collaborators",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Company",
+              "filename": "Company",
+              "seq": 3,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Company",
+                  "seq": 3
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index through coverage",
+                  "filename": "Index through coverage.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/company/through-coverage?no_paginate=1&relations[]=logos&relations[]=fiscalDocuments&relations[]=contacts",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "x-public-key",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "no_paginate",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "relations[]",
+                        "value": "logos",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "relations[]",
+                        "value": "fiscalDocuments",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "relations[]",
+                        "value": "contacts",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "fiscal_document_type",
+                        "value": "ruc",
+                        "type": "query",
+                        "enabled": false
+                      },
+                      {
+                        "name": "fiscal_document_value",
+                        "value": "80112863",
+                        "type": "query",
+                        "enabled": false
+                      },
+                      {
+                        "name": "with_count",
+                        "value": "complaints",
+                        "type": "query",
+                        "enabled": false
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Complaints",
+              "filename": "Complaints",
+              "seq": 5,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Complaints",
+                  "seq": 5
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Complaints",
+                  "filename": "Complaints.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/complaint-book/complaints?device=sdk_gphone64_x86_64&page=1",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "device",
+                        "value": "sdk_gphone64_x86_64",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "page",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "multipartForm",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {
+                      "res": "// const body = res.getBody();\n// bru.setEnvVar('token', body.token)"
+                    },
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Public",
+              "filename": "Public",
+              "root": {
+                "meta": {
+                  "name": "Public"
+                }
+              },
+              "items": [
+                {
+                  "type": "folder",
+                  "name": "Complaints",
+                  "filename": "Complaints",
+                  "root": {
+                    "meta": {
+                      "name": "Complaints"
+                    }
+                  },
+                  "items": [
+                    {
+                      "type": "http",
+                      "name": "Index",
+                      "filename": "Index.bru",
+                      "seq": 1,
+                      "settings": {},
+                      "tags": [],
+                      "request": {
+                        "url": "{{sandboxUrl}}/complaints",
+                        "method": "GET",
+                        "headers": [
+                          {
+                            "name": "x-public-key",
+                            "value": "{{pbkComplaintBook}}",
+                            "enabled": true
+                          }
+                        ],
+                        "params": [],
+                        "body": {
+                          "mode": "none",
+                          "formUrlEncoded": [],
+                          "multipartForm": [],
+                          "file": []
+                        },
+                        "script": {},
+                        "vars": {},
+                        "assertions": [],
+                        "tests": "",
+                        "docs": "",
+                        "auth": {
+                          "mode": "inherit"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Users",
+              "filename": "Users",
+              "root": {
+                "meta": {
+                  "name": "Users"
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "User Register",
+                  "filename": "User Register.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/complaint-book/users",
+                    "method": "POST",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "multipartForm",
+                      "formUrlEncoded": [],
+                      "multipartForm": [
+                        {
+                          "type": "text",
+                          "name": "device",
+                          "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "name",
+                          "value": "User Test Twenty Nine",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "email",
+                          "value": "user-test-29@echosistema.email",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "currency",
+                          "value": "BRL",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "language",
+                          "value": "pt-BR",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "password",
+                          "value": "123#Mudar",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "password_confirmation",
+                          "value": "123#Mudar",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "gender",
+                          "value": "m",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "roles[]",
+                          "value": "supervisor",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "birth_date",
+                          "value": "1968-03-08",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "address[city_id]",
+                          "value": "693",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "address[type]",
+                          "value": "both",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "address[address_one]",
+                          "value": "Rua Horácio Borges",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "address[address_two]",
+                          "value": "1059",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "address[address_four]",
+                          "value": "Drews",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "contacts[0][country_code]",
+                          "value": "55",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "contacts[0][number]",
+                          "value": "997430417",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "nationalities[]",
+                          "value": "BR",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "address[zipcode]",
+                          "value": "96501-072",
+                          "enabled": true
+                        },
+                        {
+                          "type": "text",
+                          "name": "contacts[0][name]",
+                          "value": "telephone",
+                          "enabled": true
+                        }
+                      ],
+                      "file": []
+                    },
+                    "script": {
+                      "res": "// const body = res.getBody();\n// bru.setEnvVar('token', body.token)"
+                    },
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "HealthCare",
+          "filename": "HealthCare",
+          "seq": 5,
+          "root": {
+            "request": {
+              "auth": {
+                "mode": "inherit"
+              }
+            },
+            "meta": {
+              "name": "HealthCare",
+              "seq": 5
+            }
+          },
+          "items": [
+            {
+              "type": "http",
+              "name": "Auth - HealthCare",
+              "filename": "Auth - HealthCare.bru",
+              "seq": 4,
+              "settings": {},
+              "tags": [],
+              "request": {
+                "url": "{{sandboxUrl}}/auth",
+                "method": "POST",
+                "headers": [
+                  {
+                    "name": "X-PUBLIC-KEY",
+                    "value": "{{pbkHealthCare}}",
+                    "enabled": true
+                  }
+                ],
+                "params": [],
+                "body": {
+                  "mode": "multipartForm",
+                  "formUrlEncoded": [],
+                  "multipartForm": [
+                    {
+                      "type": "text",
+                      "name": "device",
+                      "value": "Bruno 2.1.0 ©2025 Bruno Software Inc",
+                      "enabled": true
+                    }
+                  ],
+                  "file": []
+                },
+                "script": {
+                  "res": "const body = res.getBody();\nbru.setEnvVar('token', body.token)"
+                },
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "docs": "",
+                "auth": {
+                  "mode": "basic",
+                  "basic": {
+                    "username": "priscila@priscilaalcantara.com",
+                    "password": "123stage321"
+                  }
+                }
+              }
+            },
+            {
+              "type": "folder",
+              "name": "Me",
+              "filename": "Me",
+              "seq": 1,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Me",
+                  "seq": 1
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Me Profile",
+                  "filename": "Me Profile.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/health-care/me",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkHealthCare}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "CMS",
+          "filename": "CMS",
+          "seq": 7,
+          "root": {
+            "request": {
+              "auth": {
+                "mode": "inherit"
+              }
+            },
+            "meta": {
+              "name": "CMS",
+              "seq": 7
+            }
+          },
+          "items": [
+            {
+              "type": "folder",
+              "name": "Texts",
+              "filename": "Texts",
+              "seq": 1,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Texts",
+                  "seq": 1
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/cms/texts",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkEchoSistema}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Title",
+              "filename": "Title",
+              "seq": 2,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Title",
+                  "seq": 2
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/cms/titles?usage=laws",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept-Language",
+                        "value": "es",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "usage",
+                        "value": "laws",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "language",
+                        "value": "es",
+                        "type": "query",
+                        "enabled": false
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Show",
+                  "filename": "Show.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/cms/titles/ley-n-133498-defensa-del-consumidor-y-del-usuario-es?usage=laws",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept-Language",
+                        "value": "es",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "usage",
+                        "value": "laws",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "language",
+                        "value": "es",
+                        "type": "query",
+                        "enabled": false
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "IA",
+          "filename": "IA",
+          "seq": 10,
+          "root": {
+            "request": {
+              "auth": {
+                "mode": "inherit"
+              }
+            },
+            "meta": {
+              "name": "IA",
+              "seq": 10
+            }
+          },
+          "items": [
+            {
+              "type": "folder",
+              "name": "Users",
+              "filename": "Users",
+              "seq": 1,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Users",
+                  "seq": 1
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {
+                    "encodeUrl": true
+                  },
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/ia/admin/users",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "me",
+                  "filename": "me.bru",
+                  "seq": 2,
+                  "settings": {
+                    "encodeUrl": true
+                  },
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/ia/me",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Company",
+          "filename": "Company",
+          "seq": 6,
+          "root": {
+            "request": {
+              "auth": {
+                "mode": "inherit"
+              }
+            },
+            "meta": {
+              "name": "Company",
+              "seq": 6
+            }
+          },
+          "items": [
+            {
+              "type": "http",
+              "name": "By Coverage",
+              "filename": "By Coverage.bru",
+              "seq": 1,
+              "settings": {},
+              "tags": [],
+              "request": {
+                "url": "{{sandboxUrl}}/company/through-coverage?no_paginate=1",
+                "method": "GET",
+                "headers": [
+                  {
+                    "name": "X-PUBLIC-KEY",
+                    "value": "c43864ce-efae-31c9-bb66-82dceefbc996",
+                    "enabled": true
+                  }
+                ],
+                "params": [
+                  {
+                    "name": "no_paginate",
+                    "value": "1",
+                    "type": "query",
+                    "enabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": [],
+                  "file": []
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "docs": "",
+                "auth": {
+                  "mode": "bearer",
+                  "bearer": {
+                    "token": "{{token}}"
+                  }
+                }
+              }
+            },
+            {
+              "type": "http",
+              "name": "Reviews",
+              "filename": "Reviews.bru",
+              "seq": 2,
+              "settings": {},
+              "tags": [],
+              "request": {
+                "url": "{{sandboxUrl}}/company/reviews?noPaginate=1",
+                "method": "GET",
+                "headers": [
+                  {
+                    "name": "X-PUBLIC-KEY",
+                    "value": "c43864ce-efae-31c9-bb66-82dceefbc996",
+                    "enabled": true
+                  }
+                ],
+                "params": [
+                  {
+                    "name": "noPaginate",
+                    "value": "1",
+                    "type": "query",
+                    "enabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": [],
+                  "file": []
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "docs": "",
+                "auth": {
+                  "mode": "bearer",
+                  "bearer": {
+                    "token": "{{token}}"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Pigeons",
+          "filename": "Pigeons",
+          "seq": 8,
+          "root": {
+            "meta": {
+              "name": "Pigeons",
+              "seq": 8
+            }
+          },
+          "items": [
+            {
+              "type": "folder",
+              "name": "Newsletter",
+              "filename": "Newsletter",
+              "root": {
+                "meta": {
+                  "name": "Newsletter"
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Store",
+                  "filename": "Store.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/item-types",
+                    "method": "POST",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkEchoSistema}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept",
+                        "value": "application/json",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept-Language",
+                        "value": "pt-BR",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Browser-Language",
+                        "value": "en",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Shared",
+          "filename": "Shared",
+          "root": {
+            "meta": {
+              "name": "Shared"
+            }
+          },
+          "items": [
+            {
+              "type": "http",
+              "name": "Check Company RUC",
+              "filename": "Check Company RUC.bru",
+              "seq": 2,
+              "settings": {},
+              "tags": [],
+              "request": {
+                "url": "{{sandboxUrl}}/complaint-book/claimed-company/ruc/560947",
+                "method": "GET",
+                "headers": [
+                  {
+                    "name": "X-PUBLIC-KEY",
+                    "value": "{{pbkEchoSistema}}",
+                    "enabled": true
+                  }
+                ],
+                "params": [],
+                "body": {
+                  "mode": "none",
+                  "formUrlEncoded": [],
+                  "multipartForm": [],
+                  "file": []
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "docs": "",
+                "auth": {
+                  "mode": "inherit"
+                }
+              }
+            },
+            {
+              "type": "folder",
+              "name": "Countries",
+              "filename": "Countries",
+              "seq": 1,
+              "root": {
+                "meta": {
+                  "name": "Countries",
+                  "seq": 1
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "City",
+                  "filename": "City.bru",
+                  "seq": 3,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/public/countries/py/states/Itapua/cities/encarnacion",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "inherit"
+                    }
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/public/countries?minimum=1&no_paginate=1",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "minimum",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "no_paginate",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "inherit"
+                    }
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Show",
+                  "filename": "Show.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/public/countries?minimum=1&no_paginate=1",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "minimum",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "no_paginate",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "inherit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "PlatformContactMessage]",
+              "filename": "PlatformContactMessage]",
+              "seq": 3,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "PlatformContactMessage]",
+                  "seq": 3
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 3,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/contacts?is_read=0&no_paginate=1",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkEchoSistema}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "is_read",
+                        "value": "0",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "no_paginate",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Rules",
+              "filename": "Rules",
+              "seq": 4,
+              "root": {
+                "meta": {
+                  "name": "Rules",
+                  "seq": 4
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/roles",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkComplaintBook}}",
+                        "enabled": false
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "permissions",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": false
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "inherit"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Test",
+          "filename": "Test",
+          "seq": 9,
+          "root": {
+            "request": {
+              "auth": {
+                "mode": "inherit"
+              }
+            },
+            "meta": {
+              "name": "Test",
+              "seq": 9
+            }
+          },
+          "items": [
+            {
+              "type": "http",
+              "name": "v1 - Order Store",
+              "filename": "v1 - Order Store.bru",
+              "seq": 1,
+              "settings": {
+                "encodeUrl": true
+              },
+              "tags": [],
+              "request": {
+                "url": "https://dev.micros.services/api/v1/order",
+                "method": "POST",
+                "headers": [],
+                "params": [],
+                "body": {
+                  "mode": "multipartForm",
+                  "formUrlEncoded": [],
+                  "multipartForm": [
+                    {
+                      "type": "text",
+                      "name": "customer_name",
+                      "value": "Marcelinho Pão e Vinho",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "customer_nif",
+                      "value": "231670478",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "total",
+                      "value": "29.70",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "currency",
+                      "value": "EUR",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "items[0][sku]",
+                      "value": "PEN-16GB",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "items[0][qty]",
+                      "value": "3",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "items[0][unit_price]",
+                      "value": "9.90",
+                      "enabled": true
+                    }
+                  ],
+                  "file": []
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "docs": "",
+                "auth": {
+                  "mode": "inherit"
+                }
+              }
+            },
+            {
+              "type": "http",
+              "name": "v2 - Order Store copy",
+              "filename": "v2 - Order Store copy.bru",
+              "seq": 2,
+              "settings": {
+                "encodeUrl": true
+              },
+              "tags": [],
+              "request": {
+                "url": "https://dev.micros.services/api/v2/order",
+                "method": "POST",
+                "headers": [],
+                "params": [],
+                "body": {
+                  "mode": "multipartForm",
+                  "formUrlEncoded": [],
+                  "multipartForm": [
+                    {
+                      "type": "text",
+                      "name": "data[type]",
+                      "value": "orders",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][customer][name]",
+                      "value": "Marcelinho Pão e Vinho",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][customer][nif]",
+                      "value": "231670478",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][summary][total]",
+                      "value": "199.90",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][summary][currency]",
+                      "value": "EUR",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][lines][0][sku]",
+                      "value": "PEN‑16GB",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][lines][1][sku]",
+                      "value": "NOTE‑A5",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][lines][0][qty]",
+                      "value": "3",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][lines][1][qty]",
+                      "value": "10",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][lines][0][price]",
+                      "value": "9.90",
+                      "enabled": true
+                    },
+                    {
+                      "type": "text",
+                      "name": "data[attributes][lines][1][price]",
+                      "value": "12.00",
+                      "enabled": true
+                    }
+                  ],
+                  "file": []
+                },
+                "script": {},
+                "vars": {},
+                "assertions": [],
+                "tests": "",
+                "docs": "",
+                "auth": {
+                  "mode": "inherit"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "Rent",
+          "filename": "Rent",
+          "root": {
+            "meta": {
+              "name": "Rent"
+            }
+          },
+          "items": [
+            {
+              "type": "folder",
+              "name": "Items",
+              "filename": "Items",
+              "root": {
+                "meta": {
+                  "name": "Items"
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/pigeons/newsletters",
+                    "method": "POST",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkEchoSistema}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept",
+                        "value": "application/json",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept-Language",
+                        "value": "pt-BR",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Browser-Language",
+                        "value": "en",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "title",
+                        "value": "Molestias",
+                        "type": "query",
+                        "enabled": false
+                      },
+                      {
+                        "name": "payment_interval",
+                        "value": "minutely",
+                        "type": "query",
+                        "enabled": false
+                      },
+                      {
+                        "name": "no_paginate",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": false
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "none"
+                    }
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Store",
+                  "filename": "Store.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/item-types",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkEchoSistema}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept",
+                        "value": "application/json",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept-Language",
+                        "value": "pt-BR",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Browser-Language",
+                        "value": "en",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "bearer",
+                      "bearer": {
+                        "token": "{{token}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "folder",
+          "name": "RealEstate",
+          "filename": "RealEstate",
+          "root": {
+            "meta": {
+              "name": "RealEstate"
+            }
+          },
+          "items": [
+            {
+              "type": "folder",
+              "name": "Properties",
+              "filename": "Properties",
+              "seq": 1,
+              "root": {
+                "meta": {
+                  "name": "Properties",
+                  "seq": 1
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Index",
+                  "filename": "Index.bru",
+                  "seq": 1,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/properties",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept",
+                        "value": "application/json",
+                        "enabled": true
+                      }
+                    ],
+                    "params": []
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Show",
+                  "filename": "Show.bru",
+                  "seq": 2,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/properties/{uuid}",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      },
+                      {
+                        "name": "Accept",
+                        "value": "application/json",
+                        "enabled": true
+                      }
+                    ],
+                    "params": []
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Agents Index",
+                  "filename": "Agents Index.bru",
+                  "seq": 3,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/agents",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Agent Show",
+                  "filename": "Agent Show.bru",
+                  "seq": 4,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/agents/{uuid}",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Property Types",
+                  "filename": "Property Types.bru",
+                  "seq": 5,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/property-types",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Rent Types",
+                  "filename": "Rent Types.bru",
+                  "seq": 6,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/rent-types",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Platform Images",
+                  "filename": "Platform Images.bru",
+                  "seq": 7,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/platform-images",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "http",
+                  "name": "Platform Texts",
+                  "filename": "Platform Texts.bru",
+                  "seq": 8,
+                  "settings": {},
+                  "tags": [],
+                  "request": {
+                    "url": "{{sandboxUrl}}/real-estate/platform-texts",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "folder",
+              "name": "Public API",
+              "filename": "Public API",
+              "seq": 2,
+              "root": {
+                "request": {
+                  "auth": {
+                    "mode": "inherit"
+                  }
+                },
+                "meta": {
+                  "name": "Public API",
+                  "seq": 2
+                }
+              },
+              "items": [
+                {
+                  "type": "http",
+                  "name": "Properties",
+                  "filename": "Properties.bru",
+                  "seq": 1,
+                  "settings": {
+                    "encodeUrl": true
+                  },
+                  "tags": [],
+                  "request": {
+                    "url": "https://stage.alquila.online/api/v2/properties?perPage=9&page=1",
+                    "method": "GET",
+                    "headers": [
+                      {
+                        "name": "X-PUBLIC-KEY",
+                        "value": "{{pbkRealState}}",
+                        "enabled": true
+                      }
+                    ],
+                    "params": [
+                      {
+                        "name": "perPage",
+                        "value": "9",
+                        "type": "query",
+                        "enabled": true
+                      },
+                      {
+                        "name": "page",
+                        "value": "1",
+                        "type": "query",
+                        "enabled": true
+                      }
+                    ],
+                    "body": {
+                      "mode": "none",
+                      "formUrlEncoded": [],
+                      "multipartForm": [],
+                      "file": []
+                    },
+                    "script": {},
+                    "vars": {},
+                    "assertions": [],
+                    "tests": "",
+                    "docs": "",
+                    "auth": {
+                      "mode": "inherit"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Footprints",
+      "filename": "Footprints",
+      "seq": 3,
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "Footprints",
+          "seq": 3
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "Index",
+          "filename": "Index.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{sandboxUrl}}/footprints",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "{{pbkEchoSistema}}",
+                "enabled": true
+              },
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Accept-Language",
+                "value": "pt-BR",
+                "enabled": true
+              },
+              {
+                "name": "Browser-Language",
+                "value": "en",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "sort",
+                "value": "created_at",
+                "type": "query",
+                "enabled": false
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{token}}"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Show",
+          "filename": "Show.bru",
+          "seq": 2,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{sandboxUrl}}/footprints/817",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-PUBLIC-KEY",
+                "value": "{{pbkEchoSistema}}",
+                "enabled": true
+              },
+              {
+                "name": "Accept",
+                "value": "application/json",
+                "enabled": true
+              },
+              {
+                "name": "Accept-Language",
+                "value": "pt-BR",
+                "enabled": true
+              },
+              {
+                "name": "Browser-Language",
+                "value": "en",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "sort",
+                "value": "created_at",
+                "type": "query",
+                "enabled": false
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{token}}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "TE09TZyg4cqb3UoHxBZXn",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "stageUrl",
+          "value": "https://sandbox.echosistema.online/api/v1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "pbkComplaintBook",
+          "value": "c43864ce-efae-31c9-bb66-82dceefbc996",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "pbkRealState",
+          "value": "1396fd3b-d56b-362f-8ebb-c068bb910b69",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "sandoxUrl",
+          "value": "https://sandbox.echosistema.online/api/v1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "sandboxUrl",
+          "value": "https://sandbox.echosistema.online/api/v1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "prodUrl",
+          "value": "https://echosistema.online/api/v1",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "pbkEchoSistema",
+          "value": "f246f177-c795-390b-af95-39b0dd01a7fb",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "pbkHealthCare",
+          "value": "92e0e0a4-20e1-3487-a9d9-759589759f35",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "token",
+          "value": "",
+          "enabled": true,
+          "secret": true,
+          "type": "text"
+        }
+      ],
+      "name": "multiapi"
+    }
+  ],
+  "brunoConfig": {
+    "version": "1",
+    "name": "EchoSistema Api",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "size": 0.013585090637207031,
+    "filesCount": 69
+  }
+};
