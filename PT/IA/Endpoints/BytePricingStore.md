@@ -1,5 +1,7 @@
 # IA — Preço por Byte: Criar
 
+Cria um produto precificado por byte com conteúdo localizado e um único preço ativo.
+
 ## Endpoint
 
 ```
@@ -58,23 +60,50 @@ curl -X POST \
   "https://sandbox.seu-dominio.com/ia/admin/pricing/bytes"
 ```
 
-### Resposta (201)
+### Resposta (200)
 
 ```json
 {
   "data": {
-    "uuid": "...",
-    "measurement_type": "byte",
-    "title": { "content": "Preço por Byte" },
-    "text": { "content": "Preço por byte" },
-    "prices": [ { "currency_id": 2, "value": 100, "is_default": true } ]
+    "uuid": "9e3c5352-a2d7-411d-9ba5-c29756966ca7",
+    "measurement_type": {
+      "id": "byte",
+      "name": "BYTE",
+      "title": "Byte"
+    },
+    "title": "Preço por Byte",
+    "slug": "byte_price",
+    "description": "Preço por byte",
+    "language": "pt-BR",
+    "price": 100,
+    "currency": "USD",
+    "formatted_price": "US$\u00a01,00",
+    "created_at": "2025-09-26T04:46:04-03:00"
   }
 }
 ```
 
+## Estrutura JSON Explicada
+
+| Campo                         | Tipo        | Descrição |
+| ----------------------------- | ----------- | --------- |
+| data.uuid                     | string      | Identificador do produto |
+| data.measurement_type         | object      | Metadados do tipo de medida |
+| data.measurement_type.id      | string      | Identificador enum (`byte`) |
+| data.measurement_type.name    | string      | Nome do enum (`BYTE`) |
+| data.measurement_type.title   | string      | Rótulo legível |
+| data.title                    | string|null | Título localizado do produto |
+| data.slug                     | string|null | Slug usado internamente |
+| data.description              | string|null | Descrição localizada padrão |
+| data.language                 | string|null | Locale associado ao título padrão |
+| data.price                    | integer     | Preço padrão na menor unidade (ex.: centavos) |
+| data.currency                 | string      | Código ISO da moeda |
+| data.formatted_price          | string|null | Preço formatado |
+| data.created_at               | string|null | Data de criação (ISO 8601) |
+
 ## Status HTTP
 
-- 201: Criado
+- 200: Sucesso
 - 400: Requisição inválida
 - 401: Não autenticado
 - 422: Erro de validação
@@ -82,7 +111,7 @@ curl -X POST \
 
 ## Notas
 
-- Título criado para todos os idiomas a partir da chave `common.byte_price` e slug fixo `byte_price`.
+- Título criado a partir da chave `common.byte_price`; o slug permanece `byte_price` para integração com o Data Calculator.
 - O título é imutável para os endpoints de Preço por Byte.
 
 ## Relacionados
@@ -95,3 +124,4 @@ curl -X POST \
 ## Changelog
 
 - 2025-09-23: Alinhado com entrada de preço único e título imutável.
+- 2025-09-26: Resposta e status ajustados para refletir a implementação atual.

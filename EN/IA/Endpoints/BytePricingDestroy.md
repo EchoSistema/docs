@@ -6,7 +6,7 @@
 DELETE /ia/admin/pricing/bytes/{product}
 ```
 
-Soft-deletes a BYTE product.
+Soft-deletes a byte-priced product and returns a success message.
 
 ## Authentication
 
@@ -39,7 +39,10 @@ curl -X DELETE \
 ### Response (200)
 
 ```json
-{ "message": "Deleted successfully." }
+{
+  "success": true,
+  "message": "The byte pricing has been successfully deleted"
+}
 ```
 
 ## HTTP Status
@@ -55,6 +58,11 @@ curl -X DELETE \
 - docs/EN/IA/Endpoints/BytePricingStore.md
 - docs/EN/IA/Endpoints/BytePricingUpdate.md
 
+## Notes
+
+- Message text is localized through `common.successfully_deleted` with the attribute `byte pricing`.
+
 ## Changelog
 
 - 2025-09-23: Added headers and parameters per template.
+- 2025-09-26: Updated response payload and added localization note.

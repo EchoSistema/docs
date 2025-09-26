@@ -1,5 +1,7 @@
 # IA — Byte Pricing: Index
 
+Lists byte-priced products with localized content and their default prices.
+
 ## Endpoint
 
 ```
@@ -53,9 +55,9 @@ curl -X GET \
         "title": "Byte"
       },
       "title": "Price per Byte",
-      "slug": "price-per-byte",
+      "slug": "byte_price",
       "description": null,
-      "language": "af",
+      "language": "en",
       "price": 29900,
       "currency": "BRL",
       "formatted_price": "R$\u00a0299,00",
@@ -63,8 +65,8 @@ curl -X GET \
     }
   ],
   "links": {
-    "first": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes?page=1",
-    "last": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes?page=1",
+    "first": "https://sandbox.your-domain.com/ia/admin/pricing/bytes?page=1",
+    "last": "https://sandbox.your-domain.com/ia/admin/pricing/bytes?page=1",
     "prev": null,
     "next": null
   },
@@ -79,7 +81,7 @@ curl -X GET \
         "active": false
       },
       {
-        "url": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes?page=1",
+        "url": "https://sandbox.your-domain.com/ia/admin/pricing/bytes?page=1",
         "label": "1",
         "active": true
       },
@@ -89,7 +91,7 @@ curl -X GET \
         "active": false
       }
     ],
-    "path": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes",
+    "path": "https://sandbox.your-domain.com/ia/admin/pricing/bytes",
     "per_page": 25,
     "to": 1,
     "total": 1
@@ -99,24 +101,24 @@ curl -X GET \
 
 ## JSON Structure Explained
 
-| Field                     | Type        | Description |
-| ------------------------- | ----------- | ----------- |
-| data[]                    | array       | Collection of byte-based products |
-| data[].uuid               | string      | Product identifier |
-| data[].measurement_type   | object      | Measurement type metadata |
-| data[].measurement_type.id| string      | Enum identifier (always `byte`) |
-| data[].measurement_type.name | string   | Enum name (`BYTE`) |
-| data[].measurement_type.title | string  | Human readable label |
-| data[].title              | string|null | Localized name of the product |
-| data[].slug               | string|null | Slug derived from the title |
-| data[].description        | string|null | Optional localized description |
-| data[].language           | string|null | Locale tied to the title record |
-| data[].price              | number|null | Default price in minor units |
-| data[].currency           | string|null | Currency ISO code |
-| data[].formatted_price    | string|null | Human readable price |
-| data[].created_at         | string|null | Creation timestamp (ISO 8601) |
-| links                     | object      | Pagination navigation links |
-| meta                      | object      | Pagination metadata |
+| Field                                | Type        | Description |
+| ------------------------------------ | ----------- | ----------- |
+| data[]                               | array       | Paginated list of byte-priced products |
+| data[].uuid                          | string      | Product identifier |
+| data[].measurement_type              | object      | Measurement type metadata |
+| data[].measurement_type.id           | string      | Enum identifier (`byte`) |
+| data[].measurement_type.name         | string      | Enum name (`BYTE`) |
+| data[].measurement_type.title        | string      | Human readable label |
+| data[].title                         | string|null | Localized product title |
+| data[].slug                          | string|null | Slug used to reference the product (expected `byte_price`) |
+| data[].description                   | string|null | Optional localized description |
+| data[].language                      | string|null | Locale tied to the default title |
+| data[].price                         | integer|null | Default price in minor units (e.g., cents) |
+| data[].currency                      | string|null | ISO currency code |
+| data[].formatted_price               | string|null | Human-friendly currency string |
+| data[].created_at                    | string|null | Creation timestamp (ISO 8601) |
+| links                                | object      | Pagination navigation links |
+| meta                                 | object      | Pagination metadata |
 
 ## HTTP Status
 
@@ -133,8 +135,10 @@ curl -X GET \
 
 ## Notes
 
-- Returns only `measurement_type = byte`.
-- Pagination link labels are localized; the example above reflects a pt-BR backend locale.
+- Returns only products stored with measurement type `byte`.
+- Pagination link labels follow the backend locale.
+- Page size is fixed to 25 records.
+- The collection payload may include additional keys when the product `raw` attribute is populated.
 
 ## Related
 
@@ -146,3 +150,4 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Updated to single-price model and immutable title.
+- 2025-09-26: Refreshed response example and field descriptions.

@@ -1,5 +1,7 @@
 # IA — Precio por Byte: Actualizar
 
+Actualiza la descripción predeterminada y/o el precio único de un producto con precio por byte existente.
+
 ## Endpoint
 
 ```
@@ -59,8 +61,43 @@ curl -X PUT \
 ### Respuesta (200)
 
 ```json
-{ "data": { "uuid": "...", "measurement_type": "byte" } }
+{
+  "data": {
+    "uuid": "9e3c5352-a2d7-411d-9ba5-c29756966ca7",
+    "measurement_type": {
+      "id": "byte",
+      "name": "BYTE",
+      "title": "Byte"
+    },
+    "title": "Precio por Byte",
+    "slug": "byte_price",
+    "description": "Nueva descripción",
+    "language": "es",
+    "price": 150,
+    "currency": "EUR",
+    "formatted_price": "€1,50",
+    "created_at": "2025-09-26T04:46:04-03:00"
+  }
+}
 ```
+
+## Estructura JSON Explicada
+
+| Campo                         | Tipo        | Descripción |
+| ----------------------------- | ----------- | ----------- |
+| data.uuid                     | string      | Identificador del producto |
+| data.measurement_type         | object      | Metadatos del tipo de medida |
+| data.measurement_type.id      | string      | Identificador enum (`byte`) |
+| data.measurement_type.name    | string      | Nombre del enum (`BYTE`) |
+| data.measurement_type.title   | string      | Etiqueta legible |
+| data.title                    | string|null | Título localizado del producto |
+| data.slug                     | string|null | Slug usado internamente |
+| data.description              | string|null | Descripción predeterminada actualizada |
+| data.language                 | string|null | Locale asociado al título predeterminado |
+| data.price                    | integer|null | Precio actualizado en la unidad mínima |
+| data.currency                 | string|null | Código ISO de la moneda |
+| data.formatted_price          | string|null | Precio formateado |
+| data.created_at               | string|null | Marca temporal de creación (ISO 8601) |
 
 ## Estados HTTP
 
@@ -73,6 +110,7 @@ curl -X PUT \
 ## Notas
 
 - El título para Precio por Byte es inmutable y no será actualizado por este endpoint.
+- Precio y moneda deben enviarse juntos; omitir ambos conserva los valores actuales.
 
 ## Relacionados
 
@@ -84,3 +122,4 @@ curl -X PUT \
 ## Changelog
 
 - 2025-09-23: Actualizado para precio único y título inmutable.
+- 2025-09-26: Ejemplo de respuesta y referencias de campos actualizados.

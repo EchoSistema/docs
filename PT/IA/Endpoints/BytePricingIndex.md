@@ -1,5 +1,7 @@
 # IA — Preço por Byte: Listagem
 
+Lista produtos precificados por byte com conteúdo localizado e preço padrão.
+
 ## Endpoint
 
 ```
@@ -25,9 +27,9 @@ Nenhum.
 
 ### Parâmetros de consulta
 
-| Parâmetro | Tipo | Obrigatório | Descrição   | Padrão |
-| --------- | ---- | ----------- | ----------- | ------ |
-| page      | int  | Não         | Página      | 1      |
+| Parâmetro | Tipo | Obrigatório | Descrição        | Padrão |
+| --------- | ---- | ----------- | ---------------- | ------ |
+| page      | int  | Não         | Número da página | 1      |
 
 ## Exemplos
 
@@ -52,10 +54,10 @@ curl -X GET \
         "name": "BYTE",
         "title": "Byte"
       },
-      "title": "Price per Byte",
-      "slug": "price-per-byte",
+      "title": "Preço por Byte",
+      "slug": "byte_price",
       "description": null,
-      "language": "af",
+      "language": "pt-BR",
       "price": 29900,
       "currency": "BRL",
       "formatted_price": "R$\u00a0299,00",
@@ -63,8 +65,8 @@ curl -X GET \
     }
   ],
   "links": {
-    "first": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes?page=1",
-    "last": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes?page=1",
+    "first": "https://sandbox.seu-dominio.com/ia/admin/pricing/bytes?page=1",
+    "last": "https://sandbox.seu-dominio.com/ia/admin/pricing/bytes?page=1",
     "prev": null,
     "next": null
   },
@@ -79,7 +81,7 @@ curl -X GET \
         "active": false
       },
       {
-        "url": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes?page=1",
+        "url": "https://sandbox.seu-dominio.com/ia/admin/pricing/bytes?page=1",
         "label": "1",
         "active": true
       },
@@ -89,7 +91,7 @@ curl -X GET \
         "active": false
       }
     ],
-    "path": "https://sandbox.echosistema.online/api/v1/ia/admin/pricing/bytes",
+    "path": "https://sandbox.seu-dominio.com/ia/admin/pricing/bytes",
     "per_page": 25,
     "to": 1,
     "total": 1
@@ -99,24 +101,24 @@ curl -X GET \
 
 ## Estrutura JSON Explicada
 
-| Campo                          | Tipo        | Descrição |
-| ------------------------------ | ----------- | --------- |
-| data[]                         | array       | Lista de produtos que medem em bytes |
-| data[].uuid                    | string      | Identificador do produto |
-| data[].measurement_type        | object      | Metadados do tipo de medição |
-| data[].measurement_type.id     | string      | Identificador enum (sempre `byte`) |
-| data[].measurement_type.name   | string      | Nome do enum (`BYTE`) |
-| data[].measurement_type.title  | string      | Rótulo legível |
-| data[].title                   | string|null | Título localizado |
-| data[].slug                    | string|null | Slug derivado do título |
-| data[].description             | string|null | Descrição localizada opcional |
-| data[].language                | string|null | Locale associado ao título |
-| data[].price                   | number|null | Preço padrão em unidades menores |
-| data[].currency                | string|null | Código ISO da moeda |
-| data[].formatted_price         | string|null | Preço formatado |
-| data[].created_at              | string|null | Data de criação (ISO 8601) |
-| links                          | object      | Links de paginação |
-| meta                           | object      | Metadados de paginação |
+| Campo                              | Tipo        | Descrição |
+| ---------------------------------- | ----------- | --------- |
+| data[]                             | array       | Lista paginada de produtos precificados por byte |
+| data[].uuid                        | string      | Identificador do produto |
+| data[].measurement_type            | object      | Metadados do tipo de medida |
+| data[].measurement_type.id         | string      | Identificador do enum (`byte`) |
+| data[].measurement_type.name       | string      | Nome do enum (`BYTE`) |
+| data[].measurement_type.title      | string      | Rótulo legível |
+| data[].title                       | string|null | Título localizado do produto |
+| data[].slug                        | string|null | Slug usado internamente (esperado `byte_price`) |
+| data[].description                 | string|null | Descrição localizada opcional |
+| data[].language                    | string|null | Locale associado ao título padrão |
+| data[].price                       | integer|null | Preço padrão na menor unidade (ex.: centavos) |
+| data[].currency                    | string|null | Código ISO da moeda |
+| data[].formatted_price             | string|null | Preço formatado |
+| data[].created_at                  | string|null | Data de criação (ISO 8601) |
+| links                              | object      | Links de paginação |
+| meta                               | object      | Metadados de paginação |
 
 ## Status HTTP
 
@@ -128,7 +130,9 @@ curl -X GET \
 ## Notas
 
 - Retorna apenas produtos com `measurement_type = byte`.
-- Os rótulos em `links[].label` são localizados pelo backend; o exemplo reflete um ambiente pt-BR.
+- Os rótulos dos links de paginação seguem o locale configurado no backend.
+- O tamanho da página é fixo em 25 registros.
+- A coleção pode incluir chaves adicionais quando o atributo `raw` do produto estiver preenchido.
 
 ## Relacionados
 
@@ -140,3 +144,4 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Alinhado ao modelo de preço único e título imutável.
+- 2025-09-26: Exemplo de resposta e tabela de campos revisados.

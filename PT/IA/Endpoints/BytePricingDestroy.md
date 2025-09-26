@@ -6,7 +6,7 @@
 DELETE /ia/admin/pricing/bytes/{product}
 ```
 
-Exclui (soft-delete) um produto BYTE.
+Exclui (soft-delete) um produto precificado por byte e retorna mensagem de sucesso.
 
 ## Autenticação
 
@@ -39,7 +39,10 @@ curl -X DELETE \
 ### Resposta (200)
 
 ```json
-{ "message": "Excluído com sucesso." }
+{
+  "success": true,
+  "message": "O byte pricing foi excluído com sucesso"
+}
 ```
 
 ## Status HTTP
@@ -55,6 +58,11 @@ curl -X DELETE \
 - docs/PT/IA/Endpoints/BytePricingStore.md
 - docs/PT/IA/Endpoints/BytePricingUpdate.md
 
+## Notas
+
+- A mensagem é localizada via `common.successfully_deleted` com o atributo `byte pricing`.
+
 ## Changelog
 
 - 2025-09-23: Adicionados cabeçalhos e parâmetros conforme template.
+- 2025-09-26: Resposta ajustada e nota de localização adicionada.

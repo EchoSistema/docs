@@ -1,5 +1,7 @@
 # IA — Preço por Byte: Atualizar
 
+Atualiza a descrição padrão e/ou o preço único de um produto precificado por byte existente.
+
 ## Endpoint
 
 ```
@@ -59,8 +61,43 @@ curl -X PUT \
 ### Resposta (200)
 
 ```json
-{ "data": { "uuid": "...", "measurement_type": "byte" } }
+{
+  "data": {
+    "uuid": "9e3c5352-a2d7-411d-9ba5-c29756966ca7",
+    "measurement_type": {
+      "id": "byte",
+      "name": "BYTE",
+      "title": "Byte"
+    },
+    "title": "Preço por Byte",
+    "slug": "byte_price",
+    "description": "Nova descrição",
+    "language": "pt-BR",
+    "price": 150,
+    "currency": "EUR",
+    "formatted_price": "€1,50",
+    "created_at": "2025-09-26T04:46:04-03:00"
+  }
+}
 ```
+
+## Estrutura JSON Explicada
+
+| Campo                         | Tipo        | Descrição |
+| ----------------------------- | ----------- | --------- |
+| data.uuid                     | string      | Identificador do produto |
+| data.measurement_type         | object      | Metadados do tipo de medida |
+| data.measurement_type.id      | string      | Identificador enum (`byte`) |
+| data.measurement_type.name    | string      | Nome do enum (`BYTE`) |
+| data.measurement_type.title   | string      | Rótulo legível |
+| data.title                    | string|null | Título localizado do produto |
+| data.slug                     | string|null | Slug usado internamente |
+| data.description              | string|null | Descrição padrão atualizada |
+| data.language                 | string|null | Locale associado ao título padrão |
+| data.price                    | integer|null | Preço atualizado na menor unidade |
+| data.currency                 | string|null | Código ISO da moeda |
+| data.formatted_price          | string|null | Preço formatado |
+| data.created_at               | string|null | Data de criação (ISO 8601) |
 
 ## Status HTTP
 
@@ -73,6 +110,7 @@ curl -X PUT \
 ## Notas
 
 - O título para Preço por Byte é imutável e não será atualizado por este endpoint.
+- Preço e moeda devem ser enviados em conjunto; omitir ambos mantém os valores atuais.
 
 ## Relacionados
 
@@ -84,3 +122,4 @@ curl -X PUT \
 ## Changelog
 
 - 2025-09-23: Atualizado para preço único e título imutável.
+- 2025-09-26: Exemplo de resposta e tabela de campos atualizados.
