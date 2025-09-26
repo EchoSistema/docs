@@ -1015,6 +1015,224 @@
                   }
                 }
               ]
+            },
+            {
+              "name": "Byte Pricing",
+              "item": [
+                {
+                  "name": "Index",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{sandboxUrl}}/ia/admin/pricing/bytes?page=1",
+                      "host": [
+                        "{{sandboxUrl}}"
+                      ],
+                      "path": [
+                        "ia",
+                        "admin",
+                        "pricing",
+                        "bytes"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1",
+                          "disabled": true
+                        }
+                      ]
+                    },
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Show",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{sandboxUrl}}/ia/admin/pricing/bytes/{product}",
+                      "host": [
+                        "{{sandboxUrl}}"
+                      ],
+                      "path": [
+                        "ia",
+                        "admin",
+                        "pricing",
+                        "bytes",
+                        "{product}"
+                      ]
+                    },
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Store",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"price\": 100,\n  \"currency\": \"USD\",\n  \"description\": \"Preço por byte\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{sandboxUrl}}/ia/admin/pricing/bytes",
+                      "host": [
+                        "{{sandboxUrl}}"
+                      ],
+                      "path": [
+                        "ia",
+                        "admin",
+                        "pricing",
+                        "bytes"
+                      ]
+                    },
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Update",
+                  "request": {
+                    "method": "PUT",
+                    "header": [
+                      {
+                        "key": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "type": "text"
+                      },
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"price\": 150,\n  \"currency\": \"EUR\",\n  \"description\": \"Nova descrição\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{sandboxUrl}}/ia/admin/pricing/bytes/{product}",
+                      "host": [
+                        "{{sandboxUrl}}"
+                      ],
+                      "path": [
+                        "ia",
+                        "admin",
+                        "pricing",
+                        "bytes",
+                        "{product}"
+                      ]
+                    },
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Destroy",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "X-PUBLIC-KEY",
+                        "value": "27a442b4-50bd-3a54-a518-672fd9dc9d57",
+                        "type": "text"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{sandboxUrl}}/ia/admin/pricing/bytes/{product}",
+                      "host": [
+                        "{{sandboxUrl}}"
+                      ],
+                      "path": [
+                        "ia",
+                        "admin",
+                        "pricing",
+                        "bytes",
+                        "{product}"
+                      ]
+                    },
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{token}}",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
             }
           ]
         },
