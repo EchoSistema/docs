@@ -9,6 +9,7 @@
 | [ComplaintBackoffice](ComplaintBackoffice.md) | Gestión completa de reclamaciones para operadores de la plataforma. |
 | [ComplaintCounter](ComplaintCounter.md) | Métricas agregadas e informes de reclamaciones. |
 | [ComplaintBookUsers](ComplaintBookUsers.md) | Perfil del usuario del libro de reclamaciones y carga de imágenes. |
+| [ComplaintBookUsersUpdateRole](ComplaintBookUsersUpdateRole.md) | Actualiza la asignación de rol del usuario del libro de reclamaciones. |
 | [CollaboratorMe](CollaboratorMe.md) | Perfil del colaborador de backoffice en la plataforma actual. |
 | [ClaimedCompany](ClaimedCompany.md) | CRUD de empresas reclamadas y consultas públicas. |
 | [ComplaintBookMe](ComplaintBookMe.md) | Datos de la empresa asociada a la plataforma actual (backoffice). |

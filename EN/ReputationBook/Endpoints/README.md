@@ -9,6 +9,7 @@
 | [ComplaintBackoffice](ComplaintBackoffice.md) | Full complaint management for platform operators. |
 | [ComplaintCounter](ComplaintCounter.md) | Aggregated metrics and reports for complaints. |
 | [ComplaintBookUsers](ComplaintBookUsers.md) | Complaint-book user profile and image upload. |
+| [ComplaintBookUsersUpdateRole](ComplaintBookUsersUpdateRole.md) | Updates the complaint-book user role assignment. |
 | [CollaboratorMe](CollaboratorMe.md) | Backoffice collaborator profile for the current platform. |
 | [ClaimedCompany](ClaimedCompany.md) | Claimed company CRUD and public lookups. |
 | [ComplaintBookMe](ComplaintBookMe.md) | Company data attached to the current platform (backoffice). |
