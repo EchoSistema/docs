@@ -2,6 +2,10 @@
 
 Creates a byte-priced product with localized content and a single active price.
 
+> Branch: master
+
+If a byte-priced product already exists for the current platform (slug `byte_price`), the endpoint returns that record instead of creating a duplicate.
+
 ## Endpoint
 
 ```

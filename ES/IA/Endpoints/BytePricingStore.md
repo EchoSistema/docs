@@ -2,6 +2,10 @@
 
 Crea un producto con precio por byte, agregando contenido localizado y un único precio activo.
 
+> Branch: master
+
+Si ya existe un producto con slug `byte_price` para la plataforma actual, el endpoint devuelve ese registro en lugar de crear un duplicado.
+
 ## Endpoint
 
 ```
