@@ -6,6 +6,8 @@
 
 Procesa CSV/TSV/NDJSON/XML/YAML (archivo) o JSON (cadena/archivo) y devuelve el tamaño del payload y el JSON extraído.
 
+> Branch: master
+
 ---
 
 ## Autenticación
@@ -31,7 +33,8 @@ Envíe un `file` (CSV) O un `json` (cadena JSON).
 | `json`       | `string`  | Cond        | Cadena JSON. Obligatorio si no se envía `file`. |
 | `has_header` | `boolean` | No          | CSV: si `true` (por defecto), usa la primera fila como encabezados. |
 | `delimiter`  | `string`  | No          | CSV: delimitador (un solo carácter). Predeterminado: `,`. |
-| `format`     | `string`  | No          | Forzar detección: `csv`, `tsv`, `dsv`, `json`, `ndjson`, `xml`, `yaml`. |
+| `format`     | `string`  | No          | Forzar detección: `csv`, `tsv`, `dsv`, `json`, `ndjson`, `xml`, `yaml`, `excel`. |
+| `currency`   | `string`  | No          | Código de moneda para formatear totales; usa el precio predeterminado si se omite. |
 
 > CSV sin encabezados: claves generadas como `"1"`, `"2"`, `"3"`, ... por fila.
 
@@ -44,7 +47,18 @@ Envíe un `file` (CSV) O un `json` (cadena JSON).
   "data": {
     "size": 1234,
     "size_formatted": "9872 bits | 1234 B | 1.21 KB | 0.00 MB | 0.00 GB | 0.00 TB | 0.00 PB",
-    "json": [ { "colA": "valor" } ]
+    "json": [ { "colA": "valor" } ],
+    "price": {
+      "value": 100,
+      "formatted_value": "$1.00",
+      "currency": "USD"
+    },
+    "total_value": {
+      "value": 123400,
+      "float_value": 1234,
+      "formatted_value": "$1,234.00",
+      "currency": "USD"
+    }
   }
 }
 ```
@@ -52,6 +66,8 @@ Envíe un `file` (CSV) O un `json` (cadena JSON).
 - `size`: tamaño en bytes tras normalización
 - `size_formatted`: tamaños combinados en bits, bytes, KB, MB, GB, TB, PB
 - `json`: payload parseado (array/objeto)
+- `price`: precio unitario (ajusta la moneda solicitada cuando disponible)
+- `total_value`: valor total calculado para el tamaño detectado
 
 ---
 

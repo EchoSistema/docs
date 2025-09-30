@@ -6,6 +6,8 @@
 
 Processes CSV/TSV/NDJSON/XML/YAML (file) or JSON (string/file) to return the payload size and the extracted JSON.
 
+> Branch: master
+
 ---
 
 ## Authentication
@@ -31,7 +33,8 @@ Send either a CSV `file` or a JSON string in `json`.
 | `json`       | `string`  | Cond     | JSON string. Required if `file` is not provided. |
 | `has_header` | `boolean` | No       | CSV only: if true (default), uses first row as headers. |
 | `delimiter`  | `string`  | No       | CSV only: field delimiter (single char). Default: `,`. |
-| `format`     | `string`  | No       | Force format detection: `csv`, `tsv`, `dsv`, `json`, `ndjson`, `xml`, `yaml`. |
+| `format`     | `string`  | No       | Force format detection: `csv`, `tsv`, `dsv`, `json`, `ndjson`, `xml`, `yaml`, `excel`. |
+| `currency`   | `string`  | No       | Currency code used to format totals; falls back to default price when omitted. |
 
 > CSV without headers: keys are generated as `"1"`, `"2"`, `"3"`, ... per row.
 
@@ -44,7 +47,18 @@ Send either a CSV `file` or a JSON string in `json`.
   "data": {
     "size": 1234,
     "size_formatted": "9872 bits | 1234 B | 1.21 KB | 0.00 MB | 0.00 GB | 0.00 TB | 0.00 PB",
-    "json": [ { "colA": "value" } ]
+    "json": [ { "colA": "value" } ],
+    "price": {
+      "value": 100,
+      "formatted_value": "$1.00",
+      "currency": "USD"
+    },
+    "total_value": {
+      "value": 123400,
+      "float_value": 1234,
+      "formatted_value": "$1,234.00",
+      "currency": "USD"
+    }
   }
 }
 ```
@@ -52,6 +66,8 @@ Send either a CSV `file` or a JSON string in `json`.
 - `size`: payload size in bytes after normalization
 - `size_formatted`: combined sizes in bits, bytes, KB, MB, GB, TB, PB
 - `json`: parsed payload (array/object)
+- `price`: unit price (matching requested currency when available)
+- `total_value`: total amount for the computed size
 
 ---
 
