@@ -4,6 +4,8 @@ Lista de endpoints da API.
 
 - [Healthcheck](Health.md)
 - [Role Index](RoleIndex.md)
+- [Listagem de Moedas](CurrencyIndex.md)
+- [Listagem de Idiomas Disponiveis](LanguageIndex.md)
 - [Platform User Index](PlatformUserIndex.md)
 - [Platform User Counter](PlatformUserCounter.md)
 - [E-mails da Plataforma — Listagem](PlatformEmailIndex.md)
