@@ -74,6 +74,20 @@ Send either a CSV `file` or a JSON string in `json`.
 - `price`: unit price per byte with four-decimal precision; includes the stored raw amount (`raw_value`) and the currency used.
 - `total_value`: total calculated price for the payload size, preserving both integer (`value`) and decimal (`raw_value`) representations with four-decimal precision.
 
+### Error Response (422)
+
+Returned when the input format is not supported or required libraries (e.g., PhpSpreadsheet for Excel) are missing.
+
+```json
+{
+  "success": false,
+  "message": "The excel is unsupported."
+}
+```
+
+- The message follows the translated `validation.unsupported` string for the rejected attribute.
+- Discord receives an error log containing the exception details for observability.
+
 ---
 
 ## Examples

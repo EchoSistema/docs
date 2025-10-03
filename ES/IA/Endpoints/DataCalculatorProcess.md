@@ -74,6 +74,20 @@ Envíe un `file` (CSV) O un `json` (cadena JSON).
 - `price`: precio unitario por byte con precisión de cuatro decimales; incluye el valor bruto (`raw_value`) y la moneda retornada.
 - `total_value`: valor total calculado para el tamaño detectado, preservando representaciones entera (`value`) y decimal (`raw_value`) con cuatro decimales.
 
+### Respuesta de error (422)
+
+Se devuelve cuando el formato enviado no es admitido o faltan bibliotecas obligatorias (p. ej., PhpSpreadsheet para Excel).
+
+```json
+{
+  "success": false,
+  "message": "El excel no es compatible."
+}
+```
+
+- El mensaje utiliza la traducción de `validation.unsupported` para el atributo rechazado.
+- Se envía un log detallado al canal de Discord para monitoreo del error.
+
 ---
 
 ## Ejemplos
