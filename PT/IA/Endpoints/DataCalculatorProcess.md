@@ -49,15 +49,20 @@ Envie um `file` (CSV) OU um `json` (string JSON).
     "size_formatted": "9872 bits | 1234 B | 1.21 KB | 0.00 MB | 0.00 GB | 0.00 TB | 0.00 PB",
     "json": [ { "colA": "valor" } ],
     "price": {
-      "value": 100,
-      "formatted_value": "R$\u00a01,00",
+      "value": "0.0100",
+      "raw_value": 100,
+      "precision": 4,
+      "float_value": 0.01,
+      "formatted_value": "R$\u00a00,0100",
       "currency": "BRL"
     },
     "total_value": {
-      "value": 123400,
-      "float_value": 1234,
-      "formatted_value": "R$\u00a01.234,00",
-      "currency": "BRL"
+      "value": 1234,
+      "float_value": 12.34,
+      "raw_value": "12.3400",
+      "formatted_value": "R$\u00a012,3400",
+      "currency": "BRL",
+      "precision": 4
     }
   }
 }
@@ -66,8 +71,8 @@ Envie um `file` (CSV) OU um `json` (string JSON).
 - `size`: tamanho em bytes após normalização
 - `size_formatted`: tamanhos combinados em bits, bytes, KB, MB, GB, TB, PB
 - `json`: payload parseado (array/objeto)
-- `price`: preço unitário (respeita a moeda solicitada quando disponível)
-- `total_value`: valor total calculado para o tamanho encontrado
+- `price`: preço unitário por byte com precisão de quatro casas decimais; inclui o valor bruto (`raw_value`) e a moeda aplicada.
+- `total_value`: valor total calculado para o tamanho encontrado, preservando representações inteira (`value`) e decimal (`raw_value`) com quatro casas decimais.
 
 ---
 

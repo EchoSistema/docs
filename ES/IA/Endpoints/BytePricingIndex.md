@@ -1,6 +1,6 @@
 # IA — Precio por Byte: Índice
 
-Lista productos con precio por byte, mostrando contenido localizado y precio predeterminado.
+Lista productos con precio por byte, mostrando contenido localizado y precio predeterminado por byte.
 
 ## Endpoint
 
@@ -58,9 +58,12 @@ curl -X GET \
       "slug": "byte_price",
       "description": null,
       "language": "es",
-      "price": 29900,
+      "price": "0.0299",
+      "raw_price": 299,
+      "price_precision": 4,
+      "prices": [],
       "currency": "BRL",
-      "formatted_price": "R$\u00a0299,00",
+      "formatted_price": "R$\u00a00.0299",
       "created_at": "2025-09-26T04:46:04-03:00"
     }
   ],
@@ -113,9 +116,17 @@ curl -X GET \
 | data[].slug                        | string|null | Slug usado internamente (esperado `byte_price`) |
 | data[].description                 | string|null | Descripción localizada opcional |
 | data[].language                    | string|null | Locale asociado al título predeterminado |
-| data[].price                       | integer|null | Precio predeterminado en la unidad mínima (p. ej., centavos) |
-| data[].currency                    | string|null | Código ISO de la moneda |
-| data[].formatted_price             | string|null | Precio formateado |
+| data[].price                       | string|null | Precio predeterminado por byte con cuatro decimales |
+| data[].raw_price                   | integer|null | Valor original almacenado en la unidad mínima |
+| data[].price_precision             | integer|null | Precisión decimal aplicada |
+| data[].prices                      | array       | Precios alternativos activos por moneda |
+| data[].prices[].currency_id        | integer     | Identificador de la moneda |
+| data[].prices[].currency           | string      | Código ISO de la moneda |
+| data[].prices[].value              | string      | Precio alternativo por byte con cuatro decimales |
+| data[].prices[].raw_value          | integer     | Valor alternativo almacenado en la unidad mínima |
+| data[].prices[].formatted_value    | string      | Precio alternativo formateado |
+| data[].currency                    | string|null | Código ISO de la moneda predeterminada |
+| data[].formatted_price             | string|null | Precio predeterminado formateado con cuatro decimales |
 | data[].created_at                  | string|null | Marca temporal de creación (ISO 8601) |
 | links                              | object      | Navegación de paginación |
 | meta                               | object      | Metadatos de paginación |
@@ -144,4 +155,5 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Alineado al modelo de precio único y título inmutable.
+- 2025-10-03: Documentados campos de precisión por byte y precios alternativos.
 - 2025-09-26: Ejemplo de respuesta y descripción de campos actualizados.

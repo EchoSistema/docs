@@ -1,6 +1,6 @@
 # IA — Byte Pricing: Index
 
-Lists byte-priced products with localized content and their default prices.
+Lists byte-priced products with localized content and their default prices per byte.
 
 ## Endpoint
 
@@ -58,9 +58,12 @@ curl -X GET \
       "slug": "byte_price",
       "description": null,
       "language": "en",
-      "price": 29900,
+      "price": "0.0299",
+      "raw_price": 299,
+      "price_precision": 4,
+      "prices": [],
       "currency": "BRL",
-      "formatted_price": "R$\u00a0299,00",
+      "formatted_price": "R$\u00a00.0299",
       "created_at": "2025-09-26T04:46:04-03:00"
     }
   ],
@@ -113,9 +116,17 @@ curl -X GET \
 | data[].slug                          | string|null | Slug used to reference the product (expected `byte_price`) |
 | data[].description                   | string|null | Optional localized description |
 | data[].language                      | string|null | Locale tied to the default title |
-| data[].price                         | integer|null | Default price in minor units (e.g., cents) |
+| data[].price                         | string|null | Default price per byte formatted with four decimal places |
+| data[].raw_price                     | integer|null | Original stored amount in minor units (e.g., cents) |
+| data[].price_precision               | integer|null | Decimal precision applied to price formatting |
+| data[].prices                        | array       | Alternate active prices per currency |
+| data[].prices[].currency_id          | integer     | Currency enum identifier |
+| data[].prices[].currency             | string      | Currency ISO code |
+| data[].prices[].value                | string      | Alternate price per byte with four decimals |
+| data[].prices[].raw_value            | integer     | Stored alternate price in minor units |
+| data[].prices[].formatted_value      | string      | Alternate currency string respecting four decimals |
 | data[].currency                      | string|null | ISO currency code |
-| data[].formatted_price               | string|null | Human-friendly currency string |
+| data[].formatted_price               | string|null | Human-friendly currency string with four decimals |
 | data[].created_at                    | string|null | Creation timestamp (ISO 8601) |
 | links                                | object      | Pagination navigation links |
 | meta                                 | object      | Pagination metadata |
@@ -150,4 +161,5 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Updated to single-price model and immutable title.
+- 2025-10-03: Documented per-byte precision fields and alternate prices.
 - 2025-09-26: Refreshed response example and field descriptions.

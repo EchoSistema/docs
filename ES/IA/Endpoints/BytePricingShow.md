@@ -1,14 +1,14 @@
 # IA — Precio por Byte: Detalle
 
-Expone un producto con precio por byte incluyendo metadatos localizados y precio predeterminado.
+Expone el producto con precio por byte de la plataforma, incluyendo metadatos localizados y precio predeterminado por byte.
 
 ## Endpoint
 
 ```
-GET /ia/admin/pricing/bytes/{product}
+GET /ia/admin/pricing/bytes/details
 ```
 
-Retorna un producto medido en BYTE.
+Retorna el producto medido en BYTE configurado para la plataforma.
 
 ## Autenticación
 
@@ -25,9 +25,7 @@ Requerida — Bearer {token} con Sanctum.
 
 ### Parámetros de ruta
 
-| Parámetro | Tipo   | Requerido | Descripción |
-| --------- | ------ | --------- | ----------- |
-| product   | string | Sí        | Clave de ruta del producto |
+Ninguno.
 
 ## Ejemplos
 
@@ -37,7 +35,7 @@ Requerida — Bearer {token} con Sanctum.
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "Accept-Language: es" \
-  "https://sandbox.su-dominio.com/ia/admin/pricing/bytes/{product}"
+  "https://sandbox.su-dominio.com/ia/admin/pricing/bytes/details"
 ```
 
 ### Respuesta (200)
@@ -55,9 +53,20 @@ curl -X GET \
     "slug": "byte_price",
     "description": "Descripción predeterminada de precio por byte",
     "language": "es",
-    "price": 29900,
+    "price": "0.0299",
+    "raw_price": 299,
+    "price_precision": 4,
+    "prices": [
+      {
+        "currency_id": 840,
+        "currency": "USD",
+        "value": "0.0055",
+        "raw_value": 55,
+        "formatted_value": "$0.0055"
+      }
+    ],
     "currency": "BRL",
-    "formatted_price": "R$\u00a0299,00",
+    "formatted_price": "R$\u00a00.0299",
     "created_at": "2025-09-26T04:46:04-03:00"
   }
 }
@@ -76,9 +85,17 @@ curl -X GET \
 | data.slug                     | string|null | Slug usado internamente |
 | data.description              | string|null | Descripción predeterminada |
 | data.language                 | string|null | Locale asociado al título predeterminado |
-| data.price                    | integer|null | Precio predeterminado en la unidad mínima |
-| data.currency                 | string|null | Código ISO de la moneda |
-| data.formatted_price          | string|null | Precio formateado |
+| data.price                    | string|null | Precio por byte con cuatro decimales |
+| data.raw_price                | integer|null | Valor original almacenado en la unidad mínima |
+| data.price_precision          | integer|null | Precisión decimal aplicada |
+| data.prices                   | array       | Precios alternativos activos por moneda |
+| data.prices[].currency_id     | integer     | Identificador de moneda |
+| data.prices[].currency        | string      | Código ISO de la moneda |
+| data.prices[].value           | string      | Precio alternativo por byte con cuatro decimales |
+| data.prices[].raw_value       | integer     | Valor alternativo almacenado en la unidad mínima |
+| data.prices[].formatted_value | string      | Precio alternativo formateado |
+| data.currency                 | string|null | Código ISO de la moneda predeterminada |
+| data.formatted_price          | string|null | Precio predeterminado formateado con cuatro decimales |
 | data.created_at               | string|null | Marca temporal de creación (ISO 8601) |
 
 ## Estados HTTP
@@ -101,4 +118,5 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Campos y códigos actualizados.
+- 2025-10-03: Documentados campos de precisión por byte, precios alternativos y nuevo endpoint sin parámetro.
 - 2025-09-26: Ejemplo de respuesta actualizado según la forma actual del recurso.

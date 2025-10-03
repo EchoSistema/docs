@@ -49,15 +49,20 @@ Send either a CSV `file` or a JSON string in `json`.
     "size_formatted": "9872 bits | 1234 B | 1.21 KB | 0.00 MB | 0.00 GB | 0.00 TB | 0.00 PB",
     "json": [ { "colA": "value" } ],
     "price": {
-      "value": 100,
-      "formatted_value": "$1.00",
+      "value": "0.0100",
+      "raw_value": 100,
+      "precision": 4,
+      "float_value": 0.01,
+      "formatted_value": "$0.0100",
       "currency": "USD"
     },
     "total_value": {
-      "value": 123400,
-      "float_value": 1234,
-      "formatted_value": "$1,234.00",
-      "currency": "USD"
+      "value": 1234,
+      "float_value": 12.34,
+      "raw_value": "12.3400",
+      "formatted_value": "$12.3400",
+      "currency": "USD",
+      "precision": 4
     }
   }
 }
@@ -66,8 +71,8 @@ Send either a CSV `file` or a JSON string in `json`.
 - `size`: payload size in bytes after normalization
 - `size_formatted`: combined sizes in bits, bytes, KB, MB, GB, TB, PB
 - `json`: parsed payload (array/object)
-- `price`: unit price (matching requested currency when available)
-- `total_value`: total amount for the computed size
+- `price`: unit price per byte with four-decimal precision; includes the stored raw amount (`raw_value`) and the currency used.
+- `total_value`: total calculated price for the payload size, preserving both integer (`value`) and decimal (`raw_value`) representations with four-decimal precision.
 
 ---
 

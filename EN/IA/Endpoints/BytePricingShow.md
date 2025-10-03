@@ -1,11 +1,11 @@
 # IA — Byte Pricing: Show
 
-Returns a single byte-priced product with its localized metadata and default price.
+Returns the platform byte-priced product with its localized metadata and default price per byte.
 
 ## Endpoint
 
 ```
-GET /ia/admin/pricing/bytes/{product}
+GET /ia/admin/pricing/bytes/details
 ```
 
 ## Authentication
@@ -23,12 +23,6 @@ Required — Bearer {token} with Sanctum.
 
 ### Path parameters
 
-| Parameter | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| product   | string | Yes      | Product route key (implicit model binding) |
-
-### Query parameters
-
 None.
 
 ## Examples
@@ -39,7 +33,7 @@ None.
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "Accept-Language: en" \
-  "https://sandbox.your-domain.com/ia/admin/pricing/bytes/{product}"
+  "https://sandbox.your-domain.com/ia/admin/pricing/bytes/details"
 ```
 
 ### Response (200)
@@ -57,9 +51,20 @@ curl -X GET \
     "slug": "byte_price",
     "description": "Default byte pricing description",
     "language": "en",
-    "price": 29900,
+    "price": "0.0299",
+    "raw_price": 299,
+    "price_precision": 4,
+    "prices": [
+      {
+        "currency_id": 840,
+        "currency": "USD",
+        "value": "0.0055",
+        "raw_value": 55,
+        "formatted_value": "$0.0055"
+      }
+    ],
     "currency": "BRL",
-    "formatted_price": "R$\u00a0299,00",
+    "formatted_price": "R$\u00a00.0299",
     "created_at": "2025-09-26T04:46:04-03:00"
   }
 }
@@ -78,9 +83,17 @@ curl -X GET \
 | data.slug                      | string|null | Slug used internally to locate the product |
 | data.description               | string|null | Default description content |
 | data.language                  | string|null | Locale tied to the default title |
-| data.price                     | integer|null | Default price in minor units (e.g., cents) |
-| data.currency                  | string|null | ISO currency code |
-| data.formatted_price           | string|null | Human-friendly currency string |
+| data.price                     | string|null | Price per byte formatted with four decimal places |
+| data.raw_price                 | integer|null | Original stored amount in minor units (e.g., cents) |
+| data.price_precision           | integer|null | Decimal precision applied to `price` and formatted outputs |
+| data.prices                    | array       | Alternate active prices per currency |
+| data.prices[].currency_id      | integer     | Currency enum identifier |
+| data.prices[].currency         | string      | Currency ISO code |
+| data.prices[].value            | string      | Alternate price per byte with four decimals |
+| data.prices[].raw_value        | integer     | Stored alternate price in minor units |
+| data.prices[].formatted_value  | string      | Alternate currency string respecting four decimals |
+| data.currency                  | string|null | ISO currency code of the default price |
+| data.formatted_price           | string|null | Default price formatted with four decimal places |
 | data.created_at                | string|null | Creation timestamp (ISO 8601) |
 
 ## HTTP Status
@@ -105,4 +118,5 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Clarified response fields and status codes.
+- 2025-10-03: Documented per-byte precision fields, alternate prices, and new details endpoint without path parameters.
 - 2025-09-26: Updated response payload example to match current resource shape.

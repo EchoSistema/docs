@@ -1,6 +1,6 @@
 # IA — Preço por Byte: Listagem
 
-Lista produtos precificados por byte com conteúdo localizado e preço padrão.
+Lista produtos precificados por byte com conteúdo localizado e preço padrão por byte.
 
 ## Endpoint
 
@@ -58,9 +58,12 @@ curl -X GET \
       "slug": "byte_price",
       "description": null,
       "language": "pt-BR",
-      "price": 29900,
+      "price": "0.0299",
+      "raw_price": 299,
+      "price_precision": 4,
+      "prices": [],
       "currency": "BRL",
-      "formatted_price": "R$\u00a0299,00",
+      "formatted_price": "R$\u00a00.0299",
       "created_at": "2025-09-26T04:46:04-03:00"
     }
   ],
@@ -113,9 +116,17 @@ curl -X GET \
 | data[].slug                        | string|null | Slug usado internamente (esperado `byte_price`) |
 | data[].description                 | string|null | Descrição localizada opcional |
 | data[].language                    | string|null | Locale associado ao título padrão |
-| data[].price                       | integer|null | Preço padrão na menor unidade (ex.: centavos) |
-| data[].currency                    | string|null | Código ISO da moeda |
-| data[].formatted_price             | string|null | Preço formatado |
+| data[].price                       | string|null | Preço padrão por byte com quatro casas decimais |
+| data[].raw_price                   | integer|null | Valor original armazenado na menor unidade |
+| data[].price_precision             | integer|null | Precisão decimal aplicada |
+| data[].prices                      | array       | Preços alternativos ativos por moeda |
+| data[].prices[].currency_id        | integer     | Identificador da moeda |
+| data[].prices[].currency           | string      | Código ISO da moeda |
+| data[].prices[].value              | string      | Preço alternativo por byte com quatro casas decimais |
+| data[].prices[].raw_value          | integer     | Valor alternativo armazenado na menor unidade |
+| data[].prices[].formatted_value    | string      | Preço alternativo formatado |
+| data[].currency                    | string|null | Código ISO da moeda padrão |
+| data[].formatted_price             | string|null | Preço padrão formatado com quatro casas decimais |
 | data[].created_at                  | string|null | Data de criação (ISO 8601) |
 | links                              | object      | Links de paginação |
 | meta                               | object      | Metadados de paginação |
@@ -144,4 +155,5 @@ curl -X GET \
 ## Changelog
 
 - 2025-09-23: Alinhado ao modelo de preço único e título imutável.
+- 2025-10-03: Documentados campos de precisão por byte e preços alternativos.
 - 2025-09-26: Exemplo de resposta e tabela de campos revisados.
