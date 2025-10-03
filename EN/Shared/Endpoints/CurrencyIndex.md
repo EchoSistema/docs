@@ -6,7 +6,7 @@
 GET /api/v1/currencies
 ```
 
-Returns the backoffice currencies defined in `CurrencyEnum`, exposing the symbol (`sign`) and native name (`native_name`).
+Returns the currencies supported by the backoffice grouped into `fiat` and `crypto` buckets derived from `CurrencyEnum`.
 
 ---
 
@@ -31,9 +31,9 @@ None.
 
 | Parameter | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `type`    | string | No       | Filters the result to `fiat` or `crypto`. Case-insensitive. Missing or invalid values return all currencies. |
+| `type`    | string | No       | Filters the result to `fiat` or `crypto`. Case-insensitive. When provided, the opposite group is returned as `null`. Missing or invalid values return both groups. |
 
-> Canonical name is `type` in snake_case. Other casings are not accepted.
+> Canonical name is `type` (snake_case). Other casings are not supported.
 
 ---
 
@@ -43,27 +43,32 @@ None.
 
 ```bash
 curl -X GET \
-  "https://sandbox.example.com/api/v1/currencies?type=crypto"
+  "https://sandbox.example.com/api/v1/currencies?type=fiat"
 ```
 
 ### Sample response
 
 ```json
 {
-  "data": [
-    {
-      "name": "BTC",
-      "value": 7,
-      "sign": "₿",
-      "native_name": "Bitcoin"
-    },
-    {
-      "name": "ETH",
-      "value": 8,
-      "sign": "Ξ",
-      "native_name": "Ethereum"
-    }
-  ]
+  "data": {
+    "crypto": null,
+    "fiat": [
+      {
+        "name": "BRL",
+        "value": 1,
+        "sign": "R$",
+        "native_name": "Real Brasileiro",
+        "type": "fiat"
+      },
+      {
+        "name": "USD",
+        "value": 2,
+        "sign": "$",
+        "native_name": "US Dollar",
+        "type": "fiat"
+      }
+    ]
+  }
 }
 ```
 
@@ -71,13 +76,15 @@ curl -X GET \
 
 ## JSON Structure Explanation
 
-| Field              | Type    | Description |
-| ------------------ | ------- | ----------- |
-| `data[]`           | array   | List of available currencies. |
-| `data[].name`      | string  | Enum name (`BRL`, `USD`, `BTC`...). |
-| `data[].value`     | integer | Enum integer value. |
-| `data[].sign`      | string  | Currency symbol or ticker. |
-| `data[].native_name` | string | Currency native name. |
+| Field                      | Type            | Description |
+| -------------------------- | --------------- | ----------- |
+| `data.crypto`              | array \| null   | Crypto currencies when available. |
+| `data.fiat`                | array \| null   | Fiat currencies when available. |
+| `data.*[].name`            | string          | Enum name (`BRL`, `USD`, `BTC`...). |
+| `data.*[].value`           | integer         | Enum integer value. |
+| `data.*[].sign`            | string          | Currency symbol or ticker. |
+| `data.*[].native_name`     | string          | Currency native name. |
+| `data.*[].type`            | string          | Group label (`fiat` or `crypto`). |
 
 ---
 
@@ -91,12 +98,12 @@ curl -X GET \
 
 ## Notes
 
-- `type=fiat` returns only fiat currencies; `type=crypto` returns crypto assets.
-- Missing or unsupported values fall back to the complete list via `CurrencyEnum::cases()`.
-- Ordering matches the enum declaration order.
+- `type=fiat` returns only the fiat array with `data.crypto = null`; `type=crypto` mirrors this behaviour.
+- Without a filter, both groups are returned using `CurrencyEnum::getFiat()` and `CurrencyEnum::getCrypto()`.
+- Ordering matches the enum declaration.
 
 ---
 
 ## Changelog
 
-- 2025-10-03: Documentation refreshed to reflect the type filter and standard structure.
+- 2025-10-03: Documentation updated to describe grouped response (`crypto`/`fiat`).
