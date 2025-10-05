@@ -8,6 +8,7 @@ Lista de endpoints da API.
 - [Listagem de Idiomas Disponiveis](LanguageIndex.md)
 - [Platform User Index](PlatformUserIndex.md)
 - [Platform User Counter](PlatformUserCounter.md)
+- [Plataformas — Listagem e Detalhe](BackofficePlatformIndex.md)
 - [E-mails da Plataforma — Listagem](PlatformEmailIndex.md)
 - [E-mails da Plataforma — Exibição](PlatformEmailShow.md)
 - [E-mails da Plataforma — Configurações](PlatformEmailSettings.md)
