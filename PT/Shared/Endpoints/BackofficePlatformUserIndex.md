@@ -9,13 +9,6 @@ GET /backoffice/users
 Lista os colaboradores vinculados às plataformas disponíveis para o operador backoffice.
 
 ---
-
-## Código Fonte (branch `master`)
-
-- [`BackofficePlatformUserController.php`](https://github.com/EchoSistema/monolith/blob/master/src/Domain/Shared/Http/Controllers/Backoffice/BackofficePlatformUserController.php) — método `index`.
-
----
-
 ## Autenticação
 
 **Obrigatória** – Token Bearer com habilidade `backoffice`.
@@ -34,7 +27,13 @@ O usuário também precisa da permissão `index.all` para obter a listagem.
 
 ---
 
-## Parâmetros de consulta
+## Parâmetros
+
+### Parâmetros de caminho
+
+Nenhum.
+
+### Parâmetros de consulta
 
 | Parâmetro     | Tipo    | Obrigatório | Descrição | Padrão/Valores |
 | ------------- | ------- | ----------- | --------- | -------------- |
@@ -160,5 +159,5 @@ curl -X GET \
 
 ## Changelog
 
+- 2025-10-05: Removido apontamento para código fonte e alinhamento ao template atual.
 - 2025-10-04: Documento inicial.
-
