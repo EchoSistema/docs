@@ -9,6 +9,7 @@ Lista de endpoints da API.
 - [Platform User Index](PlatformUserIndex.md)
 - [Platform User Counter](PlatformUserCounter.md)
 - [Plataformas — Listagem e Detalhe](BackofficePlatformIndex.md)
+- [Plataformas — Usuários](BackofficePlatformUserIndex.md)
 - [E-mails da Plataforma — Listagem](PlatformEmailIndex.md)
 - [E-mails da Plataforma — Exibição](PlatformEmailShow.md)
 - [E-mails da Plataforma — Configurações](PlatformEmailSettings.md)
