@@ -15,3 +15,4 @@ Lista de endpoints de la API.
 - [Direcciones — Actualizar](AddressUpdate.md)
 - [Contactos — Crear](ContactStore.md)
 - [Contactos — Actualizar](ContactUpdate.md)
+- [Newsletter — Suscripción](NewsletterStore.md)

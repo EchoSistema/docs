@@ -15,3 +15,4 @@ API endpoint list.
 - [Address — Update](AddressUpdate.md)
 - [Contact — Create](ContactStore.md)
 - [Contact — Update](ContactUpdate.md)
+- [Newsletter — Subscribe](NewsletterStore.md)
