@@ -13,6 +13,7 @@ Lista de endpoints da API.
 - [E-mails da Plataforma — Listagem](PlatformEmailIndex.md)
 - [E-mails da Plataforma — Exibição](PlatformEmailShow.md)
 - [E-mails da Plataforma — Configurações](PlatformEmailSettings.md)
+- [Newsletter — Inscrição](NewsletterStore.md)
 - [Endereços — Criar](AddressStore.md)
 - [Endereços — Atualizar](AddressUpdate.md)
 - [Contatos — Criar](ContactStore.md)
