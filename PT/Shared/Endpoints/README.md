@@ -18,3 +18,4 @@ Lista de endpoints da API.
 - [Endereços — Atualizar](AddressUpdate.md)
 - [Contatos — Criar](ContactStore.md)
 - [Contatos — Atualizar](ContactUpdate.md)
+- [Plataforma — Mensagens de Contato](PlatformContactMessages.md)
