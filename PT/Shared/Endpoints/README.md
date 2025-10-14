@@ -19,5 +19,6 @@ Lista de endpoints da API.
 - [Contatos — Criar](ContactStore.md)
 - [Contatos — Atualizar](ContactUpdate.md)
 - [Plataforma — Mensagens de Contato](PlatformContactMessages.md)
+- [Usuário — Perfil autenticado](UserProfile.md)
 - [Usuário — Atualizar idioma](UserLanguageUpdate.md)
 - [Usuário — Atualizar moeda](UserCurrencyUpdate.md)

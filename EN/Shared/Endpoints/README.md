@@ -16,3 +16,6 @@ API endpoint list.
 - [Contact — Create](ContactStore.md)
 - [Contact — Update](ContactUpdate.md)
 - [Newsletter — Subscribe](NewsletterStore.md)
+- [User — Authenticated profile](UserProfile.md)
+- [User — Update language](UserLanguageUpdate.md)
+- [User — Update currency](UserCurrencyUpdate.md)
