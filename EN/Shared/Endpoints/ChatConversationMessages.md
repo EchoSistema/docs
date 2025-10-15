@@ -46,70 +46,63 @@ curl -X GET \
 
 ```json
 {
-  "data": {
-    "conversation": {
-      "uuid": "9b732d6a-2e56-4db8-9b2e-6fd8c14e7f28",
-      "taggable_type": "App\\Models\\Order",
-      "last_message_text": "Hello, how are you?",
-      "last_message_at": "2025-10-15T10:30:00.000000Z",
+  "data": [
+    {
+      "conversation_uuid": "361be1bb-d7fb-4c3a-8a02-9071f69bacc8",
+      "sender": {
+        "uuid": "c1f1f474-4346-3118-83c5-2b5a6e6aff48",
+        "name": "Ewerton Girardi",
+        "avatar": "https://storage.echosistema.online/main/images/learn/forensic-academy/avatar/ewerton-daniel-080933300-1643321172.png"
+      },
+      "receiver": {
+        "uuid": "05e12689-1a76-3af3-8326-7028e3b8a503",
+        "name": "Daniel C. S. C. Soares",
+        "avatar": "https://storage.echosistema.online/main/images/learn/forensic-academy/avatar/3-daniel-c-s-c-soares.png"
+      },
+      "context": {
+        "text": "Hello! How are you?",
+        "texts": {
+          "pt-BR": "Olá! Como você está?",
+          "en": "Hello! How are you?"
+        },
+        "type": "text"
+      },
+      "attachments": [],
+      "metadata": [],
+      "reactions": [],
+      "status": {
+        "is_read": true,
+        "read_at": "2025-10-15T09:36:04-03:00",
+        "delivered_at": "2025-10-15T09:35:04-03:00",
+        "is_deleted": false
+      },
+      "timestamps": {
+        "created_at": "2025-10-15T09:34:04-03:00",
+        "updated_at": "2025-10-15T09:34:04-03:00"
+      },
+      "pbk": "1396fd3b-d56b-362f-8ebb-c068bb910b69",
+      "device": {
+        "type": "mobile",
+        "os": "macOS",
+        "os_version": "11",
+        "app_version": "1.0.0",
+        "model": null,
+        "browser": "Edge",
+        "browser_version": "121.0"
+      },
+      "message_id": "68efa2cc35334e074c00abde",
+      "id": "68efa2cc35334e074c00abde"
+    }
+  ],
+  "conversation": {
+    "uuid": "361be1bb-d7fb-4c3a-8a02-9071f69bacc8",
+    "taggable_type": null,
+    "last_message_text": "Thanks! Once I finish I’ll notify QA.",
+      "last_message_at": "2025-10-15T13:29:04.000000Z",
       "is_archived": false,
-      "created_at": "2025-10-01T08:00:00.000000Z",
-      "updated_at": "2025-10-15T10:30:00.000000Z",
-      "taggable_info": {
-        "type": "Order",
-        "uuid": "8a621c5b-1d45-4cb7-8a1d-5ec7b13d6e17",
-        "title": "Order #1234"
-      }
-    },
-    "messages": [
-      {
-        "message_id": "670e3a1b8f9c2d001e4f5a6b",
-        "conversation_uuid": "9b732d6a-2e56-4db8-9b2e-6fd8c14e7f28",
-        "sender": {
-          "uuid": "7c531b4a-1c34-4ba6-7b0c-4db6a12c5d16",
-          "name": "John Smith",
-          "avatar": "https://cdn.example.com/avatars/john.jpg"
-        },
-        "receiver": {
-          "uuid": "6b420a39-0b23-3a95-6a0b-3ca5900b4c05",
-          "name": "Mary Johnson",
-          "avatar": "https://cdn.example.com/avatars/mary.jpg"
-        },
-        "context": {
-          "text": "Hello, how are you?",
-          "type": "text"
-        },
-        "attachments": [],
-        "metadata": {},
-        "reactions": [
-          {
-            "user_uuid": "6b420a39-0b23-3a95-6a0b-3ca5900b4c05",
-            "emoji": "👍",
-            "created_at": "2025-10-15T10:31:00+00:00"
-          }
-        ],
-        "status": {
-          "is_read": true,
-          "read_at": "2025-10-15T10:31:00+00:00",
-          "delivered_at": "2025-10-15T10:30:00+00:00",
-          "is_deleted": false
-        },
-        "timestamps": {
-          "created_at": "2025-10-15T10:30:00+00:00",
-          "updated_at": "2025-10-15T10:31:00+00:00"
-        },
-        "pbk": "platform_public_key",
-        "device": {
-          "type": "web",
-          "os": "Windows",
-          "os_version": "10",
-          "app_version": "1.0.0",
-          "model": null,
-          "browser": "Chrome",
-          "browser_version": "120.0"
-        }
-      }
-    ]
+      "created_at": "2025-10-15T13:34:04.000000Z",
+      "updated_at": "2025-10-15T13:34:04.000000Z",
+      "taggable_info": null
   }
 }
 ```
@@ -118,41 +111,43 @@ curl -X GET \
 
 ## JSON Structure Explained
 
-### Success Response
+### Response Body
 
-| Field  | Type     | Description |
-| ------ | -------- | ----------- |
-| `data` | `object` | Contains the conversation and its messages. |
+| Field          | Type     | Description |
+| -------------- | -------- | ----------- |
+| `data`         | `array`  | Message entries belonging to the conversation. |
+| `conversation` | `object` | Conversation context for the listed messages. |
 
-### `data.conversation` – Conversation Object
+### `conversation`
 
 | Field               | Type      | Description |
 | ------------------- | --------- | ----------- |
 | `uuid`              | `uuid`    | Unique identifier for the conversation. |
 | `taggable_type`     | `string`  | Type of associated polymorphic model. |
 | `last_message_text` | `string`  | Text of the last message. |
-| `last_message_at`   | `string`  | Date of last message (ISO-8601 format). |
+| `last_message_at`   | `string`  | Date of the last message (ISO-8601 format). |
 | `is_archived`       | `boolean` | Indicates whether the conversation is archived. |
 | `created_at`        | `string`  | Conversation creation date (ISO-8601 format). |
 | `updated_at`        | `string`  | Last update date (ISO-8601 format). |
-| `taggable_info`     | `object`  | Information about associated context. |
+| `taggable_info`     | `object`  | Contextual information about the conversation (may be `null`). |
 
-### `data.messages[]` – Messages Array
+### `data[]`
 
-| Field                | Type     | Description |
-| -------------------- | -------- | ----------- |
-| `message_id`         | `string` | Unique message ID (MongoDB ObjectId). |
-| `conversation_uuid`  | `uuid`   | Conversation UUID. |
-| `sender`             | `object` | Sender information. |
-| `receiver`           | `object` | Receiver information. |
-| `context`            | `object` | Message content. |
-| `attachments[]`      | `array`  | List of attachments (files, images, etc.). |
-| `metadata`           | `object` | Additional metadata. |
-| `reactions[]`        | `array`  | List of reactions (emojis). |
-| `status`             | `object` | Delivery and read status. |
-| `timestamps`         | `object` | Creation and update timestamps. |
-| `pbk`                | `string` | Platform public key. |
-| `device`             | `object` | Sending device information. |
+| Field               | Type     | Description |
+| ------------------- | -------- | ----------- |
+| `message_id`        | `string` | Unique message ID (MongoDB ObjectId). |
+| `id`                | `string` | Legacy alias for `message_id`. |
+| `conversation_uuid` | `uuid`   | Conversation UUID. |
+| `sender`            | `object` | Sender information. |
+| `receiver`          | `object` | Receiver information. |
+| `context`           | `object` | Message content payload. |
+| `attachments`       | `array`  | Attachment list (can be empty). |
+| `metadata`          | `array`  | Additional metadata entries. |
+| `reactions`         | `array`  | Reaction entries (emojis). |
+| `status`            | `object` | Delivery/read status flags. |
+| `timestamps`        | `object` | Creation and update timestamps. |
+| `pbk`               | `string` | Platform public key tied to the message. |
+| `device`            | `object` | Sending device information. |
 
 ### `sender` / `receiver` – User Information
 
@@ -166,8 +161,9 @@ curl -X GET \
 
 | Field  | Type     | Description |
 | ------ | -------- | ----------- |
-| `text` | `string` | Message text. |
-| `type` | `string` | Content type: `text`, `image`, `file`, `audio`, `video`. |
+| `text`  | `string`  | Primary message text. |
+| `texts` | `object?` | Optional translations keyed by locale. |
+| `type`  | `string`  | Content type: `text`, `image`, `file`, `audio`, `video`. |
 
 ### `reactions[]` – Reactions
 
@@ -216,6 +212,7 @@ curl -X GET \
 * Messages are ordered by creation date in ascending order (oldest first).
 * The `taggable_info` field provides context about what originated the conversation (e.g., an order, a booking, etc.).
 * Deleted messages (`is_deleted: true`) are still returned but can be hidden on the frontend.
+* The `context.texts` field is optional and only appears when translations are stored for the message.
 
 ---
 

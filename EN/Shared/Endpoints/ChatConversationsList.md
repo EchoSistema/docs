@@ -48,28 +48,24 @@ Retrieves a list of conversations for the authenticated user, ordered by last me
           "uuid": "7c531b4a-1c34-4ba6-7b0c-4db6a12c5d16",
           "name": "John Smith",
           "email": "john@example.com",
+          "avatar": "https://cdn.example.com/avatars/john.jpg",
+          "avatar_url": "https://cdn.example.com/avatars/john.jpg",
           "pivot": {
-            "conversation_id": 1,
-            "user_id": 10,
             "unread_count": 2,
             "last_read_at": "2025-10-15T09:00:00.000000Z",
-            "joined_at": "2025-10-01T08:00:00.000000Z",
-            "created_at": "2025-10-01T08:00:00.000000Z",
-            "updated_at": "2025-10-15T09:00:00.000000Z"
+            "joined_at": "2025-10-01T08:00:00.000000Z"
           }
         },
         {
           "uuid": "6b420a39-0b23-3a95-6a0b-3ca5900b4c05",
           "name": "Mary Johnson",
           "email": "mary@example.com",
+          "avatar": "https://cdn.example.com/avatars/mary.jpg",
+          "avatar_url": "https://cdn.example.com/avatars/mary.jpg",
           "pivot": {
-            "conversation_id": 1,
-            "user_id": 11,
             "unread_count": 0,
             "last_read_at": "2025-10-15T10:30:00.000000Z",
-            "joined_at": "2025-10-01T08:00:00.000000Z",
-            "created_at": "2025-10-01T08:00:00.000000Z",
-            "updated_at": "2025-10-15T10:30:00.000000Z"
+            "joined_at": "2025-10-01T08:00:00.000000Z"
           }
         }
       ]
@@ -81,6 +77,12 @@ Retrieves a list of conversations for the authenticated user, ordered by last me
 ---
 
 ## JSON Structure Explained
+
+### Response Body
+
+| Field  | Type   | Description |
+| ------ | ------ | ----------- |
+| `data` | `array`| List of conversations available to the authenticated user. |
 
 ### `data[]` – Conversations Array
 
@@ -106,24 +108,22 @@ Retrieves a list of conversations for the authenticated user, ordered by last me
 
 ### `participants[]` – Participant
 
-| Field   | Type     | Description |
-| ------- | -------- | ----------- |
-| `uuid`  | `uuid`   | Participant's UUID. |
-| `name`  | `string` | Participant's name. |
-| `email` | `string` | Participant's email. |
-| `pivot` | `object` | Many-to-many relationship information. |
+| Field       | Type     | Description |
+| ----------- | -------- | ----------- |
+| `uuid`      | `uuid`   | Participant's UUID. |
+| `name`      | `string` | Participant's name. |
+| `email`     | `string` | Participant's email. |
+| `avatar`    | `string` | Participant avatar URL (can be null). |
+| `avatar_url`| `string` | Alias for `avatar`, kept for backwards compatibility. |
+| `pivot`     | `object` | Many-to-many relationship information. |
 
 ### `pivot` – Participant Information in Conversation
 
-| Field             | Type      | Description |
-| ----------------- | --------- | ----------- |
-| `conversation_id` | `integer` | Internal conversation ID. |
-| `user_id`         | `integer` | Internal user ID. |
-| `unread_count`    | `integer` | Number of unread messages. |
-| `last_read_at`    | `string`  | Date and time of last read (ISO-8601 format). |
-| `joined_at`       | `string`  | Date and time when the participant joined the conversation (ISO-8601 format). |
-| `created_at`      | `string`  | Relationship creation date (ISO-8601 format). |
-| `updated_at`      | `string`  | Last update date of the relationship (ISO-8601 format). |
+| Field          | Type      | Description |
+| -------------- | --------- | ----------- |
+| `unread_count` | `integer` | Number of unread messages. |
+| `last_read_at` | `string`  | Date and time of last read (ISO-8601 format, can be null). |
+| `joined_at`    | `string`  | Date and time when the participant joined the conversation (ISO-8601 format). |
 
 ---
 
@@ -140,6 +140,8 @@ Retrieves a list of conversations for the authenticated user, ordered by last me
 * Conversations are ordered by last message date (`last_message_at`) in descending order.
 * Only conversations where the authenticated user is a participant are returned.
 * The `taggable_info` field can be `null` if there is no context associated with the conversation.
+* The `avatar`/`avatar_url` fields return the participant avatar URL when available; otherwise a default placeholder URL is provided.
+* The `pivot` block only exposes unread count, last read timestamp, and joined timestamp to keep the payload concise.
 * The `unread_count` counter indicates how many messages the participant has not read yet.
 
 ---
@@ -154,3 +156,5 @@ Retrieves a list of conversations for the authenticated user, ordered by last me
 ## Changelog
 
 - 2025-10-15: Initial documentation creation.
+- 2025-10-15: Documented participant avatar field.
+- 2025-10-15: Trimmed participant pivot payload to essential fields and documented response shape.

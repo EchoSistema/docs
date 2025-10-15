@@ -48,28 +48,24 @@ Recupera una lista de conversaciones del usuario autenticado, ordenadas por la f
           "uuid": "7c531b4a-1c34-4ba6-7b0c-4db6a12c5d16",
           "name": "Juan Silva",
           "email": "juan@example.com",
+          "avatar": "https://cdn.example.com/avatars/juan.jpg",
+          "avatar_url": "https://cdn.example.com/avatars/juan.jpg",
           "pivot": {
-            "conversation_id": 1,
-            "user_id": 10,
             "unread_count": 2,
             "last_read_at": "2025-10-15T09:00:00.000000Z",
-            "joined_at": "2025-10-01T08:00:00.000000Z",
-            "created_at": "2025-10-01T08:00:00.000000Z",
-            "updated_at": "2025-10-15T09:00:00.000000Z"
+            "joined_at": "2025-10-01T08:00:00.000000Z"
           }
         },
         {
           "uuid": "6b420a39-0b23-3a95-6a0b-3ca5900b4c05",
           "name": "María Santos",
           "email": "maria@example.com",
+          "avatar": "https://cdn.example.com/avatars/maria.jpg",
+          "avatar_url": "https://cdn.example.com/avatars/maria.jpg",
           "pivot": {
-            "conversation_id": 1,
-            "user_id": 11,
             "unread_count": 0,
             "last_read_at": "2025-10-15T10:30:00.000000Z",
-            "joined_at": "2025-10-01T08:00:00.000000Z",
-            "created_at": "2025-10-01T08:00:00.000000Z",
-            "updated_at": "2025-10-15T10:30:00.000000Z"
+            "joined_at": "2025-10-01T08:00:00.000000Z"
           }
         }
       ]
@@ -81,6 +77,12 @@ Recupera una lista de conversaciones del usuario autenticado, ordenadas por la f
 ---
 
 ## Estructura JSON Explicada
+
+### Cuerpo de la Respuesta
+
+| Campo  | Tipo   | Descripción |
+| ------ | ------ | ----------- |
+| `data` | `array`| Lista de conversaciones disponibles para el usuario autenticado. |
 
 ### `data[]` – Array de Conversaciones
 
@@ -106,24 +108,22 @@ Recupera una lista de conversaciones del usuario autenticado, ordenadas por la f
 
 ### `participants[]` – Participante
 
-| Campo   | Tipo     | Descripción |
-| ------- | -------- | ----------- |
-| `uuid`  | `uuid`   | UUID del participante. |
-| `name`  | `string` | Nombre del participante. |
-| `email` | `string` | Correo electrónico del participante. |
-| `pivot` | `object` | Información de la relación muchos a muchos. |
+| Campo        | Tipo     | Descripción |
+| ------------ | -------- | ----------- |
+| `uuid`       | `uuid`   | UUID del participante. |
+| `name`       | `string` | Nombre del participante. |
+| `email`      | `string` | Correo electrónico del participante. |
+| `avatar`     | `string` | URL del avatar del participante (puede ser `null`). |
+| `avatar_url` | `string` | Alias de `avatar`, mantenido por compatibilidad. |
+| `pivot`      | `object` | Información de la relación muchos a muchos. |
 
 ### `pivot` – Información del Participante en la Conversación
 
-| Campo             | Tipo      | Descripción |
-| ----------------- | --------- | ----------- |
-| `conversation_id` | `integer` | ID interno de la conversación. |
-| `user_id`         | `integer` | ID interno del usuario. |
-| `unread_count`    | `integer` | Cantidad de mensajes no leídos. |
-| `last_read_at`    | `string`  | Fecha y hora de la última lectura (formato ISO-8601). |
-| `joined_at`       | `string`  | Fecha y hora en que el participante se unió a la conversación (formato ISO-8601). |
-| `created_at`      | `string`  | Fecha de creación de la relación (formato ISO-8601). |
-| `updated_at`      | `string`  | Fecha de la última actualización de la relación (formato ISO-8601). |
+| Campo          | Tipo      | Descripción |
+| -------------- | --------- | ----------- |
+| `unread_count` | `integer` | Cantidad de mensajes no leídos. |
+| `last_read_at` | `string`  | Fecha y hora de la última lectura (formato ISO-8601, puede ser `null`). |
+| `joined_at`    | `string`  | Fecha y hora en que el participante se unió a la conversación (formato ISO-8601). |
 
 ---
 
@@ -140,6 +140,8 @@ Recupera una lista de conversaciones del usuario autenticado, ordenadas por la f
 * Las conversaciones se ordenan por la fecha del último mensaje (`last_message_at`) en orden descendente.
 * Solo se devuelven conversaciones en las que el usuario autenticado es participante.
 * El campo `taggable_info` puede ser `null` si no hay contexto asociado a la conversación.
+* Los campos `avatar`/`avatar_url` devuelven la URL del avatar cuando está disponible; de lo contrario se usa un placeholder por defecto.
+* El bloque `pivot` expone únicamente la cuenta de no leídos, la última lectura y la fecha de ingreso para mantener el payload conciso.
 * El contador `unread_count` indica cuántos mensajes aún no ha leído el participante.
 
 ---
@@ -154,3 +156,4 @@ Recupera una lista de conversaciones del usuario autenticado, ordenadas por la f
 ## Changelog
 
 - 2025-10-15: Creación inicial de la documentación.
+- 2025-10-15: Inclusión del avatar de participantes, reducción de campos del pivot y ajuste del cuerpo de respuesta.
