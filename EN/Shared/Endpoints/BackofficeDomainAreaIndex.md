@@ -1,4 +1,4 @@
-# Shared – List Domain Areas (Backoffice)
+# Shared – List Domain Areas
 
 ## Endpoint
 
@@ -8,18 +8,19 @@ GET /api/v1/backoffice/domain-areas
 
 ## Authentication
 
-Required – Bearer {token} with `index.all` permission
+Required – Bearer {token} with ability `backoffice`
 
 ## Headers
 
-| Header            | Type     | Required    | Description |
-| ----------------- | -------- | ----------- | ----------- |
-| Authorization     | string   | Yes         | `Bearer {token}` credential. |
-| X-PUBLIC-KEY      | string   | Yes         | Platform public key. |
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | When required | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
 ## Parameters
 
-This endpoint does not accept path or query parameters.
+List all domain areas (backoffice only)
 
 ## Examples
 
@@ -29,6 +30,7 @@ This endpoint does not accept path or query parameters.
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
   "https://sandbox.your-domain.com/api/v1/backoffice/domain-areas"
 ```
 
@@ -36,73 +38,44 @@ curl -X GET \
 
 ```json
 {
-  "data": [
-    {
-      "uuid": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Biography",
-      "slug": "bio",
-      "is_active": true
-    },
-    {
-      "uuid": "660e8400-e29b-41d4-a716-446655440001",
-      "name": "Healthcare",
-      "slug": "healthcare",
-      "is_active": true
-    }
-  ]
+  "data": {}
 }
 ```
 
 ## JSON Structure Explained
 
-| Field           | Type     | Description |
-| --------------- | -------- | ----------- |
-| data[]          | array    | List of domain areas available in the system |
-| data[].uuid     | string   | Universal unique identifier of the domain area |
-| data[].name     | string   | Domain area name |
-| data[].slug     | string   | Domain area slug (unique textual identifier) |
-| data[].is_active| boolean  | Indicates if the domain area is active in the system |
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## HTTP Status
 
-- 200: Success
-- 401: Unauthenticated
-- 403: Forbidden (no `index.all` permission)
-- 500: Internal error
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
 ## Errors
 
-### 403 Forbidden
-User does not have the required permission:
-
 ```json
 {
-  "message": "Forbidden"
-}
-```
-
-### 401 Unauthorized
-Missing or invalid token:
-
-```json
-{
-  "message": "Unauthenticated."
+  "message": "Error message"
 }
 ```
 
 ## Notes
 
-- This endpoint returns all domain areas registered in the system, including inactive ones
-- Domain areas are used to organize platforms, categories, and item types
-- The `slug` field can be used to identify specific domain areas programmatically
-- Permission check is performed through the controller's `checkPermissions('index.all')` method
-- Only the fields `uuid`, `name`, `slug`, and `is_active` are returned (explicitly selected fields)
+- List all domain areas (backoffice only)
 
 ## Related
 
-- [List Platforms](./BackofficePlatformIndex.md)
-- [List Categories by Domain](./CategoryGroupIndex.md)
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-05: Initial documentation created
+- 2025-10-16: Initial documentation

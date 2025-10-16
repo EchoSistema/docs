@@ -1,107 +1,81 @@
-# Plataforma – Endpoint de Exibição de E-mail (IMAP)
+# Shared – Exibir Email da Plataforma
 
 ## Endpoint
 
-`GET /platform/app/emails/{uid}`
-
-Retorna uma mensagem de e-mail IMAP específica pelo `uid`, com foco nos campos usados pela interface. Cabeçalhos e contagem de anexos são opcionais para preservar performance.
-
----
+```
+GET /api/v1/management/emails/{uid}
+```
 
 ## Autenticação
 
-Obrigatória – `auth:sanctum` (Bearer Token válido para o backoffice da plataforma).
+Obrigatória – Bearer {token}
 
----
+## Cabeçalhos
 
-## Requisição
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Quando exigido | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
-### Cabeçalhos Obrigatórios
+## Parâmetros
 
-| Cabeçalho         | Tipo     | Descrição |
-| ----------------- | -------- | --------- |
-| Authorization     | `string` | `Bearer {token}`. |
-| X-PUBLIC-KEY      | `string` | Chave pública da plataforma. |
-| Accept-Language   | `string` | Idioma IETF (ex.: `pt-BR`, `en`, `es`). |
+Obter detalhes de um email específico do IMAP
 
-### Parâmetros de Query
+## Exemplos
 
-| Parâmetro                    | Tipo      | Padrão  | Descrição |
-| ---------------------------- | --------- | ------- | --------- |
-| `include_headers`            | `boolean` | `false` | Quando `true`, inclui cabeçalhos crus (custo extra). |
-| `include_attachment_count`   | `boolean` | `false` | Quando `true`, retorna a contagem de anexos (pode ser custoso em alguns servidores). |
+### Exemplo de requisição (curl)
 
----
+```bash
+curl -X GET \
+  -H "Authorization: Bearer <token>" \
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: pt-BR" \
+  "https://sandbox.your-domain.com/api/v1/management/emails/{uid}"
+```
 
-## Resposta
-
-A resposta segue o formato padrão com `data`.
-
-### Exemplo (básico)
+### Exemplo de resposta
 
 ```json
 {
-  "data": {
-    "uid": 12345,
-    "sender_full": "Equipe Suporte <suporte@example.com>",
-    "from": "suporte@example.com",
-    "date": "2025-09-10T15:43:12+00:00",
-    "headers": null,
-    "body_raw": "<html>...conteúdo...</html>",
-    "body": "...conteudo em texto...",
-    "attachments_count": null
-  }
+  "data": {}
 }
 ```
 
-### Exemplo (com cabeçalhos e anexos)
+## Estrutura JSON Explicada
 
-Requisição: `GET /platform/app/emails/{uid}?include_headers=1&include_attachment_count=1`
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
+
+## Status HTTP
+
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
+
+## Erros
 
 ```json
 {
-  "data": {
-    "uid": 12345,
-    "sender_full": "Equipe Suporte <suporte@example.com>",
-    "from": "suporte@example.com",
-    "date": "2025-09-10T15:43:12+00:00",
-    "headers": {
-      "subject": "Bem-vindo",
-      "date": "Tue, 10 Sep 2025 15:43:12 +0000",
-      "message_id": "<abc@example.com>",
-      "from": "Equipe Suporte <suporte@example.com>",
-      "to": "usuario@cliente.com",
-      "cc": "",
-      "bcc": "",
-      "reply_to": "",
-      "sender": "Equipe Suporte <suporte@example.com>",
-      "content_type": "text/html; charset=UTF-8"
-    },
-    "body_raw": "<html>...conteúdo...</html>",
-    "body": "...conteudo em texto...",
-    "attachments_count": 2
-  }
+  "message": "Mensagem de erro"
 }
 ```
-
----
-
-## Campos
-
-- `uid` `int` – Identificador IMAP da mensagem.
-- `sender_full` `string|null` – Nome e e‑mail do remetente (preferencialmente `Sender`; fallback para `From`).
-- `from` `string|null` – Endereço de e‑mail usado como fallback e exibido na UI.
-- `date` `string|null` – Data em ISO‑8601.
-- `headers` `object|null` – Cabeçalhos crus, somente quando `include_headers=1`.
-- `body_raw` `string|null` – HTML (preferencial) ou texto puro quando não houver HTML.
-- `body` `string|null` – Texto puro como fallback.
-- `attachments_count` `int|null` – Quantidade de anexos, somente quando `include_attachment_count=1`.
-
----
 
 ## Notas
 
-- Flags IMAP não são recuperadas no show para reduzir latência.
-- Evite solicitar cabeçalhos e contagem de anexos quando não forem necessários.
-- A normalização de data tenta manter ISO‑8601; alguns servidores podem retornar formatos diferentes.
-- Localização: campos de texto podem refletir `Accept-Language` quando aplicável; caso contrário, retornos padrão.
+- Obter detalhes de um email específico do IMAP
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentação inicial

@@ -1,65 +1,81 @@
-# Compartilhado – Endpoint de Listagem de Roles
+# Shared – Listar Papéis Disponíveis
 
 ## Endpoint
 
-`GET /api/v1/roles`
-
-Lista os roles disponíveis. Os roles dependem do domínio da plataforma solicitante. Parâmetros opcionais permitem incluir ou excluir roles específicos.
-
----
+```
+GET /api/v1/roles
+```
 
 ## Autenticação
 
-Nenhuma.
+Nenhuma
 
----
+## Cabeçalhos
 
-## Request
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Não | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
-### Parâmetros de consulta
+## Parâmetros
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-| --------- | ---- | ----------- | --------- |
-| `roles` | `array` | Não | Inclui apenas estes roles. Os valores devem ser nomes de roles válidos. |
-| `except` | `array` | Não | Exclui estes roles do resultado. |
-| `permissions` | `boolean` | Não | Quando `true`, inclui as permissões do role na resposta. Valor padrão `false`. |
+Listar todos os papéis disponíveis
 
-> Os parâmetros aceitam variantes camelCase, snake_case, kebab-case ou CapitalCase.
+## Exemplos
 
----
+### Exemplo de requisição (curl)
 
-## Exemplo de Resposta
+```bash
+curl -X GET \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: pt-BR" \
+  "https://sandbox.your-domain.com/api/v1/roles"
+```
+
+### Exemplo de resposta
 
 ```json
 {
-  "data": [
-    {
-      "id": 1,
-      "uuid": "00000000-0000-0000-0000-000000000000",
-      "name": "admin",
-      "title": "Administrador",
-      "permissions": ["role.read", "role.write"]
-    }
-  ]
+  "data": {}
 }
 ```
-
----
 
 ## Estrutura JSON Explicada
 
 | Campo | Tipo | Descrição |
-| ----- | ---- | --------- |
-| `data[]` | `array` | Lista de roles. |
-| `data[].id` | `integer` | Identificador do role. |
-| `data[].uuid` | `uuid` | Identificador único do role. |
-| `data[].name` | `string` | Nome técnico do role. |
-| `data[].title` | `string` | Título localizado do role. |
-| `data[].permissions[]` | `array` | Permissões do role quando `permissions=true`. |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
----
+## Status HTTP
+
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
+
+## Erros
+
+```json
+{
+  "message": "Mensagem de erro"
+}
+```
 
 ## Notas
 
-* Os roles retornados dependem do domínio da plataforma solicitante.
-* O parâmetro `permissions` tem valor padrão `false`.
+- Listar todos os papéis disponíveis
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentação inicial

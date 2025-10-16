@@ -1,61 +1,81 @@
-# Endereços — Criar
+# Shared – Criar Endereço
 
 ## Endpoint
 
-`POST /addresses` (Backoffice)  |  `POST /ia/admin/addresses` (IA Admin)
-
-Cria um endereço. Quando não há rotas aninhadas, `uuid` é obrigatório.
-
----
+```
+POST /api/v1/addresses
+```
 
 ## Autenticação
 
-- `POST /addresses`: `auth:sanctum` com `ability:backoffice`.
-- `POST /ia/admin/addresses`: `auth:sanctum`.
+Obrigatória – Bearer {token} com habilidade `backoffice`
 
-### Cabeçalhos Necessários
-| Cabeçalho | Tipo | Descrição |
-| --------- | ---- | --------- |
-| Authorization | `string` | `Bearer <token>` obrigatório. |
-| Accept-Language | `string` | Locale (ex.: `en`, `pt-BR`). Opcional. |
+## Cabeçalhos
 
----
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Quando exigido | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
-## Corpo (JSON)
-| Campo           | Tipo              | Req. | Descrição |
-| --------------- | ----------------- | ---- | --------- |
-| `type`          | `AddressTypeEnum` | Não  | Padrão `both`. `billing`, `shipping`, `both`, `fiscal`, `additional`. |
-| `uuid`          | `uuid`            | Cond | Obrigatório sem rota `addressable` aninhada. |
-| `city`          | `string|object`   | Sim  | Referência de cidade; resolvida via pipeline. |
-| `address_one`   | `string`          | Sim  | Linha 1. |
-| `address_two`   | `string`          | Não  | Linha 2. |
-| `address_three` | `string`          | Não  | Linha 3. |
-| `address_four`  | `string`          | Não  | Linha 4. |
-| `zipcode`       | `string`          | Não  | CEP. |
+## Parâmetros
 
-### Sucesso (200)
-Retorna o recurso criado.
+Criar um novo endereço (requer habilidade backoffice)
 
-### Erro de Validação (422)
-```json
-{ "message": "The given data was invalid.", "errors": { "uuid": ["The uuid field must be a valid UUID."], "city": ["The city field is required."], "address_one": ["The address one field is required."] } }
+## Exemplos
+
+### Exemplo de requisição (curl)
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: pt-BR" \
+  "https://sandbox.your-domain.com/api/v1/addresses"
 ```
 
-### Não Autenticado (401)
+### Exemplo de resposta
+
 ```json
-{ "message": "Unauthenticated." }
+{
+  "data": {}
+}
 ```
 
-### Proibido (403)
-Somente para `POST /addresses` quando faltar a ability `backoffice`.
-```json
-{ "message": "This action is unauthorized." }
-```
+## Estrutura JSON Explicada
 
----
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
+
+## Status HTTP
+
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
+
+## Erros
+
+```json
+{
+  "message": "Mensagem de erro"
+}
+```
 
 ## Notas
-- Resolução de cidade via pipeline.
-- `type = both` retorna `main: true`; caso contrário, flags específicas.
-- Localização: nomes de cidade/estado/país podem seguir `Accept-Language`.
 
+- Criar um novo endereço (requer habilidade backoffice)
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentação inicial

@@ -1,4 +1,4 @@
-# Shared – Atualizar idioma do usuário
+# Shared – Atualizar Idioma do Usuário
 
 ## Endpoint
 
@@ -6,95 +6,76 @@
 PATCH /api/v1/user/language
 ```
 
-Atualiza o idioma preferido do usuário autenticado, persistindo a informação na tabela de regionalização.
-
 ## Autenticação
 
-Obrigatória – Bearer {token} (Laravel Sanctum).
+Obrigatória – Bearer {token}
 
 ## Cabeçalhos
 
-| Cabeçalho       | Tipo   | Obrigatório | Descrição |
-| --------------- | ------ | ----------- | --------- |
-| Authorization   | string | Sim         | Credencial `Bearer {token}` válida para o usuário atual. |
-| X-PUBLIC-KEY    | string | Sim         | Chave pública da plataforma. |
-| Accept-Language | string | Não         | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Quando exigido | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
-## Corpo da requisição
+## Parâmetros
 
-```json
-{
-  "language": "pt-BR"
-}
-```
-
-| Campo      | Tipo   | Obrigatório | Descrição |
-| ---------- | ------ | ----------- | --------- |
-| language   | string | Sim         | Código da enum `LanguageEnum` (`pt-BR`, `en`, `es`, `gn`). |
+Atualizar o idioma preferido do usuário
 
 ## Exemplos
 
-### Requisição (curl)
+### Exemplo de requisição (curl)
 
 ```bash
 curl -X PATCH \
   -H "Authorization: Bearer <token>" \
-  -H "X-PUBLIC-KEY: <chave>" \
+  -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: pt-BR" \
-  -H "Content-Type: application/json" \
-  -d '{"language":"pt-BR"}' \
-  "https://sandbox.echosistema.com/api/v1/user/language"
+  "https://sandbox.your-domain.com/api/v1/user/language"
 ```
 
-### Resposta de sucesso
+### Exemplo de resposta
 
 ```json
 {
-  "data": {
-    "language": "pt-BR"
-  },
-  "meta": []
+  "data": {}
 }
 ```
 
 ## Estrutura JSON Explicada
 
-| Campo             | Tipo   | Descrição |
-| ----------------- | ------ | --------- |
-| data.language     | string | Idioma salvo para o usuário. |
-| meta              | array  | Reservado para metadados (vazio). |
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## Status HTTP
 
-- 200: Idioma atualizado com sucesso.
-- 401: Token ausente ou inválido.
-- 422: Valor de `language` fora dos permitidos.
-- 500: Erro interno inesperado.
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
 
 ## Erros
 
 ```json
 {
-  "message": "O idioma selecionado é inválido.",
-  "errors": {
-    "language": [
-      "O campo language é inválido."
-    ]
-  }
+  "message": "Mensagem de erro"
 }
 ```
 
 ## Notas
 
-- Nome da rota: `api.v1.user.language.update`.
-- O idioma é persistido em `regional_information.language` com base na enum `LanguageEnum`.
-- Caso o usuário não possua registro de regionalização, ele é criado automaticamente.
+- Atualizar o idioma preferido do usuário
 
 ## Relacionados
 
-- [Shared – Atualizar moeda do usuário](UserCurrencyUpdate.md)
-- [Shared – Listagem de idiomas disponíveis](LanguageIndex.md)
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-14: Endpoint documentado.
+- 2025-10-16: Documentação inicial

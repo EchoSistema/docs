@@ -1,110 +1,81 @@
-# Platform – Email Listing Endpoint (IMAP)
+# Shared – List Platform Emails
 
 ## Endpoint
 
-`GET /platform/app/emails`
-
-Returns IMAP emails from the platform-configured mailbox. Supports pagination, ordering, and field projection for better performance.
-
----
+```
+GET /api/v1/management/emails
+```
 
 ## Authentication
 
-Required — `auth:sanctum` (Bearer token for the platform backoffice).
+Required – Bearer {token}
 
----
+## Headers
 
-## Request
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | When required | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
-### Required Headers
+## Parameters
 
-| Header           | Type     | Description |
-| ---------------- | -------- | ----------- |
-| Authorization    | `string` | `Bearer {token}`. |
-| X-PUBLIC-KEY     | `string` | Platform public key. |
-| Accept-Language  | `string` | IETF language (e.g., `en`, `pt-BR`, `es`). |
+List emails from platform IMAP inbox
 
-### Query Parameters
+## Examples
 
-| Param                        | Type       | Default | Description |
-| ---------------------------- | ---------- | ------- | ----------- |
-| `page`                       | `integer`  | `1`     | Current page. |
-| `per_page`                   | `integer`  | `10`    | Items per page (1–100). |
-| `order`                      | `string`   | `desc`  | Chronological order: `asc` or `desc`. |
-| `fields`                     | `string`   | —       | Comma-separated list for projection (e.g., `subject,sender_name,sender_full,date,uid,seen`). Recommended for performance. |
-| `include_flags`              | `boolean`  | `true`  | Include IMAP flags when needed. Auto-inferred when any flag field is requested via `fields` (e.g., `seen`). |
-| `include_body`               | `boolean`  | `false` | Include message body (expensive; request only when needed). |
-| `include_body_preview`       | `boolean`  | `false` | Include 300-char plain-text preview. |
-| `include_attachment_count`   | `boolean`  | `false` | Count attachments (may be costly depending on the server). |
-| `include_headers`            | `boolean`  | `false` | Include raw headers (extra cost). |
+### Request example (curl)
 
----
+```bash
+curl -X GET \
+  -H "Authorization: Bearer <token>" \
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/management/emails"
+```
 
-## Response
-
-The response follows the standard shape with `data` and `meta`.
-
-### Example (lean projection)
-
-Recommended for index: `?fields=subject,sender_name,sender_full,date,uid,seen`.
+### Response example
 
 ```json
 {
-  "data": [
-    {
-      "subject": "Welcome",
-      "sender_name": "Support Team",
-      "sender_full": "Support Team <support@example.com>",
-      "date": "2025-09-10T15:43:12+00:00",
-      "uid": 12345,
-      "seen": false
-    }
-  ],
-  "meta": {
-    "page": 1,
-    "per_page": 10,
-    "has_more": true,
-    "order": "desc"
-  }
+  "data": {}
 }
 ```
 
-### Example (full payload)
+## JSON Structure Explained
 
-Without `fields`, more fields may be returned (to/cc/bcc/reply_to, size, flags, etc.). Use only if necessary due to parsing cost.
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
----
+## HTTP Status
 
-## Common Fields
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
-- Identity
-  - `subject` `string`
-  - `sender` `string|null` – sender email (when requested)
-  - `sender_full` `string|null` – name + email
-  - `sender_name` `string|null` – sender display name
-  - `from`/`from_full`/`from_name` – From header variants (when requested)
-- Metadata
-  - `date` `string|null` – ISO‑8601
-  - `uid` `int|null`
-  - `msgno`, `message_id`, `size` (when requested)
-- Flags (when `include_flags` or requested via `fields`)
-  - `flags` `array|null`
-  - `seen`, `answered`, `flagged`, `draft`, `recent`, `deleted` `boolean|null`
-- Content (expensive; request only when needed)
-  - `body_preview` `string|null`
-  - `body_raw` `string|null`
-  - `body` `string|null`
-  - `headers` `object|null`
-- Attachments (variable cost)
-  - `has_attachments` `boolean|null`
-  - `attachments_count` `int|null`
+## Errors
 
----
+```json
+{
+  "message": "Error message"
+}
+```
 
 ## Notes
 
-- Use `fields` to reduce latency and IMAP workload.
-- `seen` and other flags are only fetched when requested, saving IMAP calls.
-- `attachments_count` can be costly; enable only when necessary.
-- Dates are normalized to ISO‑8601 when possible.
-- Localisation: text fields may reflect the `Accept-Language` header when applicable; otherwise defaults are returned.
+- List emails from platform IMAP inbox
+
+## Related
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Initial documentation

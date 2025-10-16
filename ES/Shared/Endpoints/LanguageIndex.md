@@ -1,63 +1,81 @@
-# Compartido – Indice de Idiomas Disponibles
+# Shared – Listar Idiomas Disponibles
 
 ## Endpoint
 
-`GET /api/v1/languages`
+```
+GET /api/v1/languages
+```
 
-Devuelve los idiomas soportados por el backoffice segun `LanguageEnum`, incluyendo el codigo y el nombre mostrado (`native_name`).
+## Autenticación
 
----
+Ninguna
 
-## Autenticacion
+## Encabezados
 
-Ninguna.
+| Encabezado     | Tipo | Requerido | Descripción |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | No | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sí      | Clave pública de la plataforma. |
+| Accept-Language  | string | No       | Locale IETF (ej.: `pt-BR`, `en`, `es`). |
 
----
+## Parámetros
 
-## Request
+Listar todos los idiomas disponibles
 
-Sin parametros.
+## Ejemplos
 
----
+### Ejemplo de solicitud (curl)
 
-## Ejemplo de Respuesta
+```bash
+curl -X GET \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: es" \
+  "https://sandbox.your-domain.com/api/v1/languages"
+```
+
+### Ejemplo de respuesta
 
 ```json
 {
-  "data": [
-    {
-      "name": "PT_BR",
-      "code": "pt-BR",
-      "native_name": "Portugues (Brasil)"
-    },
-    {
-      "name": "EN",
-      "code": "en",
-      "native_name": "English"
-    }
-  ]
+  "data": {}
 }
 ```
 
----
-
 ## Estructura JSON Explicada
 
-| Campo | Tipo | Descripcion |
-| ----- | ---- | ----------- |
-| `data[]` | `array` | Lista de idiomas soportados. |
-| `data[].name` | `string` | Nombre del enum (`PT_BR`, `EN`, `ES`, `GN`). |
-| `data[].code` | `string` | Codigo ISO del idioma. |
-| `data[].native_name` | `string` | Nombre mostrado del idioma. |
+| Campo | Tipo | Descripción |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
----
+## Estados HTTP
+
+- 200: OK
+- 201: Creado
+- 400: Solicitud inválida
+- 401: No autorizado
+- 403: Prohibido
+- 404: No encontrado
+- 422: Entidad no procesable
+- 429: Demasiadas solicitudes
+- 500: Error interno del servidor
+
+## Errores
+
+```json
+{
+  "message": "Mensaje de error"
+}
+```
 
 ## Notas
 
-* El orden sigue la declaracion en `LanguageEnum`.
+- Listar todos los idiomas disponibles
 
----
+## Relacionados
+
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-03: Documentacion inicial del endpoint `/api/v1/languages`.
+- 2025-10-16: Documentación inicial

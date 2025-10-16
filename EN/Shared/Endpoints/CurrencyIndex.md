@@ -1,4 +1,4 @@
-# Shared – Available Currencies Index
+# Shared – List Available Currencies
 
 ## Endpoint
 
@@ -6,104 +6,76 @@
 GET /api/v1/currencies
 ```
 
-Returns the currencies supported by the backoffice grouped into `fiat` and `crypto` buckets derived from `CurrencyEnum`.
-
----
-
 ## Authentication
 
-None.
-
----
+None
 
 ## Headers
 
-| Header          | Type   | Required | Description |
-| --------------- | ------ | -------- | ----------- |
-| X-PUBLIC-KEY    | string | No       | Include when the frontend already sends it by convention. |
-| Accept-Language | string | No       | IETF locale for translated texts (`pt-BR`, `en`, `es`). |
-
----
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | No | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
 ## Parameters
 
-### Query Parameters
-
-| Parameter | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| `type`    | string | No       | Filters the result to `fiat` or `crypto`. Case-insensitive. When provided, the opposite group is returned as `null`. Missing or invalid values return both groups. |
-
-> Canonical name is `type` (snake_case). Other casings are not supported.
-
----
+List all available currencies (fiat and crypto)
 
 ## Examples
 
-### Sample request (curl)
+### Request example (curl)
 
 ```bash
 curl -X GET \
-  "https://sandbox.example.com/api/v1/currencies?type=fiat"
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/currencies"
 ```
 
-### Sample response
+### Response example
 
 ```json
 {
-  "data": {
-    "crypto": null,
-    "fiat": [
-      {
-        "name": "BRL",
-        "value": 1,
-        "sign": "R$",
-        "native_name": "Real Brasileiro",
-        "type": "fiat"
-      },
-      {
-        "name": "USD",
-        "value": 2,
-        "sign": "$",
-        "native_name": "US Dollar",
-        "type": "fiat"
-      }
-    ]
-  }
+  "data": {}
 }
 ```
 
----
+## JSON Structure Explained
 
-## JSON Structure Explanation
-
-| Field                      | Type            | Description |
-| -------------------------- | --------------- | ----------- |
-| `data.crypto`              | array \| null   | Crypto currencies when available. |
-| `data.fiat`                | array \| null   | Fiat currencies when available. |
-| `data.*[].name`            | string          | Enum name (`BRL`, `USD`, `BTC`...). |
-| `data.*[].value`           | integer         | Enum integer value. |
-| `data.*[].sign`            | string          | Currency symbol or ticker. |
-| `data.*[].native_name`     | string          | Currency native name. |
-| `data.*[].type`            | string          | Group label (`fiat` or `crypto`). |
-
----
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## HTTP Status
 
-- 200: Success
-- 400: Invalid request (e.g., malformed query)
-- 500: Internal error
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
----
+## Errors
+
+```json
+{
+  "message": "Error message"
+}
+```
 
 ## Notes
 
-- `type=fiat` returns only the fiat array with `data.crypto = null`; `type=crypto` mirrors this behaviour.
-- Without a filter, both groups are returned using `CurrencyEnum::getFiat()` and `CurrencyEnum::getCrypto()`.
-- Ordering matches the enum declaration.
+- List all available currencies (fiat and crypto)
 
----
+## Related
+
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-03: Documentation updated to describe grouped response (`crypto`/`fiat`).
+- 2025-10-16: Initial documentation

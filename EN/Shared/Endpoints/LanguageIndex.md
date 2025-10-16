@@ -1,63 +1,81 @@
-# Shared – Available Languages Index
+# Shared – List Available Languages
 
 ## Endpoint
 
-`GET /api/v1/languages`
-
-Returns the backoffice languages declared in `LanguageEnum`, including the code and presented name (`native_name`).
-
----
+```
+GET /api/v1/languages
+```
 
 ## Authentication
 
-None.
+None
 
----
+## Headers
 
-## Request
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | No | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
-No parameters.
+## Parameters
 
----
+List all available languages
 
-## Example Response
+## Examples
+
+### Request example (curl)
+
+```bash
+curl -X GET \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/languages"
+```
+
+### Response example
 
 ```json
 {
-  "data": [
-    {
-      "name": "PT_BR",
-      "code": "pt-BR",
-      "native_name": "Portugues (Brasil)"
-    },
-    {
-      "name": "EN",
-      "code": "en",
-      "native_name": "English"
-    }
-  ]
+  "data": {}
 }
 ```
 
----
-
-## JSON Structure Explanation
+## JSON Structure Explained
 
 | Field | Type | Description |
-| ----- | ---- | ----------- |
-| `data[]` | `array` | Supported languages list. |
-| `data[].name` | `string` | Enum name (`PT_BR`, `EN`, `ES`, `GN`). |
-| `data[].code` | `string` | ISO code for the language. |
-| `data[].native_name` | `string` | Display name for the language. |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
----
+## HTTP Status
+
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
+
+## Errors
+
+```json
+{
+  "message": "Error message"
+}
+```
 
 ## Notes
 
-* Ordering follows the declaration in `LanguageEnum`.
+- List all available languages
 
----
+## Related
+
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-03: Initial documentation for `/api/v1/languages`.
+- 2025-10-16: Initial documentation

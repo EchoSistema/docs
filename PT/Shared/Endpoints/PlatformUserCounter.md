@@ -1,47 +1,81 @@
-# Inteligência Artificial – Contador de Usuários Admin
+# Shared – Contar Usuários da Plataforma por Papel
 
 ## Endpoint
 
-`GET /api/v1/ia/admin/users/counter`
-
-Retorna o número total de usuários da plataforma por cargo que correspondem aos filtros aplicados na área administrativa de Inteligência Artificial. O comportamento e os filtros são os mesmos do endpoint Shared Users Counter.
-
-Veja também: docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
-
----
+```
+GET /api/v1/platform/users/counter
+```
 
 ## Autenticação
 
-Obrigatória – Token Bearer com habilidade `backoffice`.
+Obrigatória – Bearer {token}
 
----
+## Cabeçalhos
 
-## Parâmetros de Consulta
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Quando exigido | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
-Aceita os mesmos parâmetros de filtro do AI Users Index (e do Shared Users Index). Consulte:
+## Parâmetros
 
-- docs/domain/artificial-intelligence/http/controllers/platform-user-controller.index.md
-- docs/domain/shared/http/controllers/platform/platform-user-controller.index.md
+Obter a contagem de usuários agrupados por papel
 
----
+## Exemplos
 
-## Resposta
+### Exemplo de requisição (curl)
 
-Idêntica à resposta do Shared Users Counter. Exemplo:
+```bash
+curl -X GET \
+  -H "Authorization: Bearer <token>" \
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: pt-BR" \
+  "https://sandbox.your-domain.com/api/v1/platform/users/counter"
+```
+
+### Exemplo de resposta
 
 ```json
 {
-  "counter": {
-    "admin": {
-      "role_id": 2,
-      "name": "admin",
-      "localized_name": "Administrator",
-      "total": 10
-    }
-  }
+  "data": {}
 }
 ```
 
-Para mais detalhes, veja:
+## Estrutura JSON Explicada
 
-- docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
+
+## Status HTTP
+
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
+
+## Erros
+
+```json
+{
+  "message": "Mensagem de erro"
+}
+```
+
+## Notas
+
+- Obter a contagem de usuários agrupados por papel
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentação inicial

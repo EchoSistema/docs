@@ -1,78 +1,81 @@
-# Newsletter — Subscribe
+# Shared – Subscribe to Newsletter
 
 ## Endpoint
 
-`POST /api/v1/newsletters`
-
-Receives public newsletter subscription requests and stores the records associated with the provided platform.
-
----
+```
+POST /api/v1/newsletters
+```
 
 ## Authentication
 
-No Bearer token. Requires the platform header to identify the tenant.
+None
 
-### Required Headers
-| Header | Type | Description |
-| ------ | ---- | ----------- |
-| `X-PUBLIC-KEY` | `string` | Platform public identifier. |
+## Headers
 
-### Optional Headers
-| Header | Type | Description |
-| ------ | ---- | ----------- |
-| `Accept-Language` | `string` | Sets the locale; used to fill `language`. |
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | No | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
----
+## Parameters
 
-## Body (JSON)
-| Field            | Type     | Req. | Description |
-| ---------------- | -------- | ---- | ----------- |
-| `name`           | `string` | No   | Subscriber name. Optional. |
-| `email`          | `email`  | Yes  | Subscriber email address. |
-| `g_recaptcha`    | `string` | Yes  | reCAPTCHA token validated by `ReCaptchaRule`. |
-| `platform_uuid`  | `uuid`   | Yes  | UUID of the platform that receives the subscription. |
-| `is_active`      | `bool`   | Auto | Forced to `true` by the backend; incoming values are ignored. |
-| `language`       | `string` | Auto | Derived from the current locale (`Accept-Language` or app default). |
+Subscribe an email to the newsletter
 
-### Request Example
+## Examples
+
+### Request example (curl)
+
+```bash
+curl -X POST \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/newsletters"
+```
+
+### Response example
+
 ```json
 {
-  "name": "Jane Doe",
-  "email": "jane.doe@example.com",
-  "g_recaptcha": "token-recaptcha",
-  "platform_uuid": "11111111-1111-1111-1111-111111111111"
+  "data": {}
 }
 ```
 
----
+## JSON Structure Explained
 
-## Responses
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
-### Success — 201 Created
+## HTTP Status
+
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
+
+## Errors
+
 ```json
 {
-  "message": "Email saved successfully"
+  "message": "Error message"
 }
 ```
-
-### Validation Error — 422 Unprocessable Entity
-```json
-{
-  "message": "Email not saved",
-  "errors": {
-    "email": ["The email field is required."],
-    "g_recaptcha": ["Failed to validate reCAPTCHA."]
-  }
-}
-```
-
-### Robot Block — 402 Payment Required
-Returned when the identified user agent matches a bot.
-
----
 
 ## Notes
-- Route name: `api.v1.newsletters.store`.
-- Each subscription triggers a Slack notification defined at `config('backoffice.slack.channel.default')`.
-- Additional attributes (`language`, `is_active`) are computed internally through `NewsletterStoreRequest`.
-- Records are persisted by `Newsletter::createWithAttributes` after preparation via `PrepareNewsletterData`.
+
+- Subscribe an email to the newsletter
+
+## Related
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Initial documentation

@@ -1,4 +1,4 @@
-# Shared – Update user language
+# Shared – Update User Language
 
 ## Endpoint
 
@@ -6,95 +6,76 @@
 PATCH /api/v1/user/language
 ```
 
-Updates the preferred language for the authenticated user and persists the value in the regional information table.
-
 ## Authentication
 
-Required – Bearer {token} (Laravel Sanctum).
+Required – Bearer {token}
 
 ## Headers
 
-| Header         | Type   | Required | Description |
-| -------------- | ------ | -------- | ----------- |
-| Authorization  | string | Yes      | `Bearer {token}` belonging to the authenticated user. |
-| X-PUBLIC-KEY   | string | Yes      | Platform public key header. |
-| Accept-Language| string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | When required | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
-## Request body
+## Parameters
 
-```json
-{
-  "language": "pt-BR"
-}
-```
-
-| Field    | Type   | Required | Description |
-| -------- | ------ | -------- | ----------- |
-| language | string | Yes      | Enum value from `LanguageEnum` (`pt-BR`, `en`, `es`, `gn`). |
+Update the user's preferred language
 
 ## Examples
 
-### Request (curl)
+### Request example (curl)
 
 ```bash
 curl -X PATCH \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: en" \
-  -H "Content-Type: application/json" \
-  -d '{"language":"pt-BR"}' \
-  "https://sandbox.echosistema.com/api/v1/user/language"
+  "https://sandbox.your-domain.com/api/v1/user/language"
 ```
 
-### Success response
+### Response example
 
 ```json
 {
-  "data": {
-    "language": "pt-BR"
-  },
-  "meta": []
+  "data": {}
 }
 ```
 
 ## JSON Structure Explained
 
-| Field         | Type   | Description |
-| ------------- | ------ | ----------- |
-| data.language | string | Language saved for the user. |
-| meta          | array  | Reserved for metadata (empty array). |
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## HTTP Status
 
-- 200: Language updated successfully.
-- 401: Missing or invalid token.
-- 422: `language` not allowed by the enum.
-- 500: Unexpected server error.
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
 ## Errors
 
 ```json
 {
-  "message": "The selected language is invalid.",
-  "errors": {
-    "language": [
-      "The language field is invalid."
-    ]
-  }
+  "message": "Error message"
 }
 ```
 
 ## Notes
 
-- Route name: `api.v1.user.language.update`.
-- The value is stored in `regional_information.language` using `LanguageEnum`.
-- If the user has no regional information record, it is created automatically.
+- Update the user's preferred language
 
 ## Related
 
-- [Shared – Update user currency](UserCurrencyUpdate.md)
-- [Shared – Available languages](LanguageIndex.md)
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-14: Endpoint documented.
+- 2025-10-16: Initial documentation

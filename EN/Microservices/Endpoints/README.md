@@ -1,3 +1,24 @@
-# Endpoints
+# Microservices Endpoints
 
-- [Languages Index](LanguageIndex.md)
+This directory contains detailed documentation for all Microservices domain endpoints.
+
+## Endpoint List
+
+| Endpoint | Method | Description |
+| -------- | ------ | ----------- |
+| [CountryIndex](./CountryIndex.md) | GET | CountryIndex endpoint |
+| [CountryShow](./CountryShow.md) | GET | CountryShow endpoint |
+| [CountryState](./CountryState.md) | GET | CountryState endpoint |
+| [CountryCity](./CountryCity.md) | GET | CountryCity endpoint |
+| [CountryUpdate](./CountryUpdate.md) | PUT | CountryUpdate endpoint |
+| [LanguageIndex](./LanguageIndex.md) | GET | LanguageIndex endpoint |
+
+## Common Features
+
+### Authentication
+
+Required: `Authorization: Bearer {token}` and `X-PUBLIC-KEY: {key}`
+
+## Related
+
+- [Microservices Domain](../README.md)

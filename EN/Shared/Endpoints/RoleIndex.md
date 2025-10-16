@@ -1,65 +1,81 @@
-# Shared – Roles Index Endpoint
+# Shared – List Available Roles
 
 ## Endpoint
 
-`GET /api/v1/roles`
-
-Lists available roles. Roles depend on the requesting platform's domain. Optional parameters allow including or excluding specific roles.
-
----
+```
+GET /api/v1/roles
+```
 
 ## Authentication
 
-None.
+None
 
----
+## Headers
 
-## Request
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | No | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
-### Query Parameters
+## Parameters
 
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `roles` | `array` | No | Include only these roles. Values must be valid role names. |
-| `except` | `array` | No | Exclude these roles from the result. |
-| `permissions` | `boolean` | No | When `true`, includes role permissions in the response. Defaults to `false`. |
+List all available roles
 
-> Parameters accept camelCase, snake_case, kebab-case, or CapitalCase variants.
+## Examples
 
----
+### Request example (curl)
 
-## Example Response
+```bash
+curl -X GET \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/roles"
+```
+
+### Response example
 
 ```json
 {
-  "data": [
-    {
-      "id": 1,
-      "uuid": "00000000-0000-0000-0000-000000000000",
-      "name": "admin",
-      "title": "Administrator",
-      "permissions": ["role.read", "role.write"]
-    }
-  ]
+  "data": {}
 }
 ```
 
----
-
-## JSON Structure Explanation
+## JSON Structure Explained
 
 | Field | Type | Description |
-| ----- | ---- | ----------- |
-| `data[]` | `array` | List of roles. |
-| `data[].id` | `integer` | Role identifier. |
-| `data[].uuid` | `uuid` | Unique role identifier. |
-| `data[].name` | `string` | Role machine name. |
-| `data[].title` | `string` | Localized role title. |
-| `data[].permissions[]` | `array` | Permission strings when `permissions=true`. |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
----
+## HTTP Status
+
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
+
+## Errors
+
+```json
+{
+  "message": "Error message"
+}
+```
 
 ## Notes
 
-* Roles returned depend on the requesting platform's domain.
-* The `permissions` parameter defaults to `false`.
+- List all available roles
+
+## Related
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Initial documentation

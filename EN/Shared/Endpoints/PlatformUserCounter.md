@@ -1,47 +1,81 @@
-# Artificial Intelligence – Admin Users Counter
+# Shared – Count Platform Users by Role
 
 ## Endpoint
 
-`GET /api/v1/ia/admin/users/counter`
-
-Returns the total number of platform users per role that match the applied filters in the Artificial Intelligence admin area. Behavior and filters match the Shared Users Counter endpoint.
-
-See also: docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
-
----
+```
+GET /api/v1/platform/users/counter
+```
 
 ## Authentication
 
-Required – Bearer token with `backoffice` ability.
+Required – Bearer {token}
 
----
+## Headers
 
-## Query Parameters
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | When required | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
-Accepts the same filter parameters as the AI Users Index (and the Shared Users Index). Refer to:
+## Parameters
 
-- docs/domain/artificial-intelligence/http/controllers/platform-user-controller.index.md
-- docs/domain/shared/http/controllers/platform/platform-user-controller.index.md
+Get user count grouped by role
 
----
+## Examples
 
-## Response
+### Request example (curl)
 
-Identical to the Shared Users Counter response. Example:
+```bash
+curl -X GET \
+  -H "Authorization: Bearer <token>" \
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/platform/users/counter"
+```
+
+### Response example
 
 ```json
 {
-  "counter": {
-    "admin": {
-      "role_id": 2,
-      "name": "admin",
-      "localized_name": "Administrator",
-      "total": 10
-    }
-  }
+  "data": {}
 }
 ```
 
-For more details, see:
+## JSON Structure Explained
 
-- docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
+
+## HTTP Status
+
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
+
+## Errors
+
+```json
+{
+  "message": "Error message"
+}
+```
+
+## Notes
+
+- Get user count grouped by role
+
+## Related
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Initial documentation

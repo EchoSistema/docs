@@ -1,78 +1,81 @@
-# Newsletter — Inscrição
+# Shared – Inscrever-se na Newsletter
 
 ## Endpoint
 
-`POST /api/v1/newsletters`
-
-Recebe solicitações públicas de assinatura de newsletter e armazena os registros associados à plataforma informada.
-
----
+```
+POST /api/v1/newsletters
+```
 
 ## Autenticação
 
-Sem Bearer token. Requer cabeçalho da plataforma para identificar o tenant.
+Nenhuma
 
-### Cabeçalhos Obrigatórios
-| Cabeçalho | Tipo | Descrição |
-| --------- | ---- | --------- |
-| `X-PUBLIC-KEY` | `string` | Identificador público da plataforma. |
+## Cabeçalhos
 
-### Cabeçalhos Opcionais
-| Cabeçalho | Tipo | Descrição |
-| --------- | ---- | --------- |
-| `Accept-Language` | `string` | Define o locale; usado para preencher `language`. |
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Não | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
----
+## Parâmetros
 
-## Corpo (JSON)
-| Campo            | Tipo     | Req. | Descrição |
-| ---------------- | -------- | ---- | --------- |
-| `name`           | `string` | Não  | Nome do assinante. Opcional. |
-| `email`          | `email`  | Sim  | Endereço de e-mail do assinante. |
-| `g_recaptcha`    | `string` | Sim  | Token reCAPTCHA validado pelo `ReCaptchaRule`. |
-| `platform_uuid`  | `uuid`   | Sim  | UUID da plataforma que receberá a inscrição. |
-| `is_active`      | `bool`   | Auto | Fixado como `true` pelo backend; valores enviados são ignorados. |
-| `language`       | `string` | Auto | Definido a partir do locale atual (`Accept-Language` ou padrão da aplicação). |
+Inscrever um email na newsletter
 
-### Exemplo de Requisição
+## Exemplos
+
+### Exemplo de requisição (curl)
+
+```bash
+curl -X POST \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: pt-BR" \
+  "https://sandbox.your-domain.com/api/v1/newsletters"
+```
+
+### Exemplo de resposta
+
 ```json
 {
-  "name": "Jane Doe",
-  "email": "jane.doe@example.com",
-  "g_recaptcha": "token-recaptcha",
-  "platform_uuid": "11111111-1111-1111-1111-111111111111"
+  "data": {}
 }
 ```
 
----
+## Estrutura JSON Explicada
 
-## Respostas
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
-### Sucesso — 201 Created
+## Status HTTP
+
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
+
+## Erros
+
 ```json
 {
-  "message": "O e-mail foi salvo com sucesso"
+  "message": "Mensagem de erro"
 }
 ```
-
-### Erro de Validação — 422 Unprocessable Entity
-```json
-{
-  "message": "O e-mail não foi salvo",
-  "errors": {
-    "email": ["O campo email é obrigatório."],
-    "g_recaptcha": ["Falha ao validar o reCAPTCHA."]
-  }
-}
-```
-
-### Bloqueio por Robô — 402 Payment Required
-Enviado quando o agente de usuário identificado corresponde a um robô.
-
----
 
 ## Notas
-- Nome da rota: `api.v1.newsletters.store`.
-- Cada inscrição dispara uma notificação para o Slack definido em `config('backoffice.slack.channel.default')`.
-- Os atributos adicionais (`language`, `is_active`) são calculados internamente através de `NewsletterStoreRequest`.
-- Os registros são persistidos por `Newsletter::createWithAttributes`, após preparação via `PrepareNewsletterData`.
+
+- Inscrever um email na newsletter
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentação inicial

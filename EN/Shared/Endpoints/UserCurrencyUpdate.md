@@ -1,4 +1,4 @@
-# Shared – Update user currency
+# Shared – Update User Currency
 
 ## Endpoint
 
@@ -6,95 +6,76 @@
 PATCH /api/v1/user/currency
 ```
 
-Updates the preferred currency for the authenticated user, ensuring the provided value matches `CurrencyEnum`.
-
 ## Authentication
 
-Required – Bearer {token} (Laravel Sanctum).
+Required – Bearer {token}
 
 ## Headers
 
-| Header         | Type   | Required | Description |
-| -------------- | ------ | -------- | ----------- |
-| Authorization  | string | Yes      | `Bearer {token}` belonging to the authenticated user. |
-| X-PUBLIC-KEY   | string | Yes      | Platform public key header. |
-| Accept-Language| string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
+| Header     | Type | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | When required | `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
-## Request body
+## Parameters
 
-```json
-{
-  "currency": "BRL"
-}
-```
-
-| Field    | Type   | Required | Description |
-| -------- | ------ | -------- | ----------- |
-| currency | string | Yes      | Enum name from `CurrencyEnum` (e.g., `BRL`, `USD`, `EUR`, `PYG`, `USDC`, `USDT`, `BTC`, `ETH`, `DOGE`, `XMR`, `SOL`). |
+Update the user's preferred currency
 
 ## Examples
 
-### Request (curl)
+### Request example (curl)
 
 ```bash
 curl -X PATCH \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: en" \
-  -H "Content-Type: application/json" \
-  -d '{"currency":"BRL"}' \
-  "https://sandbox.echosistema.com/api/v1/user/currency"
+  "https://sandbox.your-domain.com/api/v1/user/currency"
 ```
 
-### Success response
+### Response example
 
 ```json
 {
-  "data": {
-    "currency": "BRL"
-  },
-  "meta": []
+  "data": {}
 }
 ```
 
 ## JSON Structure Explained
 
-| Field         | Type   | Description |
-| ------------- | ------ | ----------- |
-| data.currency | string | Currency stored for the user. |
-| meta          | array  | Reserved for metadata (empty array). |
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## HTTP Status
 
-- 200: Currency updated successfully.
-- 401: Missing or invalid token.
-- 422: `currency` not recognized by the enum.
-- 500: Unexpected server error.
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
 ## Errors
 
 ```json
 {
-  "message": "The selected currency is invalid.",
-  "errors": {
-    "currency": [
-      "The currency field is invalid."
-    ]
-  }
+  "message": "Error message"
 }
 ```
 
 ## Notes
 
-- Route name: `api.v1.user.currency.update`.
-- The currency is stored in `regional_information.currency_id` using `CurrencyEnum`.
-- A regional information record is created automatically when missing.
+- Update the user's preferred currency
 
 ## Related
 
-- [Shared – Update user language](UserLanguageUpdate.md)
-- [Shared – Available currencies](CurrencyIndex.md)
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-14: Endpoint documented.
+- 2025-10-16: Initial documentation

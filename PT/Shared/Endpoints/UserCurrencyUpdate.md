@@ -1,4 +1,4 @@
-# Shared – Atualizar moeda do usuário
+# Shared – Atualizar Moeda do Usuário
 
 ## Endpoint
 
@@ -6,95 +6,76 @@
 PATCH /api/v1/user/currency
 ```
 
-Atualiza a moeda preferida do usuário autenticado, garantindo que o valor pertença à enum `CurrencyEnum`.
-
 ## Autenticação
 
-Obrigatória – Bearer {token} (Laravel Sanctum).
+Obrigatória – Bearer {token}
 
 ## Cabeçalhos
 
-| Cabeçalho       | Tipo   | Obrigatório | Descrição |
-| --------------- | ------ | ----------- | --------- |
-| Authorization   | string | Sim         | Credencial `Bearer {token}` válida para o usuário atual. |
-| X-PUBLIC-KEY    | string | Sim         | Chave pública da plataforma. |
-| Accept-Language | string | Não         | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Quando exigido | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
-## Corpo da requisição
+## Parâmetros
 
-```json
-{
-  "currency": "BRL"
-}
-```
-
-| Campo    | Tipo   | Obrigatório | Descrição |
-| -------- | ------ | ----------- | --------- |
-| currency | string | Sim         | Nome da enum `CurrencyEnum` (ex.: `BRL`, `USD`, `EUR`, `PYG`, `USDC`, `USDT`, `BTC`, `ETH`, `DOGE`, `XMR`, `SOL`). |
+Atualizar a moeda preferida do usuário
 
 ## Exemplos
 
-### Requisição (curl)
+### Exemplo de requisição (curl)
 
 ```bash
 curl -X PATCH \
   -H "Authorization: Bearer <token>" \
-  -H "X-PUBLIC-KEY: <chave>" \
+  -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: pt-BR" \
-  -H "Content-Type: application/json" \
-  -d '{"currency":"BRL"}' \
-  "https://sandbox.echosistema.com/api/v1/user/currency"
+  "https://sandbox.your-domain.com/api/v1/user/currency"
 ```
 
-### Resposta de sucesso
+### Exemplo de resposta
 
 ```json
 {
-  "data": {
-    "currency": "BRL"
-  },
-  "meta": []
+  "data": {}
 }
 ```
 
 ## Estrutura JSON Explicada
 
-| Campo           | Tipo   | Descrição |
-| --------------- | ------ | --------- |
-| data.currency   | string | Moeda persistida para o usuário. |
-| meta            | array  | Reservado para metadados (vazio). |
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## Status HTTP
 
-- 200: Moeda atualizada com sucesso.
-- 401: Token ausente ou inválido.
-- 422: Valor de `currency` fora dos permitidos.
-- 500: Erro interno inesperado.
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
+- 500: Erro interno
 
 ## Erros
 
 ```json
 {
-  "message": "A moeda selecionada é inválida.",
-  "errors": {
-    "currency": [
-      "O campo currency é inválido."
-    ]
-  }
+  "message": "Mensagem de erro"
 }
 ```
 
 ## Notas
 
-- Nome da rota: `api.v1.user.currency.update`.
-- A moeda é persistida em `regional_information.currency_id` utilizando a enum `CurrencyEnum`.
-- Caso o usuário não possua registro de regionalização, ele é criado automaticamente.
+- Atualizar a moeda preferida do usuário
 
 ## Relacionados
 
-- [Shared – Atualizar idioma do usuário](UserLanguageUpdate.md)
-- [Shared – Listagem de moedas disponíveis](CurrencyIndex.md)
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-14: Endpoint documentado.
+- 2025-10-16: Documentação inicial

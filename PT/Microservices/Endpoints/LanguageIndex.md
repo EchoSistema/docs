@@ -1,4 +1,4 @@
-# Microservices – Lista de Idiomas
+# Microservices – LanguageIndex
 
 ## Endpoint
 
@@ -6,70 +6,70 @@
 GET /api/v1/public/languages
 ```
 
-Retorna as linguagens mais conhecidas do mundo com base no arquivo `public/storage/documents/languages.json`. Pode ser utilizado por frontends publicos que precisem preencher seletores de idioma.
+## Autenticação
 
----
+Nenhuma
 
-## Autenticacao
+## Cabeçalhos
 
-Nenhuma.
+| Header           | Type   | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
----
+## Parâmetros
 
-## Cabecalhos
+### Path parameters
 
-| Cabecalho       | Tipo   | Obrigatorio | Descricao |
-| --------------- | ------ | ----------- | --------- |
-| Accept-Language | string | Nao         | Locale IETF (`pt-BR`, `en`, `es`). |
+No path parameters.
 
----
+### Query parameters
 
-## Parametros
-
-Nenhum parametro.
-
----
+| Parameter | Type    | Required | Description | Default/Values |
+| --------- | ------- | -------- | ----------- | -------------- |
+| per_page  | integer | No       | Results per page | 10 (1-100) |
+| page      | integer | No       | Page number | 1 |
 
 ## Exemplos
 
-### Requisicao (curl)
+### Request example (curl)
 
 ```bash
-curl -X GET "https://sandbox.exemplo.com/api/v1/public/languages"
+curl -X GET \
+  -H "X-PUBLIC-KEY: <key>" \
+  "https://sandbox.your-domain.com/api/v1/public/languages"
 ```
 
-### Resposta
+### Response example
 
 ```json
 {
-  "data": [
-    {"name": "English", "code": "en"},
-    {"name": "Spanish", "code": "es"},
-    {"name": "Portuguese", "code": "pt"}
-  ]
+  "data": []
 }
 ```
 
----
+## HTTP Status
 
-## Estrutura JSON Explicada
-
-| Campo         | Tipo   | Descricao |
-| ------------- | ------ | --------- |
-| `data[]`      | array  | Lista de idiomas suportados. |
-| `data[].name` | string | Nome do idioma. |
-| `data[].code` | string | Codigo ISO-639-1 do idioma. |
-
----
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
 ## Notas
 
-- O endpoint expoe linguagens amplamente utilizadas globalmente.
-- Novos idiomas podem ser adicionados editando `public/storage/documents/languages.json`.
-- O repositorio `LanguageRepository` realiza o parse desse JSON e ignora erros de leitura.
+- Refer to controller implementation for specific business rules
+- Pagination is available for list endpoints
+- All timestamps are in ISO 8601 format
 
----
+## Relacionados
+
+- [Microservices Domínio](../README.md)
 
 ## Changelog
 
-- 2025-10-03: Documentacao inicial do endpoint de linguagens publicas.
+- 2025-10-16: Initial documentation

@@ -1,4 +1,4 @@
-# Shared – Listar Áreas de Dominio (Backoffice)
+# Shared – Listar Áreas de Dominio
 
 ## Endpoint
 
@@ -8,18 +8,19 @@ GET /api/v1/backoffice/domain-areas
 
 ## Autenticación
 
-Obligatoria – Bearer {token} con permiso `index.all`
+Requerida – Bearer {token} con habilidad `backoffice`
 
 ## Encabezados
 
-| Encabezado        | Tipo     | Obligatorio | Descripción |
-| ----------------- | -------- | ----------- | ----------- |
-| Authorization     | string   | Sí          | Credencial `Bearer {token}`. |
-| X-PUBLIC-KEY      | string   | Sí          | Clave pública de la plataforma. |
+| Encabezado     | Tipo | Requerido | Descripción |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Cuando aplica | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sí      | Clave pública de la plataforma. |
+| Accept-Language  | string | No       | Locale IETF (ej.: `pt-BR`, `en`, `es`). |
 
 ## Parámetros
 
-Este endpoint no acepta parámetros de ruta o consulta.
+Listar todas las áreas de dominio (solo backoffice)
 
 ## Ejemplos
 
@@ -28,81 +29,53 @@ Este endpoint no acepta parámetros de ruta o consulta.
 ```bash
 curl -X GET \
   -H "Authorization: Bearer <token>" \
-  -H "X-PUBLIC-KEY: <clave>" \
-  "https://sandbox.tu-dominio.com/api/v1/backoffice/domain-areas"
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: es" \
+  "https://sandbox.your-domain.com/api/v1/backoffice/domain-areas"
 ```
 
 ### Ejemplo de respuesta
 
 ```json
 {
-  "data": [
-    {
-      "uuid": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Biografía",
-      "slug": "bio",
-      "is_active": true
-    },
-    {
-      "uuid": "660e8400-e29b-41d4-a716-446655440001",
-      "name": "Salud",
-      "slug": "healthcare",
-      "is_active": true
-    }
-  ]
+  "data": {}
 }
 ```
 
 ## Estructura JSON Explicada
 
-| Campo           | Tipo     | Descripción |
-| --------------- | -------- | ----------- |
-| data[]          | array    | Lista de áreas de dominio disponibles en el sistema |
-| data[].uuid     | string   | Identificador único universal del área de dominio |
-| data[].name     | string   | Nombre del área de dominio |
-| data[].slug     | string   | Slug del área de dominio (identificador textual único) |
-| data[].is_active| boolean  | Indica si el área de dominio está activa en el sistema |
+| Campo | Tipo | Descripción |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
-## Estado HTTP
+## Estados HTTP
 
-- 200: Éxito
-- 401: No autenticado
-- 403: Prohibido (sin permiso `index.all`)
-- 500: Error interno
+- 200: OK
+- 201: Creado
+- 400: Solicitud inválida
+- 401: No autorizado
+- 403: Prohibido
+- 404: No encontrado
+- 422: Entidad no procesable
+- 429: Demasiadas solicitudes
+- 500: Error interno del servidor
 
 ## Errores
 
-### 403 Forbidden
-El usuario no tiene el permiso necesario:
-
 ```json
 {
-  "message": "Forbidden"
-}
-```
-
-### 401 Unauthorized
-Token ausente o inválido:
-
-```json
-{
-  "message": "Unauthenticated."
+  "message": "Mensaje de error"
 }
 ```
 
 ## Notas
 
-- Este endpoint devuelve todas las áreas de dominio registradas en el sistema, incluyendo las inactivas
-- Las áreas de dominio se utilizan para organizar plataformas, categorías y tipos de elementos
-- El campo `slug` puede usarse para identificar áreas de dominio específicas programáticamente
-- La verificación de permisos se realiza a través del método `checkPermissions('index.all')` del controlador
-- Solo se devuelven los campos `uuid`, `name`, `slug` e `is_active` (campos seleccionados explícitamente)
+- Listar todas las áreas de dominio (solo backoffice)
 
 ## Relacionados
 
-- [Listar Plataformas](./BackofficePlatformIndex.md)
-- [Listar Categorías por Dominio](./CategoryGroupIndex.md)
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-05: Documentación inicial creada
+- 2025-10-16: Documentación inicial

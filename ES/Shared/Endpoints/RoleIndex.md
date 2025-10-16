@@ -1,65 +1,81 @@
-# Compartido – Endpoint de Índice de Roles
+# Shared – Listar Roles Disponibles
 
 ## Endpoint
 
-`GET /api/v1/roles`
-
-Lista los roles disponibles. Los roles dependen del dominio de la plataforma solicitante. Los parámetros opcionales permiten incluir o excluir roles específicos.
-
----
+```
+GET /api/v1/roles
+```
 
 ## Autenticación
 
-Ninguna.
+Ninguna
 
----
+## Encabezados
 
-## Request
+| Encabezado     | Tipo | Requerido | Descripción |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | No | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sí      | Clave pública de la plataforma. |
+| Accept-Language  | string | No       | Locale IETF (ej.: `pt-BR`, `en`, `es`). |
 
-### Parámetros de consulta
+## Parámetros
 
-| Parámetro | Tipo | Requerido | Descripción |
-| --------- | ---- | -------- | ----------- |
-| `roles` | `array` | No | Incluir solo estos roles. Los valores deben ser nombres de roles válidos. |
-| `except` | `array` | No | Excluir estos roles del resultado. |
-| `permissions` | `boolean` | No | Cuando es `true`, incluye los permisos del rol en la respuesta. Valor predeterminado `false`. |
+Listar todos los roles disponibles
 
-> Los parámetros aceptan variantes camelCase, snake_case, kebab-case o CapitalCase.
+## Ejemplos
 
----
+### Ejemplo de solicitud (curl)
 
-## Ejemplo de Respuesta
+```bash
+curl -X GET \
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: es" \
+  "https://sandbox.your-domain.com/api/v1/roles"
+```
+
+### Ejemplo de respuesta
 
 ```json
 {
-  "data": [
-    {
-      "id": 1,
-      "uuid": "00000000-0000-0000-0000-000000000000",
-      "name": "admin",
-      "title": "Administrador",
-      "permissions": ["role.read", "role.write"]
-    }
-  ]
+  "data": {}
 }
 ```
 
----
-
-## Explicación de la Estructura JSON
+## Estructura JSON Explicada
 
 | Campo | Tipo | Descripción |
-| ----- | ---- | ----------- |
-| `data[]` | `array` | Lista de roles. |
-| `data[].id` | `integer` | Identificador del rol. |
-| `data[].uuid` | `uuid` | Identificador único del rol. |
-| `data[].name` | `string` | Nombre técnico del rol. |
-| `data[].title` | `string` | Título localizado del rol. |
-| `data[].permissions[]` | `array` | Permisos del rol cuando `permissions=true`. |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
----
+## Estados HTTP
+
+- 200: OK
+- 201: Creado
+- 400: Solicitud inválida
+- 401: No autorizado
+- 403: Prohibido
+- 404: No encontrado
+- 422: Entidad no procesable
+- 429: Demasiadas solicitudes
+- 500: Error interno del servidor
+
+## Errores
+
+```json
+{
+  "message": "Mensaje de error"
+}
+```
 
 ## Notas
 
-* Los roles devueltos dependen del dominio de la plataforma solicitante.
-* El parámetro `permissions` tiene valor predeterminado `false`.
+- Listar todos los roles disponibles
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentación inicial

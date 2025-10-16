@@ -1,4 +1,4 @@
-# Microservices – Languages Index
+# Microservices – LanguageIndex
 
 ## Endpoint
 
@@ -6,70 +6,70 @@
 GET /api/v1/public/languages
 ```
 
-Returns the most widely known languages worldwide based on `public/storage/documents/languages.json`. Useful for public frontends that need to populate language pickers.
-
----
-
 ## Authentication
 
-None.
-
----
+None
 
 ## Headers
 
-| Header          | Type   | Required | Description |
-| --------------- | ------ | -------- | ----------- |
-| Accept-Language | string | No       | IETF locale (`pt-BR`, `en`, `es`). |
-
----
+| Header           | Type   | Required | Description |
+| ---------------- | ------ | -------- | ----------- |
+| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
 ## Parameters
 
-None.
+### Path parameters
 
----
+No path parameters.
+
+### Query parameters
+
+| Parameter | Type    | Required | Description | Default/Values |
+| --------- | ------- | -------- | ----------- | -------------- |
+| per_page  | integer | No       | Results per page | 10 (1-100) |
+| page      | integer | No       | Page number | 1 |
 
 ## Examples
 
-### Request (curl)
+### Request example (curl)
 
 ```bash
-curl -X GET "https://sandbox.example.com/api/v1/public/languages"
+curl -X GET \
+  -H "X-PUBLIC-KEY: <key>" \
+  "https://sandbox.your-domain.com/api/v1/public/languages"
 ```
 
-### Response
+### Response example
 
 ```json
 {
-  "data": [
-    {"name": "English", "code": "en"},
-    {"name": "Spanish", "code": "es"},
-    {"name": "Portuguese", "code": "pt"}
-  ]
+  "data": []
 }
 ```
 
----
+## HTTP Status
 
-## JSON Structure Explanation
-
-| Field         | Type   | Description |
-| ------------- | ------ | ----------- |
-| `data[]`      | array  | Supported language list. |
-| `data[].name` | string | Human readable language name. |
-| `data[].code` | string | ISO-639-1 code. |
-
----
+- 200: OK
+- 201: Created
+- 400: Bad Request
+- 401: Unauthorized
+- 403: Forbidden
+- 404: Not Found
+- 422: Unprocessable Entity
+- 429: Too Many Requests
+- 500: Internal Server Error
 
 ## Notes
 
-- The endpoint lists globally known languages consumed by partner apps.
-- Add or fix entries by editing `public/storage/documents/languages.json`.
-- `LanguageRepository` parses the JSON and gracefully handles read errors.
+- Refer to controller implementation for specific business rules
+- Pagination is available for list endpoints
+- All timestamps are in ISO 8601 format
 
----
+## Related
+
+- [Microservices Domain](../README.md)
 
 ## Changelog
 
-- 2025-10-03: Initial documentation for the public languages endpoint.
+- 2025-10-16: Initial documentation

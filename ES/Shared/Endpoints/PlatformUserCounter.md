@@ -1,47 +1,81 @@
-# Inteligencia Artificial – Contador de Usuarios Admin
+# Shared – Contar Usuarios de Plataforma por Rol
 
 ## Endpoint
 
-`GET /api/v1/ia/admin/users/counter`
-
-Devuelve el número total de usuarios de la plataforma por rol que coinciden con los filtros aplicados en el área administrativa de Inteligencia Artificial. El comportamiento y los filtros coinciden con el endpoint Shared Users Counter.
-
-Véase también: docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
-
----
+```
+GET /api/v1/platform/users/counter
+```
 
 ## Autenticación
 
-Requerida – Token Bearer con capacidad `backoffice`.
+Requerida – Bearer {token}
 
----
+## Encabezados
 
-## Parámetros de Consulta
+| Encabezado     | Tipo | Requerido | Descripción |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Cuando aplica | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sí      | Clave pública de la plataforma. |
+| Accept-Language  | string | No       | Locale IETF (ej.: `pt-BR`, `en`, `es`). |
 
-Acepta los mismos parámetros de filtro que el AI Users Index (y el Shared Users Index). Consulte:
+## Parámetros
 
-- docs/domain/artificial-intelligence/http/controllers/platform-user-controller.index.md
-- docs/domain/shared/http/controllers/platform/platform-user-controller.index.md
+Obtener el recuento de usuarios agrupados por rol
 
----
+## Ejemplos
 
-## Respuesta
+### Ejemplo de solicitud (curl)
 
-Idéntica a la respuesta de Shared Users Counter. Ejemplo:
+```bash
+curl -X GET \
+  -H "Authorization: Bearer <token>" \
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: es" \
+  "https://sandbox.your-domain.com/api/v1/platform/users/counter"
+```
+
+### Ejemplo de respuesta
 
 ```json
 {
-  "counter": {
-    "admin": {
-      "role_id": 2,
-      "name": "admin",
-      "localized_name": "Administrator",
-      "total": 10
-    }
-  }
+  "data": {}
 }
 ```
 
-Para más detalles, consulte:
+## Estructura JSON Explicada
 
-- docs/domain/shared/http/controllers/platform/platform-user-controller.counter.md
+| Campo | Tipo | Descripción |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
+
+## Estados HTTP
+
+- 200: OK
+- 201: Creado
+- 400: Solicitud inválida
+- 401: No autorizado
+- 403: Prohibido
+- 404: No encontrado
+- 422: Entidad no procesable
+- 429: Demasiadas solicitudes
+- 500: Error interno del servidor
+
+## Errores
+
+```json
+{
+  "message": "Mensaje de error"
+}
+```
+
+## Notas
+
+- Obtener el recuento de usuarios agrupados por rol
+
+## Relacionados
+
+- See other Shared API endpoints
+
+## Changelog
+
+- 2025-10-16: Documentación inicial

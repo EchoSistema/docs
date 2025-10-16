@@ -1,4 +1,4 @@
-# Compartilhado – Listagem de Moedas Disponiveis
+# Shared – Listar Moedas Disponíveis
 
 ## Endpoint
 
@@ -6,104 +6,76 @@
 GET /api/v1/currencies
 ```
 
-Retorna as moedas suportadas pelo backoffice, agrupadas em `fiat` e `crypto` conforme o enum `CurrencyEnum`.
+## Autenticação
 
----
+Nenhuma
 
-## Autenticacao
+## Cabeçalhos
 
-Nenhuma.
+| Cabeçalho     | Tipo | Obrigatório | Descrição |
+| ---------------- | ------ | -------- | ----------- |
+| Authorization    | string | Não | Credencial `Bearer {token}`. |
+| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
+| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
 
----
+## Parâmetros
 
-## Cabecalhos
-
-| Cabecalho       | Tipo   | Obrigatorio | Descricao |
-| --------------- | ------ | ----------- | --------- |
-| X-PUBLIC-KEY    | string | Nao         | Utilize se o front ja enviar por padrao. |
-| Accept-Language | string | Nao         | Locale IETF para textos traduziveis (`pt-BR`, `en`, `es`). |
-
----
-
-## Parametros
-
-### Parametros de consulta
-
-| Parametro | Tipo   | Obrigatorio | Descricao |
-| --------- | ------ | ----------- | --------- |
-| `type`    | string | Nao         | Filtra o resultado para `fiat` ou `crypto`. Comparacao case-insensitive. Quando informado, o grupo oposto retorna `null`. Valores ausentes ou invalidos retornam ambos os grupos. |
-
-> O nome canonico do parametro e `type` (snake_case). Variantes nao sao aceitas.
-
----
+Listar todas as moedas disponíveis (fiat e crypto)
 
 ## Exemplos
 
-### Exemplo de requisicao (curl)
+### Exemplo de requisição (curl)
 
 ```bash
 curl -X GET \
-  "https://sandbox.exemplo.com/api/v1/currencies?type=crypto"
+  
+  -H "X-PUBLIC-KEY: <key>" \
+  -H "Accept-Language: pt-BR" \
+  "https://sandbox.your-domain.com/api/v1/currencies"
 ```
 
 ### Exemplo de resposta
 
 ```json
 {
-  "data": {
-    "crypto": [
-      {
-        "name": "BTC",
-        "value": 7,
-        "sign": "₿",
-        "native_name": "Bitcoin",
-        "type": "crypto"
-      },
-      {
-        "name": "ETH",
-        "value": 8,
-        "sign": "Ξ",
-        "native_name": "Ethereum",
-        "type": "crypto"
-      }
-    ],
-    "fiat": null
-  }
+  "data": {}
 }
 ```
 
----
-
 ## Estrutura JSON Explicada
 
-| Campo                       | Tipo            | Descricao |
-| --------------------------- | --------------- | --------- |
-| `data.crypto`               | array \| null   | Lista de criptoativos quando disponivel. |
-| `data.fiat`                 | array \| null   | Lista de moedas fiduciarias quando disponivel. |
-| `data.*[].name`             | string          | Nome do enum (`BRL`, `USD`, `BTC`...). |
-| `data.*[].value`            | integer         | Valor numerico associado ao enum. |
-| `data.*[].sign`             | string          | Simbolo monetario ou ticker. |
-| `data.*[].native_name`      | string          | Nome nativo da moeda. |
-| `data.*[].type`             | string          | Categoria (`fiat` ou `crypto`). |
-
----
+| Campo | Tipo | Descrição |
+| ----------- | ------- | ----------- |
+| data        | object  | Response data |
 
 ## Status HTTP
 
-- 200: Sucesso
-- 400: Requisicao invalida (ex.: query malformada)
+- 200: OK
+- 201: Criado
+- 400: Requisição inválida
+- 401: Não autenticado
+- 403: Proibido
+- 404: Não encontrado
+- 422: Erro de validação
+- 429: Limite de requests excedido
 - 500: Erro interno
 
----
+## Erros
+
+```json
+{
+  "message": "Mensagem de erro"
+}
+```
 
 ## Notas
 
-- `type=fiat` retorna `data.fiat` preenchido e `data.crypto = null`; `type=crypto` faz o oposto.
-- Sem filtro, ambos os grupos sao retornados conforme `CurrencyEnum::getFiat()` e `CurrencyEnum::getCrypto()`.
-- A ordenacao segue a declaracao do enum.
+- Listar todas as moedas disponíveis (fiat e crypto)
 
----
+## Relacionados
+
+- See other Shared API endpoints
 
 ## Changelog
 
-- 2025-10-03: Documentacao revisada para refletir retorno agrupado (`crypto`/`fiat`).
+- 2025-10-16: Documentação inicial
