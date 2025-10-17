@@ -133,6 +133,7 @@ curl -X GET \
 - Results are ordered by most recent first (latest)
 - Default pagination is 25 items per page
 - Soft-deleted items are not included in the results
+- The `taggable` relationship is eager loaded for optimal performance
 
 ## Related
 

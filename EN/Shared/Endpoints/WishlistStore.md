@@ -119,10 +119,11 @@ curl -X POST \
 ## Notes
 
 - If the item is already in the user's wishlist, the existing entry is returned (no duplicate)
-- The `type` field accepts enum values that map to different resource types
+- The `type` field is a string enum value that maps to different resource types
 - The endpoint automatically resolves the class from the type and finds the item by UUID
 - Both `type` and `uuid` are required fields
 - The authenticated user becomes the owner of the wishlist entry
+- Uses `firstOrCreate` to prevent duplicate wishlist entries
 
 ## Related
 

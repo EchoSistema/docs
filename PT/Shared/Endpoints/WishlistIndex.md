@@ -133,6 +133,7 @@ curl -X GET \
 - Os resultados são ordenados por mais recentes primeiro (latest)
 - A paginação padrão é de 25 itens por página
 - Itens excluídos (soft-deleted) não são incluídos nos resultados
+- A relação `taggable` é carregada antecipadamente para desempenho otimizado
 
 ## Relacionados
 

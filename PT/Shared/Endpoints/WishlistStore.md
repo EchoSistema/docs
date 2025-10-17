@@ -119,10 +119,11 @@ curl -X POST \
 ## Notas
 
 - Se o item já estiver na lista de desejos do usuário, a entrada existente é retornada (sem duplicatas)
-- O campo `type` aceita valores enum que mapeiam para diferentes tipos de recursos
+- O campo `type` é um valor enum string que mapeia para diferentes tipos de recursos
 - O endpoint resolve automaticamente a classe a partir do tipo e encontra o item pelo UUID
 - Tanto `type` quanto `uuid` são campos obrigatórios
 - O usuário autenticado se torna o proprietário da entrada da lista de desejos
+- Usa `firstOrCreate` para prevenir entradas duplicadas na lista de desejos
 
 ## Relacionados
 

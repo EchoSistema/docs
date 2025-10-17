@@ -79,7 +79,7 @@ curl -X DELETE \
 ### 404 No encontrado
 ```json
 {
-  "message": "No se encontraron resultados para el modelo [Domain\\Shared\\Models\\Wishlist]."
+  "message": "Lista de deseos no encontrada."
 }
 ```
 
@@ -90,6 +90,7 @@ curl -X DELETE \
 - La eliminación es soft delete - el registro se marca como eliminado pero permanece en la base de datos
 - Después de la eliminación exitosa, el elemento ya no aparecerá en la lista de deseos del usuario
 - Si la entrada no existe, se devuelve un error 404
+- El route binding encuentra automáticamente la lista de deseos por UUID
 
 ## Relacionados
 

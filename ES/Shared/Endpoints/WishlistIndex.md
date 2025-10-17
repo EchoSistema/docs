@@ -133,6 +133,7 @@ curl -X GET \
 - Los resultados están ordenados por más recientes primero (latest)
 - La paginación predeterminada es de 25 elementos por página
 - Los elementos eliminados (soft-deleted) no se incluyen en los resultados
+- La relación `taggable` se carga anticipadamente para un rendimiento óptimo
 
 ## Relacionados
 

@@ -79,7 +79,7 @@ curl -X DELETE \
 ### 404 Not Found
 ```json
 {
-  "message": "No query results for model [Domain\\Shared\\Models\\Wishlist]."
+  "message": "Wishlist not found."
 }
 ```
 
@@ -90,6 +90,7 @@ curl -X DELETE \
 - Deletion is soft delete - the record is marked as deleted but remains in the database
 - After successful deletion, the item will no longer appear in the user's wishlist
 - If the wishlist entry doesn't exist, a 404 error is returned
+- Route binding automatically finds the wishlist by UUID
 
 ## Related
 
