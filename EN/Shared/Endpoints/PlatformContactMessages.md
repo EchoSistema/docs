@@ -2,7 +2,7 @@
 
 ## Overview
 
-Endpoints responsible for the message flow submitted via the platform contact form. They allow the public contact to be registered (with reCAPTCHA validation), attach images to the newly created ticket, and, inside the authenticated backoffice, list, view, and toggle messages as read.
+Endpoints responsible for the message flow submitted via the platform contact form. They allow the public contact to be registered (with optional reCAPTCHA validation for web, or `X-APP-NAME` header for mobile apps), attach images to the newly created ticket, and, inside the authenticated backoffice, list, view, and toggle messages as read.
 
 ## Endpoints
 
@@ -28,6 +28,7 @@ Endpoints responsible for the message flow submitted via the platform contact fo
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
 | `X-PUBLIC-KEY` | `string` | Yes | Platform public key (also accepts `public_key` in the query string). |
+| `X-APP-NAME` | `string` | No | Application name. When provided, bypasses reCAPTCHA validation. |
 | `Content-Type` | `application/json` | Yes | JSON body. |
 | `Accept-Language` | `string` | No | Validation message locale (`pt-BR`, `en`, `es`, `gn`). |
 
@@ -35,9 +36,9 @@ Endpoints responsible for the message flow submitted via the platform contact fo
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `type` | `enum` | Yes | `default`, `denunciation`, or `report`. |
+| `type` | `enum` | Yes | `general`, `denunciation`, or `report`. |
 | `language` | `enum` | Yes | Form language: `pt-BR`, `en`, `es`, `gn`. |
-| `g_recaptcha` | `string` | Yes | Token validated via `ReCaptchaRule`. |
+| `g_recaptcha` | `string` | Conditional | Token validated via `ReCaptchaRule`. Not required when `X-APP-NAME` header is provided. |
 | `email` | `email` | Conditional | Required when `phone` is not sent. |
 | `phone` | `string` | Conditional | Required when `email` is not sent. |
 | `content` | `string` | Yes | Message (max 5000 characters). |
@@ -48,9 +49,10 @@ Endpoints responsible for the message flow submitted via the platform contact fo
 
 ### Request example
 
+**With reCAPTCHA (web browsers):**
 ```json
 {
-    "type": "default",
+    "type": "general",
     "language": "en",
     "g_recaptcha": "recaptcha_token",
     "email": "maria.silva@example.com",
@@ -58,6 +60,18 @@ Endpoints responsible for the message flow submitted via the platform contact fo
     "name": "Maria Silva"
 }
 ```
+
+**With X-APP-NAME header (mobile apps):**
+```json
+{
+    "type": "general",
+    "language": "en",
+    "email": "maria.silva@example.com",
+    "content": "I'd like to learn more about the plans.",
+    "name": "Maria Silva"
+}
+```
+> When `X-APP-NAME` header is provided, the `g_recaptcha` field is not required.
 
 ### Responses
 
@@ -69,7 +83,7 @@ Endpoints responsible for the message flow submitted via the platform contact fo
       }
   }
   ```
-- **422 Unprocessable Entity** - validation failure (required fields or reCAPTCHA).
+- **422 Unprocessable Entity** - validation failure (required fields or reCAPTCHA when `X-APP-NAME` is not provided).
 - **403 Forbidden** - invalid or missing `X-PUBLIC-KEY`.
 
 ---
