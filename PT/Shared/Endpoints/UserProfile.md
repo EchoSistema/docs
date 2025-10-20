@@ -8,7 +8,7 @@ GET /api/v1/me/profile
 
 ## Autenticação
 
-Obrigatória – Bearer {token} com habilidade `backoffice`
+Requer token Bearer válido.
 
 ## Cabeçalhos
 
@@ -44,7 +44,7 @@ curl -X GET \
     "name": "João Silva",
     "email": "joao@exemplo.com",
     "slug": "joao-silva",
-    "avatar": "https://exemplo.com/avatar.jpg",
+"avatar": {"url": "https://exemplo.com/avatar.jpg", "usage": "avatar"},
     "age": 30,
     "gender": "M",
     "gender_name": "Masculino",

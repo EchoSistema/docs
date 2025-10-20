@@ -47,6 +47,8 @@ Carga y gestión de imágenes
 Perfil de usuario y configuración regional
 
 - [Obtener Perfil de Usuario](./UserProfile.md)
+- [Actualizar Mi Perfil](./UserProfileUpdate.md)
+- [Actualizar Usuario (Admin)](./AdminUserUpdate.md)
 - [Actualizar Idioma del Usuario](./UserLanguageUpdate.md)
 - [Actualizar Moneda del Usuario](./UserCurrencyUpdate.md)
 
@@ -119,4 +121,3 @@ Gestión de email, imágenes, textos, títulos y contenido
 - [Actualizar Título de Plataforma](./PlatformTitleUpdate.md)
 - [Eliminar Título de Plataforma](./PlatformTitleDestroy.md)
 - [Listar Contenido Más Popular](./MostPopularContentIndex.md)
-

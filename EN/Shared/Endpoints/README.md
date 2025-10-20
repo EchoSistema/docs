@@ -47,6 +47,8 @@ Image upload and management
 User profile and regional settings
 
 - [Get User Profile](./UserProfile.md)
+- [Update My Profile](./UserProfileUpdate.md)
+- [Update User (Admin)](./AdminUserUpdate.md)
 - [Update User Language](./UserLanguageUpdate.md)
 - [Update User Currency](./UserCurrencyUpdate.md)
 
@@ -119,4 +121,3 @@ Email, images, texts, titles, and content management
 - [Update Platform Title](./PlatformTitleUpdate.md)
 - [Delete Platform Title](./PlatformTitleDestroy.md)
 - [List Most Popular Content](./MostPopularContentIndex.md)
-

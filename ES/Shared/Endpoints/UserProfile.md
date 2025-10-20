@@ -8,7 +8,7 @@ GET /api/v1/me/profile
 
 ## Autenticación
 
-Requerida – Bearer {token} con habilidad `backoffice`
+Requiere token Bearer válido.
 
 ## Encabezados
 
@@ -44,7 +44,7 @@ curl -X GET \
     "name": "Juan Pérez",
     "email": "juan@ejemplo.com",
     "slug": "juan-perez",
-    "avatar": "https://ejemplo.com/avatar.jpg",
+"avatar": {"url": "https://ejemplo.com/avatar.jpg", "usage": "avatar"},
     "age": 30,
     "gender": "M",
     "gender_name": "Masculino",

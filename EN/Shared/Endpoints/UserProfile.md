@@ -8,7 +8,7 @@ GET /api/v1/me/profile
 
 ## Authentication
 
-Required – Bearer {token} with ability `backoffice`
+Requires a valid Bearer token.
 
 ## Headers
 
@@ -44,7 +44,7 @@ curl -X GET \
     "name": "John Doe",
     "email": "john@example.com",
     "slug": "john-doe",
-    "avatar": "https://example.com/avatar.jpg",
+"avatar": {"url": "https://example.com/avatar.jpg", "usage": "avatar"},
     "age": 30,
     "gender": "M",
     "gender_name": "Male",
