@@ -6,7 +6,7 @@
 
 `POST /api/v1/auth/register`
 
-Registers a new user on the platform.
+Registers a new user on the platform and returns a token plus user context.
 
 ---
 
@@ -103,7 +103,7 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
 
 ## Responses
 
-### Success `201 Created`
+### Success `200 OK`
 
 ```json
 {
@@ -121,6 +121,7 @@ None. Still, the `X-PUBLIC-KEY` header must be sent.
         "usage": "avatar"
       },
       "language": "en",
+      "currency": "USD",
       "roles": [
         {
           "id": 1,
@@ -151,3 +152,8 @@ Returns an object with validation error messages.
 ---
 
 <!-- markdownlint-enable MD013 -->
+## Notes
+
+- The `recently_created` flag is present on registration responses.
+- The `device` field is used as the token name.
+- To avoid issuing a token (for diagnostics), send `no_auth=true` in the request (query or body).

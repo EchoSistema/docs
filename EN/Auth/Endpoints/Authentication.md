@@ -6,7 +6,7 @@
 
 `POST /api/v1/auth`
 
-Authenticates a user.
+Authenticates a user and returns a token plus user context.
 
 ---
 
@@ -50,7 +50,9 @@ Content-Type: application/json
 
 ---
 
-## Response Example
+## Response
+
+### Success `200 OK`
 
 ```json
 {
@@ -67,6 +69,7 @@ Content-Type: application/json
         "usage": "avatar"
       },
       "language": "en",
+      "currency": "USD",
       "roles": [
         {
           "id": 1,
@@ -98,6 +101,7 @@ Content-Type: application/json
 | ----- | ---- | ----------- |
 | `message` | `string` | Success message. |
 | `token` | `string` | Access token. |
+| `recently_created` | `boolean` | Only present on registration responses. |
 | `data.user.uuid` | `uuid` | User identifier. |
 | `data.user.echo_uuid` | `uuid` | Internal identifier. |
 | `data.user.name` | `string` | User name. |
@@ -105,9 +109,13 @@ Content-Type: application/json
 | `data.user.avatar.url` | `string` | Avatar URL. |
 | `data.user.avatar.usage` | `string` | Image usage. |
 | `data.user.language` | `string` | Preferred language. |
+| `data.user.currency` | `string` | Currency code (e.g., `USD`, `BRL`). |
 | `data.user.roles[]` | `array` | User roles. |
 | `data.user.roles[].name` | `string` | Role name. |
 | `data.user.roles[].localized_name` | `string` | Localized role name. |
+| `data.user.roles[].platform.uuid` | `uuid` | Platform UUID for the role. |
+| `data.user.roles[].platform.name` | `string` | Platform name for the role. |
+| `data.user.roles[].platform.public_key` | `string` | Platform public key. |
 | `data.user.roles[].permissions[]` | `array` | Role permissions. |
 | `data.user.roles[].permissions[].subject` | `string` | Permission domain. |
 | `data.user.roles[].permissions[].action` | `string` | Allowed action. |
@@ -117,6 +125,7 @@ Content-Type: application/json
 ## Notes
 
 * The token must be sent in future authenticated requests.
-* The `device` field helps identify the accessing device.
+* The `device` field is used as the token name.
+* To avoid issuing a token (for diagnostics), send `no_auth=true` in the request (query or body).
 
 <!-- markdownlint-enable MD013 -->

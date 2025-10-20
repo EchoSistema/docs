@@ -135,6 +135,18 @@ Requiere un token válido de Sanctum.
 
 ---
 
+## Eventos disponibles (FootprintEventEnum)
+
+Los filtros `event` y `events[]` aceptan los siguientes valores:
+
+- Analytics & Tracking: `ad_click`, `ad_view`, `first_visit`, `page_view`, `page_redirect`, `session_start`, `user_engagement`, `view_search_results`
+- E-commerce & Payments: `add_payment_info`, `add_shipping_info`, `add_to_cart`, `add_to_wishlist`, `begin_checkout`, `purchase`, `refund`, `remove_from_cart`, `select_item`, `select_promotion`, `view_cart`, `view_item`, `view_item_list`, `view_promotion`
+- Leads & Conversions: `close_convert_lead`, `close_unconvert_lead`, `disqualify_lead`, `emailCapture`, `generate_lead`, `lead`, `qualify_lead`, `register_event`, `working_lead`
+- User Actions: `apply_job`, `email_view`, `contact`, `login`, `logout`, `sign_up`, `chat`, `video_call`, `audio_call`
+- UI Interactions: `button_click`, `click`, `file_download`, `form_submission`, `input_focus`, `lightbox_open`, `modal_open`, `scroll`, `tooltip_click`
+- Media Events: `video_complete`, `video_play`, `video_progress`, `video_start`
+- Learning & Tutorials: `tutorial_begin`, `tutorial_complete`
+
 ## Ejemplo de Respuesta
 
 ```json
