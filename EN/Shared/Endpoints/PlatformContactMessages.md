@@ -11,7 +11,7 @@ Endpoints responsible for the message flow submitted via the platform contact fo
 | `POST` | `/api/v1/contact` | Registers a new contact message. | No token required; `X-PUBLIC-KEY` header mandatory. |
 | `POST` | `/api/v1/contact/{message}/images` | Adds an image linked to the message. | No token required; `X-PUBLIC-KEY` header mandatory. |
 | `GET` | `/api/v1/contacts` | Lists messages with filters/pagination. | Requires `auth:sanctum` + `X-PUBLIC-KEY`. |
-| `GET` | `/api/v1/contacts/{message}` | Shows full message details. | Requires `auth:sanctum` + `X-PUBLIC-KEY`. |
+| `GET` | `/api/v1/contacts/{message:uuid}` | Shows full message details. | Requires `auth:sanctum` + `X-PUBLIC-KEY`. |
 | `PATCH` | `/api/v1/contacts/{message}/toggle-read` | Toggles the message read status. | Requires `auth:sanctum` + `X-PUBLIC-KEY`. |
 
 > **Backoffice Permissions**
@@ -28,6 +28,7 @@ Endpoints responsible for the message flow submitted via the platform contact fo
 | Header | Type | Required | Description |
 |--------|------|----------|-------------|
 | `X-PUBLIC-KEY` | `string` | Yes | Platform public key (also accepts `public_key` in the query string). |
+| `X-APP-NAME` | `string` | No | When present (and matching a platform name), reCAPTCHA is not required. |
 | `Content-Type` | `application/json` | Yes | JSON body. |
 | `Accept-Language` | `string` | No | Validation message locale (`pt-BR`, `en`, `es`, `gn`). |
 
@@ -99,7 +100,7 @@ Allows attaching files to the contact right after creation. The `{message}` iden
 
 > You must provide **exactly one** of the fields `image_url`, `image_encoded`, or `image_file`.
 
-### Success response (201 Created)
+### Success response (200 OK)
 
 ```json
 {

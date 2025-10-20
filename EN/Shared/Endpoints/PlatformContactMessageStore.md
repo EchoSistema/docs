@@ -2,25 +2,37 @@
 
 ## Endpoint
 
-```
-POST /api/v1/contact
-```
+`POST /api/v1/contact`
 
 ## Authentication
 
-None
+None (public endpoint). Requires platform header.
 
 ## Headers
 
-| Header     | Type | Required | Description |
-| ---------------- | ------ | -------- | ----------- |
-| Authorization    | string | No | `Bearer {token}`. |
-| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
-| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
+| Header | Type | Required | Description |
+| ------ | ---- | -------- | ----------- |
+| X-PUBLIC-KEY | `string` | Yes | Platform public key (also accepts `public_key` in query). |
+| X-APP-NAME | `string` | No | When present (and matching a platform name), reCAPTCHA is not required. |
+| Accept-Language | `string` | No | Locale for validation messages (`pt-BR`, `en`, `es`, `gn`). |
 
 ## Parameters
 
 Submit a contact form message
+
+### Body (application/json)
+
+| Field | Type | Required | Description |
+| ----- | ---- | -------- | ----------- |
+| `type` | `enum` | Yes | One of: `default`, `denunciation`, `report`. |
+| `language` | `enum` | Yes | `pt-BR`, `en`, `es`, `gn`. |
+| `g_recaptcha` | `string` | Required unless `X-APP-NAME` | reCAPTCHA token validated server-side. |
+| `email` | `email` | Required without `phone` | Contact email. |
+| `phone` | `string` | Required without `email` | Contact phone. |
+| `content` | `string` | Yes | Message (max 5000 chars). Aliased from `message` if provided. |
+| `name` | `string` | No | Sender name. |
+| `user_uuid` | `uuid` | No | Associates to an existing user. |
+| `anonymous` | `boolean` | No | When `true`, uses `anonymous@pigeons.email`. |
 
 ## Examples
 
@@ -28,29 +40,38 @@ Submit a contact form message
 
 ```bash
 curl -X POST \
-  
   -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: en" \
-  "https://sandbox.your-domain.com/api/v1/contact"
+  -H "Content-Type: application/json" \
+  "https://sandbox.your-domain.com/api/v1/contact" \
+  -d '{
+    "type": "default",
+    "language": "en",
+    "g_recaptcha": "<token>",
+    "email": "maria@example.com",
+    "content": "I would like to know more about plans.",
+    "name": "Maria Silva"
+  }'
 ```
 
-### Response example
+### Success `201 Created`
 
 ```json
 {
-  "data": {}
+  "success": true,
+  "data": { "uuid": "2c3f9d26-4c68-4478-8d1f-9a1ea3b6b32e" }
 }
 ```
 
 ## JSON Structure Explained
 
 | Field | Type | Description |
-| ----------- | ------- | ----------- |
-| data        | object  | Response data |
+| ----- | ---- | ----------- |
+| success | `boolean` | Always `true` on success. |
+| data | `object` | Response data. |
 
 ## HTTP Status
 
-- 200: OK
 - 201: Created
 - 400: Bad Request
 - 401: Unauthorized

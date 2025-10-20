@@ -11,7 +11,7 @@ Endpoints responsables del flujo de mensajes enviados mediante el formulario de 
 | `POST` | `/api/v1/contact` | Registra un nuevo mensaje de contacto. | No requiere token; cabecera `X-PUBLIC-KEY` obligatoria. |
 | `POST` | `/api/v1/contact/{message}/images` | Añade una imagen vinculada al mensaje. | No requiere token; cabecera `X-PUBLIC-KEY` obligatoria. |
 | `GET` | `/api/v1/contacts` | Lista mensajes con filtros/paginación. | Requiere `auth:sanctum` + `X-PUBLIC-KEY`. |
-| `GET` | `/api/v1/contacts/{message}` | Muestra los detalles completos del mensaje. | Requiere `auth:sanctum` + `X-PUBLIC-KEY`. |
+| `GET` | `/api/v1/contacts/{message:uuid}` | Muestra los detalles completos del mensaje. | Requiere `auth:sanctum` + `X-PUBLIC-KEY`. |
 | `PATCH` | `/api/v1/contacts/{message}/toggle-read` | Alterna el estado de lectura del mensaje. | Requiere `auth:sanctum` + `X-PUBLIC-KEY`. |
 
 > **Permisos Backoffice**
@@ -28,6 +28,7 @@ Endpoints responsables del flujo de mensajes enviados mediante el formulario de 
 | Encabezado | Tipo | Obligatorio | Descripción |
 |------------|------|-------------|-------------|
 | `X-PUBLIC-KEY` | `string` | Sí | Clave pública de la plataforma (también acepta `public_key` en la query). |
+| `X-APP-NAME` | `string` | No | Cuando presente (y coincidiendo con el nombre de una plataforma), no se requiere reCAPTCHA. |
 | `Content-Type` | `application/json` | Sí | Cuerpo JSON. |
 | `Accept-Language` | `string` | No | Locale para mensajes de validación (`pt-BR`, `en`, `es`, `gn`). |
 
@@ -99,7 +100,7 @@ Permite adjuntar archivos al contacto justo después de crearlo. El identificado
 
 > Es obligatorio enviar **exactamente uno** de los campos `image_url`, `image_encoded` o `image_file`.
 
-### Respuesta exitosa (201 Created)
+### Respuesta exitosa (200 OK)
 
 ```json
 {

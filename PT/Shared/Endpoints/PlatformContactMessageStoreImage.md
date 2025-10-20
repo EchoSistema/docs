@@ -2,25 +2,37 @@
 
 ## Endpoint
 
-```
-POST /api/v1/contact/{message}/images
-```
+`POST /api/v1/contact/{message}/images`
 
 ## Autenticação
 
-Nenhuma
+Nenhuma (público). Requer cabeçalho de plataforma.
 
 ## Cabeçalhos
 
-| Cabeçalho     | Tipo | Obrigatório | Descrição |
-| ---------------- | ------ | -------- | ----------- |
-| Authorization    | string | Não | Credencial `Bearer {token}`. |
-| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
-| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
+| Cabeçalho | Tipo | Obrigatório | Descrição |
+| --------- | ---- | ----------- | --------- |
+| X-PUBLIC-KEY | `string` | Sim | Chave pública da plataforma. |
+| Content-Type | `multipart/form-data` | Condicional | Necessário ao enviar `image_file`; pode ser `application/json` ao usar URLs/Base64. |
 
 ## Parâmetros
 
-Enviar uma imagem anexada a uma mensagem de contato
+Enviar uma imagem anexada a uma mensagem de contato.
+
+Parâmetro de rota:
+- `message` (uuid) — identificador da mensagem retornado na criação.
+
+### Corpo
+
+| Campo | Tipo | Obrigatório | Descrição |
+| ----- | ---- | ----------- | --------- |
+| `usage` | `string` | Sim | Finalidade da imagem (ex.: `platform_contact`). |
+| `name` | `string` | Obrigatório sem `image_url` | Nome original do arquivo. |
+| `image_url` | `url` | Obrigatório sem `image_file`/`image_encoded` | URL pública (máx. 500). |
+| `image_encoded` | `string` | Obrigatório sem `image_file`/`image_url` | Imagem codificada em Base64. |
+| `image_file` | `file` | Obrigatório sem `image_url`/`image_encoded` | `jpeg,png,jpg,gif,svg,webp,heic,heif` até 2 MB. |
+| `unique_id` | `string` | Não | Chave opcional de deduplicação. |
+| `type` | `string` | Não | Categoria livre.
 
 ## Exemplos
 
@@ -34,24 +46,33 @@ curl -X POST \
   "https://sandbox.your-domain.com/api/v1/contact/{message}/images"
 ```
 
-### Exemplo de resposta
+### Sucesso `200 OK`
 
 ```json
 {
-  "data": {}
+  "data": {
+    "uuid": "a1dcba3c-4c74-11ef-92b0-acde48001122",
+    "unique_id": "5f2c19f4",
+    "usage": "platform_contact",
+    "url": "https://cdn.example.com/platform/contacts/a1dcba3c.png",
+    "name": "comprovante.png",
+    "slug": "comprovante-png",
+    "width": 1280,
+    "height": 720,
+    "creation_date": "2024-06-01T13:45:00+00:00"
+  }
 }
 ```
 
 ## Estrutura JSON Explicada
 
 | Campo | Tipo | Descrição |
-| ----------- | ------- | ----------- |
-| data        | object  | Response data |
+| ----- | ---- | --------- |
+| data  | `object` | Dados do recurso de imagem. |
 
 ## Status HTTP
 
 - 200: OK
-- 201: Criado
 - 400: Requisição inválida
 - 401: Não autenticado
 - 403: Proibido

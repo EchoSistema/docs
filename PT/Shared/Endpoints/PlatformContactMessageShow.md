@@ -2,25 +2,23 @@
 
 ## Endpoint
 
-```
-GET /api/v1/contacts/{message:uuid}
-```
+`GET /api/v1/contacts/{message:uuid}`
 
 ## Autenticação
 
-Obrigatória – Bearer {token}
+Exige token Bearer e cabeçalho de plataforma.
 
 ## Cabeçalhos
 
-| Cabeçalho     | Tipo | Obrigatório | Descrição |
-| ---------------- | ------ | -------- | ----------- |
-| Authorization    | string | Quando exigido | Credencial `Bearer {token}`. |
-| X-PUBLIC-KEY     | string | Sim      | Chave pública da plataforma. |
-| Accept-Language  | string | Não       | Locale IETF (ex.: `pt-BR`, `en`, `es`). |
+| Cabeçalho | Tipo | Obrigatório | Descrição |
+| --------- | ---- | ----------- | --------- |
+| Authorization | `string` | Sim | `Bearer {token}`. |
+| X-PUBLIC-KEY  | `string` | Sim | Chave pública da plataforma. |
+| Accept-Language | `string` | Não | Locale para respostas. |
 
 ## Parâmetros
 
-Obter detalhes de uma mensagem de contato específica
+Obter detalhes de uma mensagem de contato específica. Permissões: `show.platform_message` ou `show.all`, exceto quando o usuário autenticado é o autor.
 
 ## Exemplos
 
@@ -34,24 +32,38 @@ curl -X GET \
   "https://sandbox.your-domain.com/api/v1/contacts/{message:uuid}"
 ```
 
-### Exemplo de resposta
+### Sucesso `200 OK`
 
 ```json
 {
-  "data": {}
+  "data": {
+    "uuid": "2c3f9d26-4c68-4478-8d1f-9a1ea3b6b32e",
+    "name": "Maria Silva",
+    "is_read": true,
+    "email": "maria.silva@example.com",
+    "created_at": "2024-06-06T18:12:45+00:00",
+    "type": "default",
+    "language": "pt-BR",
+    "phone": "+55 11912345678",
+    "content": "Gostaria de saber mais sobre os planos e integrações disponíveis...",
+    "ip_address": "200.200.200.5",
+    "images": [ { "uuid": "a1dcba3c-4c74-11ef-92b0-acde48001122", "url": "https://cdn.example.com/platform/contacts/a1dcba3c.png", "usage": "platform_contact" } ],
+    "user": { "uuid": "1fdf0b1e-2cde-4b12-93f5-02d41a0f38c4", "name": "Maria Silva", "email": "maria.silva@example.com" },
+    "platform": { "uuid": "7a3b6d12-4d9f-4f5c-b41b-6ce39e04d57f", "name": "Echosistema" },
+    "first_reader": { "uuid": "f39af7fa-6622-4c46-ba0d-fefb699b10f8", "name": "João Admin", "email": "joao.admin@example.com" }
+  }
 }
 ```
 
 ## Estrutura JSON Explicada
 
 | Campo | Tipo | Descrição |
-| ----------- | ------- | ----------- |
-| data        | object  | Response data |
+| ----- | ---- | --------- |
+| data  | `object` | Recurso de mensagem. |
 
 ## Status HTTP
 
 - 200: OK
-- 201: Criado
 - 400: Requisição inválida
 - 401: Não autenticado
 - 403: Proibido
