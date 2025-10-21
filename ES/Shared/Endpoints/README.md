@@ -4,7 +4,7 @@ Lista completa de todos los endpoints disponibles en el dominio Shared, organiza
 
 ## Overview
 
-Total: 54 endpoints across 12 categories.
+Total: 56 endpoints across 13 categories.
 
 ## Endpoints de Chat
 
@@ -41,6 +41,13 @@ Carga y gestión de imágenes
 
 - [Subir Imagen](./ImageStore.md)
 - [Eliminar Imagen](./ImageDestroy.md)
+
+## Endpoints de Almacenamiento en la Nube (S3)
+
+Estadísticas y monitoreo de almacenamiento en AWS S3
+
+- [Estadísticas de Imágenes en S3](./CloudImagesIndex.md)
+- [Estadísticas de Archivos en S3](./CloudFilesIndex.md)
 
 ## Endpoints de Usuario y Perfil
 

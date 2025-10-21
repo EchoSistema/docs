@@ -4,7 +4,7 @@ Complete list of all available endpoints in the Shared domain, organized by func
 
 ## Overview
 
-Total: 54 endpoints across 12 categories.
+Total: 56 endpoints across 13 categories.
 
 ## Chat Endpoints
 
@@ -41,6 +41,13 @@ Image upload and management
 
 - [Upload Image](./ImageStore.md)
 - [Delete Image](./ImageDestroy.md)
+
+## Cloud Storage Endpoints (S3)
+
+Storage statistics and monitoring on AWS S3
+
+- [S3 Image Statistics](./CloudImagesIndex.md)
+- [S3 File Statistics](./CloudFilesIndex.md)
 
 ## User & Profile Endpoints
 
