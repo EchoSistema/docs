@@ -3,7 +3,7 @@
 ## Endpoint
 
 ```
-GET /api/v1/platform/cloud/structure?folder={folder}
+GET /api/v1/cloud/structure?folder={folder}
 ```
 
 ## Description
@@ -38,7 +38,7 @@ Required – Bearer {token} with appropriate ability
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
-  "https://api.example.com/api/v1/platform/cloud/structure?folder=files/real-estate/my-platform"
+  "https://api.example.com/api/v1/cloud/structure?folder=files/real-estate/my-platform"
 ```
 
 #### Subfolder
@@ -46,7 +46,7 @@ curl -X GET \
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
-  "https://api.example.com/api/v1/platform/cloud/structure?folder=files/real-estate/my-platform/uploads"
+  "https://api.example.com/api/v1/cloud/structure?folder=files/real-estate/my-platform/uploads"
 ```
 
 ### Response example - Success (200)
@@ -265,13 +265,13 @@ Build a hierarchical file browser that allows users to navigate through their cl
 
 ```javascript
 // Navigate to root
-GET /api/v1/platform/cloud/structure?folder=files/real-estate/my-platform
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform
 
 // User clicks "uploads" folder
-GET /api/v1/platform/cloud/structure?folder=files/real-estate/my-platform/uploads
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform/uploads
 
 // User clicks "2024" subfolder
-GET /api/v1/platform/cloud/structure?folder=files/real-estate/my-platform/uploads/2024
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform/uploads/2024
 ```
 
 ### 2. Folder Selection Widget
@@ -279,7 +279,7 @@ Display available folders for file upload or organization:
 
 ```javascript
 // Get available folders
-GET /api/v1/platform/cloud/structure?folder=files/real-estate/my-platform
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform
 
 // Show folders to user: "uploads", "documents", "reports"
 // User selects "documents" for file upload
@@ -290,7 +290,7 @@ Show folder structure and contents in a dashboard:
 
 ```javascript
 // Get root structure
-GET /api/v1/platform/cloud/structure?folder=files/real-estate/my-platform
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform
 
 // Display:
 // - Folders: uploads (click to expand), documents, reports
@@ -304,10 +304,10 @@ Build breadcrumb navigation for folder hierarchy:
 // Current path: files/real-estate/my-platform/uploads/2024/january
 // Breadcrumb: Home > uploads > 2024 > january
 // Each segment is clickable and calls the structure endpoint
-// Home: ?folder=files/real-estate/my-platform
-// uploads: ?folder=files/real-estate/my-platform/uploads
-// 2024: ?folder=files/real-estate/my-platform/uploads/2024
-// january: ?folder=files/real-estate/my-platform/uploads/2024/january
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform              // Home
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform/uploads      // uploads
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform/uploads/2024 // 2024
+GET /api/v1/cloud/structure?folder=files/real-estate/my-platform/uploads/2024/january // january
 ```
 
 ## Implementation Notes
@@ -333,7 +333,7 @@ The path is split into components to extract first-level folders. For example:
 ```javascript
 const folder = 'files/real-estate/my-platform';
 const response = await fetch(
-  `/api/v1/platform/cloud/structure?folder=${encodeURIComponent(folder)}`,
+  `/api/v1/cloud/structure?folder=${encodeURIComponent(folder)}`,
   {
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -346,7 +346,7 @@ const data = await response.json();
 
 ### Axios
 ```javascript
-const response = await axios.get('/api/v1/platform/cloud/structure', {
+const response = await axios.get('/api/v1/cloud/structure', {
   params: { folder: 'files/real-estate/my-platform' },
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -357,7 +357,7 @@ const response = await axios.get('/api/v1/platform/cloud/structure', {
 
 ### PHP/Guzzle
 ```php
-$response = $client->get('/api/v1/platform/cloud/structure', [
+$response = $client->get('/api/v1/cloud/structure', [
     'query' => ['folder' => 'files/real-estate/my-platform'],
     'headers' => [
         'Authorization' => "Bearer {$token}",

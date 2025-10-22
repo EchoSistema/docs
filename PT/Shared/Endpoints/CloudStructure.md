@@ -3,7 +3,7 @@
 ## Endpoint
 
 ```
-GET /api/v1/platform/cloud/structure/{folder}
+GET /api/v1/cloud/structure?folder={folder}
 ```
 
 ## Descrição
@@ -38,7 +38,7 @@ Obrigatória – Bearer {token} com habilidade adequada
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <chave>" \
-  "https://api.example.com/api/v1/platform/cloud/structure/files/real-estate/minha-plataforma"
+  "https://api.example.com/api/v1/cloud/structure?folder=files/real-estate/minha-plataforma"
 ```
 
 #### Subpasta
@@ -46,7 +46,7 @@ curl -X GET \
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <chave>" \
-  "https://api.example.com/api/v1/platform/cloud/structure/files/real-estate/minha-plataforma/uploads"
+  "https://api.example.com/api/v1/cloud/structure?folder=files/real-estate/minha-plataforma/uploads"
 ```
 
 ### Exemplo de resposta - Sucesso (200)
@@ -225,13 +225,13 @@ Construir um navegador de arquivos hierárquico que permite aos usuários navega
 
 ```javascript
 // Navegar para raiz
-GET /api/v1/platform/cloud/structure/files/real-estate/minha-plataforma
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma
 
 // Usuário clica na pasta "uploads"
-GET /api/v1/platform/cloud/structure/files/real-estate/minha-plataforma/uploads
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma/uploads
 
 // Usuário clica na subpasta "2024"
-GET /api/v1/platform/cloud/structure/files/real-estate/minha-plataforma/uploads/2024
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma/uploads/2024
 ```
 
 ### 2. Widget de Seleção de Pasta
@@ -239,7 +239,7 @@ Exibir pastas disponíveis para upload ou organização de arquivos:
 
 ```javascript
 // Obter pastas disponíveis
-GET /api/v1/platform/cloud/structure/files/real-estate/minha-plataforma
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma
 
 // Mostrar pastas ao usuário: "uploads", "documentos", "relatorios"
 // Usuário seleciona "documentos" para upload de arquivo
@@ -250,7 +250,7 @@ Mostrar estrutura de pastas e conteúdo em um dashboard:
 
 ```javascript
 // Obter estrutura raiz
-GET /api/v1/platform/cloud/structure/files/real-estate/minha-plataforma
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma
 
 // Exibir:
 // - Pastas: uploads (clique para expandir), documentos, relatorios
@@ -264,6 +264,10 @@ Construir navegação breadcrumb para hierarquia de pastas:
 // Caminho atual: files/real-estate/minha-plataforma/uploads/2024/janeiro
 // Breadcrumb: Home > uploads > 2024 > janeiro
 // Cada segmento é clicável e chama o endpoint structure
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma              // Home
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma/uploads      // uploads
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma/uploads/2024 // 2024
+GET /api/v1/cloud/structure?folder=files/real-estate/minha-plataforma/uploads/2024/janeiro // janeiro
 ```
 
 ## Notas de Implementação

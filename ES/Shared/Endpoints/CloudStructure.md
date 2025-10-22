@@ -3,7 +3,7 @@
 ## Endpoint
 
 ```
-GET /api/v1/platform/cloud/structure/{folder}
+GET /api/v1/cloud/structure?folder={folder}
 ```
 
 ## Descripción
@@ -38,7 +38,7 @@ Obligatoria – Bearer {token} con habilidad adecuada
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <clave>" \
-  "https://api.example.com/api/v1/platform/cloud/structure/files/real-estate/mi-plataforma"
+  "https://api.example.com/api/v1/cloud/structure?folder=files/real-estate/mi-plataforma"
 ```
 
 #### Subcarpeta
@@ -46,7 +46,7 @@ curl -X GET \
 curl -X GET \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <clave>" \
-  "https://api.example.com/api/v1/platform/cloud/structure/files/real-estate/mi-plataforma/uploads"
+  "https://api.example.com/api/v1/cloud/structure?folder=files/real-estate/mi-plataforma/uploads"
 ```
 
 ### Ejemplo de respuesta - Éxito (200)
@@ -225,13 +225,13 @@ Construir un explorador de archivos jerárquico que permite a los usuarios naveg
 
 ```javascript
 // Navegar a la raíz
-GET /api/v1/platform/cloud/structure/files/real-estate/mi-plataforma
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma
 
 // Usuario hace clic en la carpeta "uploads"
-GET /api/v1/platform/cloud/structure/files/real-estate/mi-plataforma/uploads
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma/uploads
 
 // Usuario hace clic en la subcarpeta "2024"
-GET /api/v1/platform/cloud/structure/files/real-estate/mi-plataforma/uploads/2024
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma/uploads/2024
 ```
 
 ### 2. Widget de Selección de Carpeta
@@ -239,7 +239,7 @@ Mostrar carpetas disponibles para carga u organización de archivos:
 
 ```javascript
 // Obtener carpetas disponibles
-GET /api/v1/platform/cloud/structure/files/real-estate/mi-plataforma
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma
 
 // Mostrar carpetas al usuario: "uploads", "documentos", "reportes"
 // Usuario selecciona "documentos" para cargar archivo
@@ -250,7 +250,7 @@ Mostrar estructura de carpetas y contenido en un panel:
 
 ```javascript
 // Obtener estructura raíz
-GET /api/v1/platform/cloud/structure/files/real-estate/mi-plataforma
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma
 
 // Mostrar:
 // - Carpetas: uploads (clic para expandir), documentos, reportes
@@ -264,6 +264,10 @@ Construir navegación breadcrumb para jerarquía de carpetas:
 // Ruta actual: files/real-estate/mi-plataforma/uploads/2024/enero
 // Breadcrumb: Inicio > uploads > 2024 > enero
 // Cada segmento es clicable y llama al endpoint structure
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma              // Inicio
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma/uploads      // uploads
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma/uploads/2024 // 2024
+GET /api/v1/cloud/structure?folder=files/real-estate/mi-plataforma/uploads/2024/enero // enero
 ```
 
 ## Notas de Implementación
