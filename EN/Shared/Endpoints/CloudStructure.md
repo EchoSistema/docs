@@ -57,25 +57,49 @@ curl -X GET \
     "folders": [
       {
         "title": "uploads",
-        "path": "files/real-estate/my-platform/uploads"
+        "path": "files/real-estate/my-platform/uploads",
+        "file_count": 45,
+        "total_size": 15728640,
+        "total_size_formatted": "15.00 MB",
+        "last_modified": "2025-10-21 14:30:25"
       },
       {
         "title": "documents",
-        "path": "files/real-estate/my-platform/documents"
+        "path": "files/real-estate/my-platform/documents",
+        "file_count": 12,
+        "total_size": 2097152,
+        "total_size_formatted": "2.00 MB",
+        "last_modified": "2025-10-20 09:15:10"
       },
       {
         "title": "reports",
-        "path": "files/real-estate/my-platform/reports"
+        "path": "files/real-estate/my-platform/reports",
+        "file_count": 8,
+        "total_size": 5242880,
+        "total_size_formatted": "5.00 MB",
+        "last_modified": "2025-10-19 16:45:00"
       }
     ],
     "files": [
       {
         "title": "readme.txt",
-        "path": "files/real-estate/my-platform/readme.txt"
+        "path": "files/real-estate/my-platform/readme.txt",
+        "size": 2048,
+        "size_formatted": "2.00 KB",
+        "mime_type": "text/plain",
+        "extension": "txt",
+        "last_modified": "2025-10-15 08:30:00",
+        "last_modified_timestamp": 1729000200
       },
       {
         "title": "config.json",
-        "path": "files/real-estate/my-platform/config.json"
+        "path": "files/real-estate/my-platform/config.json",
+        "size": 1024,
+        "size_formatted": "1.00 KB",
+        "mime_type": "application/json",
+        "extension": "json",
+        "last_modified": "2025-10-18 11:20:45",
+        "last_modified_timestamp": 1729254045
       }
     ],
     "base_path": "files/real-estate/my-platform",
@@ -116,17 +140,27 @@ curl -X GET \
 
 ### folders[] Object
 
-| Field              | Type     | Description |
-| ------------------ | -------- | ----------- |
-| title              | string   | Folder name (last segment of the path) |
-| path               | string   | Complete folder path in S3 storage |
+| Field                  | Type     | Description |
+| ---------------------- | -------- | ----------- |
+| title                  | string   | Folder name (last segment of the path) |
+| path                   | string   | Complete folder path in S3 storage |
+| file_count             | integer  | Total number of files in the folder (recursive) |
+| total_size             | integer  | Total size of all files in bytes |
+| total_size_formatted   | string   | Human-readable total size (e.g., "15.00 MB") |
+| last_modified          | string\|null | Last modification date of the most recent file (Y-m-d H:i:s format), null if no files |
 
 ### files[] Object
 
-| Field              | Type     | Description |
-| ------------------ | -------- | ----------- |
-| title              | string   | File name with extension |
-| path               | string   | Complete file path in S3 storage |
+| Field                    | Type     | Description |
+| ------------------------ | -------- | ----------- |
+| title                    | string   | File name with extension |
+| path                     | string   | Complete file path in S3 storage |
+| size                     | integer  | File size in bytes |
+| size_formatted           | string   | Human-readable file size (e.g., "512.00 KB") |
+| mime_type                | string   | MIME type of the file (e.g., "image/jpeg", "application/pdf") |
+| extension                | string   | File extension without dot (e.g., "jpg", "pdf") |
+| last_modified            | string   | Last modification date (Y-m-d H:i:s format) |
+| last_modified_timestamp  | integer  | Unix timestamp of last modification |
 
 ## HTTP Status
 
@@ -374,3 +408,5 @@ $response = $client->get('/api/v1/cloud/structure', [
 - **2025-10-21**: Added request validation for folder parameter (must be string)
 - **2025-10-21**: Added `base_path` field to response structure
 - **2025-10-21**: Added localized error messages using `validation.attributes.folder`
+- **2025-10-21**: Added S3 metadata for files (size, mime_type, extension, last_modified)
+- **2025-10-21**: Added S3 metadata for folders (file_count, total_size, last_modified)

@@ -57,25 +57,49 @@ curl -X GET \
     "folders": [
       {
         "title": "uploads",
-        "path": "files/real-estate/minha-plataforma/uploads"
+        "path": "files/real-estate/minha-plataforma/uploads",
+        "file_count": 45,
+        "total_size": 15728640,
+        "total_size_formatted": "15.00 MB",
+        "last_modified": "2025-10-21 14:30:25"
       },
       {
         "title": "documentos",
-        "path": "files/real-estate/minha-plataforma/documentos"
+        "path": "files/real-estate/minha-plataforma/documentos",
+        "file_count": 12,
+        "total_size": 2097152,
+        "total_size_formatted": "2.00 MB",
+        "last_modified": "2025-10-20 09:15:10"
       },
       {
         "title": "relatorios",
-        "path": "files/real-estate/minha-plataforma/relatorios"
+        "path": "files/real-estate/minha-plataforma/relatorios",
+        "file_count": 8,
+        "total_size": 5242880,
+        "total_size_formatted": "5.00 MB",
+        "last_modified": "2025-10-19 16:45:00"
       }
     ],
     "files": [
       {
         "title": "leiame.txt",
-        "path": "files/real-estate/minha-plataforma/leiame.txt"
+        "path": "files/real-estate/minha-plataforma/leiame.txt",
+        "size": 2048,
+        "size_formatted": "2.00 KB",
+        "mime_type": "text/plain",
+        "extension": "txt",
+        "last_modified": "2025-10-15 08:30:00",
+        "last_modified_timestamp": 1729000200
       },
       {
         "title": "config.json",
-        "path": "files/real-estate/minha-plataforma/config.json"
+        "path": "files/real-estate/minha-plataforma/config.json",
+        "size": 1024,
+        "size_formatted": "1.00 KB",
+        "mime_type": "application/json",
+        "extension": "json",
+        "last_modified": "2025-10-18 11:20:45",
+        "last_modified_timestamp": 1729254045
       }
     ],
     "base_path": "files/real-estate/minha-plataforma",
@@ -116,17 +140,27 @@ curl -X GET \
 
 ### Objeto folders[]
 
-| Campo              | Tipo     | Descrição |
-| ------------------ | -------- | --------- |
-| title              | string   | Nome da pasta (último segmento do caminho) |
-| path               | string   | Caminho completo da pasta no armazenamento S3 |
+| Campo                  | Tipo     | Descrição |
+| ---------------------- | -------- | --------- |
+| title                  | string   | Nome da pasta (último segmento do caminho) |
+| path                   | string   | Caminho completo da pasta no armazenamento S3 |
+| file_count             | integer  | Número total de arquivos na pasta (recursivo) |
+| total_size             | integer  | Tamanho total de todos os arquivos em bytes |
+| total_size_formatted   | string   | Tamanho total legível (ex: "15.00 MB") |
+| last_modified          | string\|null | Data de última modificação do arquivo mais recente (formato Y-m-d H:i:s), null se não houver arquivos |
 
 ### Objeto files[]
 
-| Campo              | Tipo     | Descrição |
-| ------------------ | -------- | --------- |
-| title              | string   | Nome do arquivo com extensão |
-| path               | string   | Caminho completo do arquivo no armazenamento S3 |
+| Campo                    | Tipo     | Descrição |
+| ------------------------ | -------- | --------- |
+| title                    | string   | Nome do arquivo com extensão |
+| path                     | string   | Caminho completo do arquivo no armazenamento S3 |
+| size                     | integer  | Tamanho do arquivo em bytes |
+| size_formatted           | string   | Tamanho do arquivo legível (ex: "512.00 KB") |
+| mime_type                | string   | Tipo MIME do arquivo (ex: "image/jpeg", "application/pdf") |
+| extension                | string   | Extensão do arquivo sem ponto (ex: "jpg", "pdf") |
+| last_modified            | string   | Data de última modificação (formato Y-m-d H:i:s) |
+| last_modified_timestamp  | integer  | Timestamp Unix da última modificação |
 
 ## Status HTTP
 
@@ -291,3 +325,5 @@ O caminho é dividido em componentes para extrair pastas de primeiro nível. Por
 - **2025-10-21**: Parâmetro alterado de `type` para `folder` para suporte a caminho completo
 - **2025-10-21**: Adicionado campo `base_path` à estrutura de resposta
 - **2025-10-21**: Adicionadas mensagens de erro localizadas usando `validation.attributes.folder`
+- **2025-10-21**: Adicionados metadados S3 para arquivos (size, mime_type, extension, last_modified)
+- **2025-10-21**: Adicionados metadados S3 para pastas (file_count, total_size, last_modified)
