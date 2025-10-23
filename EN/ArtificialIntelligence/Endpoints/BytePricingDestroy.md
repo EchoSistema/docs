@@ -1,14 +1,14 @@
-# ArtificialIntelligence – BytePricingDestroy
+# Artificial Intelligence – Delete Byte Pricing Product
 
 ## Endpoint
 
 ```
-DELETE /api/v1/ia/admin/pricing/bytes/{product}
+DELETE /api/v1/ai/admin/pricing/bytes/{product:uuid}
 ```
 
 ## Authentication
 
-Required – Bearer {token}
+Required – Bearer {token} with ability `auth:sanctum`
 
 ## Headers
 
@@ -24,14 +24,7 @@ Required – Bearer {token}
 
 | Parameter | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| product | string | Yes | Product identifier |
-
-### Query parameters
-
-| Parameter | Type    | Required | Description | Default/Values |
-| --------- | ------- | -------- | ----------- | -------------- |
-| per_page  | integer | No       | Results per page | 10 (1-100) |
-| page      | integer | No       | Page number | 1 |
+| product   | string | Yes      | Product UUID. |
 
 ## Examples
 
@@ -41,39 +34,76 @@ Required – Bearer {token}
 curl -X DELETE \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
-  "https://sandbox.your-domain.com/api/v1/ia/admin/pricing/bytes/{product}"
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/ai/admin/pricing/bytes/00000000-0000-0000-0000-000000000001"
+```
+
+### Request example (JavaScript)
+
+```javascript
+const response = await fetch('https://sandbox.your-domain.com/api/v1/ai/admin/pricing/bytes/00000000-0000-0000-0000-000000000001', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer <token>',
+    'X-PUBLIC-KEY': '<key>',
+    'Accept-Language': 'en',
+  }
+});
 ```
 
 ### Response example
 
 ```json
 {
-  "data": []
+  "message": "Byte pricing successfully deleted"
 }
 ```
 
 ## HTTP Status
 
 - 200: OK
-- 201: Created
-- 400: Bad Request
 - 401: Unauthorized
 - 403: Forbidden
-- 404: Not Found
-- 422: Unprocessable Entity
+- 404: Not Found (product not found or wrong measurement type)
 - 429: Too Many Requests
 - 500: Internal Server Error
 
+## Errors
+
+### Not Found
+
+```json
+{
+  "message": "The requested resource was not found.",
+  "errors": {}
+}
+```
+
+### Unauthenticated
+
+```json
+{
+  "message": "Unauthenticated.",
+  "errors": {}
+}
+```
+
 ## Notes
 
-- Refer to controller implementation for specific business rules
-- Pagination is available for list endpoints
-- All timestamps are in ISO 8601 format
+- This endpoint permanently deletes a byte pricing product.
+- The product must have measurement type BYTE, otherwise 404 is returned.
+- This action is irreversible - deleted products cannot be recovered.
+- Make sure you have proper backups before deleting pricing data.
+- After deletion, you can create a new byte pricing product using the store endpoint.
 
 ## Related
 
-- [ArtificialIntelligence Domain](../README.md)
+- [Byte Pricing Index](./BytePricingIndex.md)
+- [Byte Pricing Show](./BytePricingShow.md)
+- [Byte Pricing Store](./BytePricingStore.md)
+- [Byte Pricing Update](./BytePricingUpdate.md)
 
 ## Changelog
 
-- 2025-10-16: Initial documentation
+- 2025-10-23: Updated with detailed documentation and accurate response structure.
+- 2025-10-16: Initial documentation.
