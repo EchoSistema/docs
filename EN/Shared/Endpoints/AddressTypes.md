@@ -16,7 +16,7 @@ Required – Bearer {token} with ability `backoffice`
 | ---------------- | ------ | -------- | ----------- |
 | Authorization    | string | Yes      | `Bearer {token}`. |
 | X-PUBLIC-KEY     | string | Yes      | Platform public key. |
-| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). Affects the `title` field translation. |
+| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). Affects the `title_localized` field translation. |
 
 ## Parameters
 
@@ -55,27 +55,27 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
     {
       "name": "BILLING",
       "value": "billing",
-      "title": "Billing"
+      "title_localized": "Billing"
     },
     {
       "name": "SHIPPING",
       "value": "shipping",
-      "title": "Shipping"
+      "title_localized": "Shipping"
     },
     {
       "name": "BOTH",
       "value": "both",
-      "title": "Both"
+      "title_localized": "Both"
     },
     {
       "name": "FISCAL",
       "value": "fiscal",
-      "title": "Fiscal"
+      "title_localized": "Fiscal"
     },
     {
       "name": "ADDITIONAL",
       "value": "additional",
-      "title": "Additional"
+      "title_localized": "Additional"
     }
   ]
 }
@@ -83,12 +83,12 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
 
 ## JSON Structure Explained
 
-| Field       | Type   | Description |
-| ----------- | ------ | ----------- |
-| data        | array  | List of available address types. |
-| data[].name | string | Enum constant name (uppercase). |
-| data[].value| string | Enum value (lowercase). Use this value when creating/updating addresses. |
-| data[].title| string | Human-readable translated title based on `Accept-Language` header. |
+| Field                  | Type   | Description |
+| ---------------------- | ------ | ----------- |
+| data                   | array  | List of available address types. |
+| data[].name            | string | Enum constant name (uppercase). |
+| data[].value           | string | Enum value (lowercase). Use this value when creating/updating addresses. |
+| data[].title_localized | string | Human-readable translated title based on `Accept-Language` header. |
 
 ## HTTP Status
 
@@ -121,7 +121,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
 ## Notes
 
 - This endpoint returns all available address types from the `AddressTypeEnum`.
-- The `title` field is automatically translated based on the `Accept-Language` header.
+- The `title_localized` field is automatically translated based on the `Accept-Language` header.
 - Use the `value` field when creating or updating addresses (e.g., `"type": "billing"`).
 - Supported languages: `en` (English), `pt-BR` (Brazilian Portuguese), `es` (Spanish), `gn` (Guarani).
 
@@ -142,4 +142,5 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
 
 ## Changelog
 
+- 2025-10-23: Updated field name from `title` to `title_localized`.
 - 2025-10-23: Initial documentation.

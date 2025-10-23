@@ -16,7 +16,7 @@ Obligatorio – Bearer {token} con habilidad `backoffice`
 | ---------------- | ------ | ----------- | ----------- |
 | Authorization    | string | Sí          | `Bearer {token}`. |
 | X-PUBLIC-KEY     | string | Sí          | Clave pública de la plataforma. |
-| Accept-Language  | string | No          | Locale IETF (ej.: `pt-BR`, `en`, `es`). Afecta la traducción del campo `title`. |
+| Accept-Language  | string | No          | Locale IETF (ej.: `pt-BR`, `en`, `es`). Afecta la traducción del campo `title_localized`. |
 
 ## Parámetros
 
@@ -55,27 +55,27 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
     {
       "name": "BILLING",
       "value": "billing",
-      "title": "Facturación"
+      "title_localized": "Facturación"
     },
     {
       "name": "SHIPPING",
       "value": "shipping",
-      "title": "Envío"
+      "title_localized": "Envío"
     },
     {
       "name": "BOTH",
       "value": "both",
-      "title": "Ambos"
+      "title_localized": "Ambos"
     },
     {
       "name": "FISCAL",
       "value": "fiscal",
-      "title": "Fiscal"
+      "title_localized": "Fiscal"
     },
     {
       "name": "ADDITIONAL",
       "value": "additional",
-      "title": "Adicional"
+      "title_localized": "Adicional"
     }
   ]
 }
@@ -83,12 +83,12 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
 
 ## Estructura JSON Explicada
 
-| Campo       | Tipo   | Descripción |
-| ----------- | ------ | ----------- |
-| data        | array  | Lista de tipos de dirección disponibles. |
-| data[].name | string | Nombre de la constante enum (mayúsculas). |
-| data[].value| string | Valor del enum (minúsculas). Use este valor al crear/actualizar direcciones. |
-| data[].title| string | Título traducido legible basado en el encabezado `Accept-Language`. |
+| Campo                  | Tipo   | Descripción |
+| ---------------------- | ------ | ----------- |
+| data                   | array  | Lista de tipos de dirección disponibles. |
+| data[].name            | string | Nombre de la constante enum (mayúsculas). |
+| data[].value           | string | Valor del enum (minúsculas). Use este valor al crear/actualizar direcciones. |
+| data[].title_localized | string | Título traducido legible basado en el encabezado `Accept-Language`. |
 
 ## Estado HTTP
 
@@ -121,7 +121,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
 ## Notas
 
 - Este endpoint devuelve todos los tipos de dirección disponibles del `AddressTypeEnum`.
-- El campo `title` se traduce automáticamente según el encabezado `Accept-Language`.
+- El campo `title_localized` se traduce automáticamente según el encabezado `Accept-Language`.
 - Use el campo `value` al crear o actualizar direcciones (ej.: `"type": "billing"`).
 - Idiomas soportados: `en` (Inglés), `pt-BR` (Portugués Brasileño), `es` (Español), `gn` (Guaraní).
 
@@ -142,4 +142,5 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/t
 
 ## Historial de Cambios
 
+- 2025-10-23: Actualizado nombre del campo de `title` a `title_localized`.
 - 2025-10-23: Documentación inicial.
