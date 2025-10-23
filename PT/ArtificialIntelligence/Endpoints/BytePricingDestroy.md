@@ -1,79 +1,109 @@
-# ArtificialIntelligence – BytePricingDestroy
+# Inteligência Artificial – Excluir Produto de Preço por Byte
 
 ## Endpoint
 
 ```
-DELETE /api/v1/ia/admin/pricing/bytes/{product}
+DELETE /api/v1/ai/admin/pricing/bytes/{product:uuid}
 ```
 
 ## Autenticação
 
-Obrigatória – Bearer {token}
+Required – Bearer {token} with ability `auth:sanctum`
 
 ## Cabeçalhos
 
-| Header           | Type   | Required | Description |
+| Cabeçalho           | Tipo   | Obrigatório | Descrição |
 | ---------------- | ------ | -------- | ----------- |
-| Authorization    | string | Yes      | `Bearer {token}`. |
-| X-PUBLIC-KEY     | string | Yes      | Platform public key. |
-| Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
+| Authorization    | texto | Sim      | `Bearer {token}`. |
+| X-PUBLIC-KEY     | texto | Sim      | Chave pública da plataforma. |
+| Accept-Language  | texto | Não       | Localidade IETF (ex., `pt-BR`, `en`, `es`). |
 
 ## Parâmetros
 
-### Path parameters
+### Parâmetros de caminho
 
-| Parameter | Type   | Required | Description |
+| Parâmetro | Tipo   | Obrigatório | Descrição |
 | --------- | ------ | -------- | ----------- |
-| product | string | Yes | Product identifier |
-
-### Query parameters
-
-| Parameter | Type    | Required | Description | Default/Values |
-| --------- | ------- | -------- | ----------- | -------------- |
-| per_page  | integer | No       | Results per page | 10 (1-100) |
-| page      | integer | No       | Page number | 1 |
+| product   | texto | Sim      | UUID do produto. |
 
 ## Exemplos
 
-### Request example (curl)
+### Exemplo de solicitação (curl)
 
 ```bash
 curl -X DELETE \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
-  "https://sandbox.your-domain.com/api/v1/ia/admin/pricing/bytes/{product}"
+  -H "Accept-Language: en" \
+  "https://sandbox.your-domain.com/api/v1/ai/admin/pricing/bytes/00000000-0000-0000-0000-000000000001"
 ```
 
-### Response example
+### Exemplo de solicitação (JavaScript)
+
+```javascript
+const response = await fetch('https://sandbox.your-domain.com/api/v1/ai/admin/pricing/bytes/00000000-0000-0000-0000-000000000001', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer <token>',
+    'X-PUBLIC-KEY': '<key>',
+    'Accept-Language': 'en',
+  }
+});
+```
+
+### Exemplo de resposta
 
 ```json
 {
-  "data": []
+  "message": "Byte pricing successfully deleted"
 }
 ```
 
-## HTTP Status
+## Status HTTP
 
 - 200: OK
-- 201: Created
-- 400: Bad Request
 - 401: Unauthorized
 - 403: Forbidden
-- 404: Not Found
-- 422: Unprocessable Entity
+- 404: Nãot Found (product not found or wrong measurement type)
 - 429: Too Many Requests
 - 500: Internal Server Error
 
-## Notas
+## Erros
 
-- Refer to controller implementation for specific business rules
-- Pagination is available for list endpoints
-- All timestamps are in ISO 8601 format
+### Nãot Found
 
-## Relacionados
+```json
+{
+  "message": "The requested resource was not found.",
+  "errors": {}
+}
+```
 
-- [ArtificialIntelligence Domínio](../README.md)
+### Unauthenticated
 
-## Changelog
+```json
+{
+  "message": "Unauthenticated.",
+  "errors": {}
+}
+```
 
-- 2025-10-16: Initial documentation
+## Nãotas
+
+- Este endpoint permanently deletes a byte pricing product.
+- The product must have measurement type BYTE, otherwise 404 is returned.
+- This action is irreversible - deleted products cannot be recovered.
+- Make sure you have proper backups before deleting pricing data.
+- After deletion, you can create a new byte pricing product using the store endpoint.
+
+## Relacionado
+
+- [Byte Pricing Index](./BytePricingIndex.md)
+- [Byte Pricing Show](./BytePricingShow.md)
+- [Byte Pricing Store](./BytePricingStore.md)
+- [Byte Pricing Update](./BytePricingUpdate.md)
+
+## Histórico de mudanças
+
+- 2025-10-23: Atualizado com documentação detalhada e estrutura de resposta precisa.
+- 2025-10-16: Documentação inicial.
