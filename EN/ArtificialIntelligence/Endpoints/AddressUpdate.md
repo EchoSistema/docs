@@ -1,14 +1,14 @@
-# Shared – Update Address
+# Artificial Intelligence – Update Address
 
 ## Endpoint
 
 ```
-PUT /api/v1/addresses/{address}/type/{type}
+PUT /api/v1/ai/admin/addresses/{address}/type/{type}
 ```
 
 ## Authentication
 
-Required – Bearer {token} with ability `backoffice`
+Required – Bearer {token} with ability `auth:sanctum`
 
 ## Headers
 
@@ -61,13 +61,13 @@ curl -X PUT \
     "address_two": "Floor 35",
     "zipcode": "10118"
   }' \
-  "https://sandbox.your-domain.com/api/v1/addresses/00000000-0000-0000-0000-000000000001/type/BOTH"
+  "https://sandbox.your-domain.com/api/v1/ai/admin/addresses/00000000-0000-0000-0000-000000000001/type/BOTH"
 ```
 
 ### Request example (JavaScript)
 
 ```javascript
-const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/00000000-0000-0000-0000-000000000001/type/BOTH', {
+const response = await fetch('https://sandbox.your-domain.com/api/v1/ai/admin/addresses/00000000-0000-0000-0000-000000000001/type/BOTH', {
   method: 'PUT',
   headers: {
     'Authorization': 'Bearer <token>',
@@ -192,18 +192,9 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
 }
 ```
 
-### Forbidden
-
-```json
-{
-  "message": "This action is unauthorized.",
-  "errors": {}
-}
-```
-
 ## Notes
 
-- This endpoint updates an existing address and requires the `backoffice` ability.
+- This endpoint updates an existing address for the authenticated user's platform.
 - Only the provided fields will be updated; all other fields remain unchanged.
 - The `uuid` field is prohibited and cannot be updated.
 - The address is queried by both the UUID and the type parameter in the URL.

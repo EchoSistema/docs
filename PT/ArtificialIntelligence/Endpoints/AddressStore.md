@@ -1,14 +1,14 @@
-# Compartilhado – Criar Endereço
+# Inteligência Artificial – Criar Endereço
 
 ## Endpoint
 
 ```
-POST /api/v1/addresses
+POST /api/v1/ai/admin/addresses
 ```
 
 ## Autenticação
 
-Obrigatório – Bearer {token} com habilidade `backoffice`
+Obrigatório – Bearer {token} com habilidade `auth:sanctum`
 
 ## Cabeçalhos
 
@@ -56,13 +56,13 @@ curl -X POST \
     "address_two": "Andar 15",
     "zipcode": "01310-200"
   }' \
-  "https://sandbox.your-domain.com/api/v1/addresses"
+  "https://sandbox.your-domain.com/api/v1/ai/admin/addresses"
 ```
 
 ### Exemplo de requisição (JavaScript)
 
 ```javascript
-const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses', {
+const response = await fetch('https://sandbox.your-domain.com/api/v1/ai/admin/addresses', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <token>',
@@ -182,18 +182,9 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
 }
 ```
 
-### Proibido
-
-```json
-{
-  "message": "Esta ação não é autorizada.",
-  "errors": {}
-}
-```
-
 ## Notas
 
-- Este endpoint cria um novo endereço e requer a habilidade `backoffice`.
+- Este endpoint cria um novo endereço para a plataforma do usuário autenticado.
 - O campo `type` tem como padrão `BOTH` se não for fornecido.
 - A resolução da cidade é tratada através de um pipeline que resolve automaticamente informações de cidade, estado e país.
 - Se `uuid` não for fornecido, será gerado automaticamente.

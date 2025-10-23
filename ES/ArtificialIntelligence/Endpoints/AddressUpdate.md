@@ -1,14 +1,14 @@
-# Compartido – Crear Dirección
+# Inteligencia Artificial – Actualizar Dirección
 
 ## Endpoint
 
 ```
-POST /api/v1/addresses
+PUT /api/v1/ai/admin/addresses/{address}/type/{type}
 ```
 
 ## Autenticación
 
-Obligatorio – Bearer {token} con habilidad `backoffice`
+Obligatorio – Bearer {token} con habilidad `auth:sanctum`
 
 ## Encabezados
 
@@ -19,22 +19,30 @@ Obligatorio – Bearer {token} con habilidad `backoffice`
 | Accept-Language  | string | No          | Locale IETF (ej.: `pt-BR`, `en`, `es`). |
 | Content-Type     | string | Sí          | `application/json`. |
 
+## Parámetros de la URL
+
+| Parámetro | Tipo   | Obligatorio | Descripción |
+| --------- | ------ | ----------- | ----------- |
+| address   | string | Sí          | UUID de la dirección. |
+| type      | string | Sí          | Tipo de dirección para filtrar. Valores válidos: `BILLING`, `SHIPPING`, `FISCAL`, `BOTH` |
+
 ## Parámetros
 
 ### Parámetros del cuerpo
 
 | Parámetro    | Tipo   | Obligatorio | Descripción | Predeterminado/Valores |
 | ------------ | ------ | ----------- | ----------- | ---------------------- |
-| type         | string | No          | Tipo de dirección. | Predeterminado: `BOTH`. Valores válidos: `BILLING`, `SHIPPING`, `FISCAL`, `BOTH` |
-| uuid         | string | No          | UUID personalizado para la dirección. | Generado automáticamente si no se proporciona |
-| city         | string/object | Sí | Nombre de la ciudad u objeto. | - |
-| state        | string/object | No | Nombre del estado u objeto. | - |
-| country_code | string | Sí          | Código del país (ISO 3166-1 alpha-2). | Máx: 2 caracteres |
-| address_one  | string | Sí          | Línea de dirección principal. | - |
-| address_two  | string | No          | Línea de dirección secundaria. | - |
-| address_three| string | No          | Línea de dirección terciaria. | - |
-| address_four | string | No          | Línea de dirección cuaternaria. | - |
-| zipcode      | string | No          | Código postal. | - |
+| type         | string | No          | Tipo de dirección. | Valores válidos: `BILLING`, `SHIPPING`, `FISCAL`, `BOTH` |
+| city         | string/object | No | Nombre de la ciudad u objeto. | - |
+| city_id      | integer | No         | ID de la ciudad. | - |
+| state_id     | integer | No         | ID del estado. | - |
+| country_id   | integer | No         | ID del país. | - |
+| zipcode      | string | No          | Código postal. | Máx: 255 caracteres |
+| address_one  | string | No          | Línea de dirección principal. | Máx: 255 caracteres |
+| address_two  | string | No          | Línea de dirección secundaria. | Máx: 255 caracteres |
+| address_three| string | No          | Línea de dirección terciaria. | Máx: 255 caracteres |
+| address_four | string | No          | Línea de dirección cuaternaria. | Máx: 255 caracteres |
+| uuid         | -      | -           | Campo prohibido. No se puede actualizar. | - |
 
 > Los nombres de los parámetros aceptan variantes `snake_case`, `camelCase`, `kebab-case` o `CapitalCase`.
 
@@ -43,27 +51,24 @@ Obligatorio – Bearer {token} con habilidad `backoffice`
 ### Ejemplo de solicitud (curl)
 
 ```bash
-curl -X POST \
+curl -X PUT \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: es" \
   -H "Content-Type: application/json" \
   -d '{
-    "type": "BOTH",
-    "city": "Madrid",
-    "country_code": "ES",
     "address_one": "Gran Vía, 32",
-    "address_two": "Piso 5",
+    "address_two": "Piso 6",
     "zipcode": "28013"
   }' \
-  "https://sandbox.your-domain.com/api/v1/addresses"
+  "https://sandbox.your-domain.com/api/v1/ai/admin/addresses/00000000-0000-0000-0000-000000000001/type/BOTH"
 ```
 
 ### Ejemplo de solicitud (JavaScript)
 
 ```javascript
-const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses', {
-  method: 'POST',
+const response = await fetch('https://sandbox.your-domain.com/api/v1/ai/admin/addresses/00000000-0000-0000-0000-000000000001/type/BOTH', {
+  method: 'PUT',
   headers: {
     'Authorization': 'Bearer <token>',
     'X-PUBLIC-KEY': '<key>',
@@ -71,11 +76,8 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    type: 'BOTH',
-    city: 'Madrid',
-    country_code: 'ES',
     address_one: 'Gran Vía, 32',
-    address_two: 'Piso 5',
+    address_two: 'Piso 6',
     zipcode: '28013'
   })
 });
@@ -91,7 +93,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
     "type": "BOTH",
     "zipcode": "28013",
     "one": "Gran Vía, 32",
-    "two": "Piso 5",
+    "two": "Piso 6",
     "three": null,
     "four": null,
     "city": {
@@ -111,7 +113,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
       "official_name": "Reino de España",
       "code": "ES"
     },
-    "formatted": "Gran Vía, 32, Piso 5, Madrid, M 28013, España"
+    "formatted": "Gran Vía, 32, Piso 6, Madrid, M 28013, España"
   }
 }
 ```
@@ -120,7 +122,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
 
 | Campo                   | Tipo    | Descripción |
 | ----------------------- | ------- | ----------- |
-| data                    | object  | Dirección creada. |
+| data                    | object  | Dirección actualizada. |
 | data.uuid               | string  | UUID de la dirección. |
 | data.main               | boolean | Si esta es la dirección principal (verdadero cuando el tipo es `BOTH`). |
 | data.is_billing         | boolean | Si esta es una dirección de facturación (presente cuando el tipo no es `BOTH`). |
@@ -151,9 +153,9 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
 ## Estado HTTP
 
 - 200: OK
-- 201: Creado
 - 401: No Autorizado
 - 403: Prohibido
+- 404: No Encontrado
 - 422: Entidad No Procesable (errores de validación)
 - 429: Demasiadas Solicitudes
 - 500: Error Interno del Servidor
@@ -164,12 +166,20 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
 
 ```json
 {
-  "message": "El campo city es obligatorio.",
+  "message": "El campo uuid está prohibido.",
   "errors": {
-    "city": [
-      "El campo city es obligatorio."
+    "uuid": [
+      "El campo uuid está prohibido."
     ]
   }
+}
+```
+
+### No Encontrado
+
+```json
+{
+  "message": "No encontrado"
 }
 ```
 
@@ -182,26 +192,18 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses',
 }
 ```
 
-### Prohibido
-
-```json
-{
-  "message": "Esta acción no está autorizada.",
-  "errors": {}
-}
-```
-
 ## Notas
 
-- Este endpoint crea una nueva dirección y requiere la habilidad `backoffice`.
-- El campo `type` tiene como valor predeterminado `BOTH` si no se proporciona.
-- La resolución de la ciudad se maneja a través de un pipeline que resuelve automáticamente la información de ciudad, estado y país.
-- Si no se proporciona `uuid`, se generará automáticamente.
-- El `country_code` debe ser un código válido ISO 3166-1 alpha-2 (ej.: "US", "BR", "ES").
+- Este endpoint actualiza una dirección existente para la plataforma del usuario autenticado.
+- Solo se actualizarán los campos proporcionados; todos los demás campos permanecen sin cambios.
+- El campo `uuid` está prohibido y no se puede actualizar.
+- La dirección se consulta tanto por el UUID como por el parámetro de tipo en la URL.
+- La resolución de la ciudad se maneja a través de un pipeline que resuelve automáticamente la información de ciudad, estado y país cuando se actualizan campos relacionados con la ciudad.
+- Puede actualizar la ciudad usando una cadena/objeto en el campo `city` o proporcionando `city_id`, `state_id` y `country_id`.
 
 ## Relacionados
 
-- [Actualizar Dirección](./AddressUpdate.md)
+- [Crear Dirección](./AddressStore.md)
 
 ## Historial de Cambios
 

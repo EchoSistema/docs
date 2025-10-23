@@ -1,14 +1,14 @@
-# Shared – Update Address
+# Artificial Intelligence – Create Address
 
 ## Endpoint
 
 ```
-PUT /api/v1/addresses/{address}/type/{type}
+POST /api/v1/ai/admin/addresses
 ```
 
 ## Authentication
 
-Required – Bearer {token} with ability `backoffice`
+Required – Bearer {token} with ability `auth:sanctum`
 
 ## Headers
 
@@ -19,30 +19,22 @@ Required – Bearer {token} with ability `backoffice`
 | Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 | Content-Type     | string | Yes      | `application/json`. |
 
-## URL Parameters
-
-| Parameter | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| address   | string | Yes      | Address UUID. |
-| type      | string | Yes      | Address type to filter. Valid values: `BILLING`, `SHIPPING`, `FISCAL`, `BOTH` |
-
 ## Parameters
 
 ### Body parameters
 
 | Parameter    | Type   | Required | Description | Default/Values |
 | ------------ | ------ | -------- | ----------- | -------------- |
-| type         | string | No       | Address type. | Valid values: `BILLING`, `SHIPPING`, `FISCAL`, `BOTH` |
-| city         | string/object | No | City name or object. | - |
-| city_id      | integer | No      | City ID. | - |
-| state_id     | integer | No      | State ID. | - |
-| country_id   | integer | No      | Country ID. | - |
-| zipcode      | string | No       | Postal/ZIP code. | Max: 255 characters |
-| address_one  | string | No       | Primary address line. | Max: 255 characters |
-| address_two  | string | No       | Secondary address line. | Max: 255 characters |
-| address_three| string | No       | Tertiary address line. | Max: 255 characters |
-| address_four | string | No       | Quaternary address line. | Max: 255 characters |
-| uuid         | -      | -        | Prohibited field. Cannot be updated. | - |
+| type         | string | No       | Address type. | Default: `BOTH`. Valid values: `BILLING`, `SHIPPING`, `FISCAL`, `BOTH` |
+| uuid         | string | No       | Custom UUID for the address. | Auto-generated if not provided |
+| city         | string/object | Yes | City name or object. | - |
+| state        | string/object | No  | State name or object. | - |
+| country_code | string | Yes      | Country code (ISO 3166-1 alpha-2). | Max: 2 characters |
+| address_one  | string | Yes      | Primary address line. | - |
+| address_two  | string | No       | Secondary address line. | - |
+| address_three| string | No       | Tertiary address line. | - |
+| address_four | string | No       | Quaternary address line. | - |
+| zipcode      | string | No       | Postal/ZIP code. | - |
 
 > Parameter names accept `snake_case`, `camelCase`, `kebab-case`, or `CapitalCase` variants.
 
@@ -51,24 +43,27 @@ Required – Bearer {token} with ability `backoffice`
 ### Request example (curl)
 
 ```bash
-curl -X PUT \
+curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "X-PUBLIC-KEY: <key>" \
   -H "Accept-Language: en" \
   -H "Content-Type: application/json" \
   -d '{
+    "type": "BOTH",
+    "city": "New York",
+    "country_code": "US",
     "address_one": "350 Fifth Avenue",
-    "address_two": "Floor 35",
+    "address_two": "Floor 34",
     "zipcode": "10118"
   }' \
-  "https://sandbox.your-domain.com/api/v1/addresses/00000000-0000-0000-0000-000000000001/type/BOTH"
+  "https://sandbox.your-domain.com/api/v1/ai/admin/addresses"
 ```
 
 ### Request example (JavaScript)
 
 ```javascript
-const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/00000000-0000-0000-0000-000000000001/type/BOTH', {
-  method: 'PUT',
+const response = await fetch('https://sandbox.your-domain.com/api/v1/ai/admin/addresses', {
+  method: 'POST',
   headers: {
     'Authorization': 'Bearer <token>',
     'X-PUBLIC-KEY': '<key>',
@@ -76,8 +71,11 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
+    type: 'BOTH',
+    city: 'New York',
+    country_code: 'US',
     address_one: '350 Fifth Avenue',
-    address_two: 'Floor 35',
+    address_two: 'Floor 34',
     zipcode: '10118'
   })
 });
@@ -93,7 +91,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
     "type": "BOTH",
     "zipcode": "10118",
     "one": "350 Fifth Avenue",
-    "two": "Floor 35",
+    "two": "Floor 34",
     "three": null,
     "four": null,
     "city": {
@@ -113,7 +111,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
       "official_name": "United States of America",
       "code": "US"
     },
-    "formatted": "350 Fifth Avenue, Floor 35, New York, NY 10118, United States"
+    "formatted": "350 Fifth Avenue, Floor 34, New York, NY 10118, United States"
   }
 }
 ```
@@ -122,7 +120,7 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
 
 | Field                   | Type    | Description |
 | ----------------------- | ------- | ----------- |
-| data                    | object  | Updated address. |
+| data                    | object  | Created address. |
 | data.uuid               | string  | Address UUID. |
 | data.main               | boolean | Whether this is the main address (true when type is `BOTH`). |
 | data.is_billing         | boolean | Whether this is a billing address (present when type is not `BOTH`). |
@@ -153,9 +151,9 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
 ## HTTP Status
 
 - 200: OK
+- 201: Created
 - 401: Unauthorized
 - 403: Forbidden
-- 404: Not Found
 - 422: Unprocessable Entity (validation errors)
 - 429: Too Many Requests
 - 500: Internal Server Error
@@ -166,20 +164,12 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
 
 ```json
 {
-  "message": "The uuid field is prohibited.",
+  "message": "The city field is required.",
   "errors": {
-    "uuid": [
-      "The uuid field is prohibited."
+    "city": [
+      "The city field is required."
     ]
   }
-}
-```
-
-### Not Found
-
-```json
-{
-  "message": "Not Found"
 }
 ```
 
@@ -192,27 +182,17 @@ const response = await fetch('https://sandbox.your-domain.com/api/v1/addresses/0
 }
 ```
 
-### Forbidden
-
-```json
-{
-  "message": "This action is unauthorized.",
-  "errors": {}
-}
-```
-
 ## Notes
 
-- This endpoint updates an existing address and requires the `backoffice` ability.
-- Only the provided fields will be updated; all other fields remain unchanged.
-- The `uuid` field is prohibited and cannot be updated.
-- The address is queried by both the UUID and the type parameter in the URL.
-- The city resolution is handled through a pipeline that automatically resolves city, state, and country information when city-related fields are updated.
-- You can update the city using either a string/object in the `city` field or by providing `city_id`, `state_id`, and `country_id`.
+- This endpoint creates a new address for the authenticated user's platform.
+- The `type` field defaults to `BOTH` if not provided.
+- The city resolution is handled through a pipeline that automatically resolves city, state, and country information.
+- If `uuid` is not provided, it will be auto-generated.
+- The `country_code` must be a valid ISO 3166-1 alpha-2 code (e.g., "US", "BR", "ES").
 
 ## Related
 
-- [Address Store](./AddressStore.md)
+- [Address Update](./AddressUpdate.md)
 
 ## Changelog
 
