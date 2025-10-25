@@ -59,7 +59,35 @@ curl -X GET \
       "rounded": "https://cdn.example.com/logos/rounded.png",
       "rectangular": "https://cdn.example.com/logos/rectangular.png"
     },
-    "created_at": "2024-01-15T10:30:00Z"
+    "created_at": "2024-01-15T10:30:00Z",
+    "company_uuid": "7b2c9a0b-1d2e-3f4g-5h6i-7j8k9l0m1n2o",
+    "company_name": "Empresa Demo S.L.",
+    "slug": "plataforma-demo",
+    "zipcode": "28013",
+    "country": "España",
+    "state": "Madrid",
+    "city": "Madrid",
+    "company_logos": [
+      {
+        "main": "https://cdn.example.com/company/main.png"
+      },
+      {
+        "square": "https://cdn.example.com/company/square.png"
+      }
+    ],
+    "full_address": "Calle Gran Vía, 1, 28013 Madrid, España",
+    "links": [
+      {
+        "uuid": "6a1b8c9d-0e1f-2g3h-4i5j-6k7l8m9n0o1p",
+        "platform": "facebook",
+        "url": "https://facebook.com/plataforma"
+      },
+      {
+        "uuid": "5a0b7c8d-9e0f-1g2h-3i4j-5k6l7m8n9o0p",
+        "platform": "instagram",
+        "url": "https://instagram.com/plataforma"
+      }
+    ]
   }
 }
 ```
@@ -85,6 +113,19 @@ curl -X GET \
 | data.logo.rounded | string  | URL del logo redondeado |
 | data.logo.rectangular | string  | URL del logo rectangular |
 | data.created_at | string  | Fecha de creación (ISO 8601) |
+| data.company_uuid | string  | Identificador único de la empresa (cuando está disponible) |
+| data.company_name | string  | Nombre de la empresa (cuando está disponible) |
+| data.slug | string  | Slug de la empresa (cuando está disponible) |
+| data.zipcode | string  | Código postal de la empresa (cuando está disponible) |
+| data.country | string  | País de la empresa (cuando está disponible) |
+| data.state | string  | Estado/Provincia de la empresa (cuando está disponible) |
+| data.city | string  | Ciudad de la empresa (cuando está disponible) |
+| data.company_logos | array   | Logos de la empresa (cuando está disponible) |
+| data.full_address | string  | Dirección completa formateada (cuando está disponible) |
+| data.links | array   | Enlaces de redes sociales de la empresa (cuando está disponible) |
+| data.links[].uuid | string  | Identificador único del enlace |
+| data.links[].platform | string  | Nombre de la plataforma social |
+| data.links[].url | string  | URL del perfil social |
 
 ## Estados HTTP
 
@@ -108,10 +149,12 @@ curl -X GET \
 
 ## Notas
 
-- Este endpoint retorna los detalles de una plataforma específica
+- Este endpoint retorna los detalles completos de una plataforma específica
 - Solo usuarios con permiso de backoffice pueden acceder
 - Incluye conteo de usuarios de la plataforma (users_count)
 - El parámetro {platform} acepta el UUID de la plataforma
+- La respuesta incluye relaciones con domainArea, company, company.logos, company.address y company.socialMedias
+- Los campos de la empresa (company_uuid, company_name, slug, zipcode, country, state, city, company_logos, full_address, links) son condicionales y solo aparecen cuando la plataforma tiene una empresa asociada
 
 ## Relacionados
 

@@ -59,7 +59,35 @@ curl -X GET \
       "rounded": "https://cdn.example.com/logos/rounded.png",
       "rectangular": "https://cdn.example.com/logos/rectangular.png"
     },
-    "created_at": "2024-01-15T10:30:00Z"
+    "created_at": "2024-01-15T10:30:00Z",
+    "company_uuid": "7b2c9a0b-1d2e-3f4g-5h6i-7j8k9l0m1n2o",
+    "company_name": "Demo Company Inc",
+    "slug": "demo-platform",
+    "zipcode": "94102",
+    "country": "United States",
+    "state": "California",
+    "city": "San Francisco",
+    "company_logos": [
+      {
+        "main": "https://cdn.example.com/company/main.png"
+      },
+      {
+        "square": "https://cdn.example.com/company/square.png"
+      }
+    ],
+    "full_address": "123 Market St, San Francisco, CA 94102",
+    "links": [
+      {
+        "uuid": "6a1b8c9d-0e1f-2g3h-4i5j-6k7l8m9n0o1p",
+        "platform": "facebook",
+        "url": "https://facebook.com/platform"
+      },
+      {
+        "uuid": "5a0b7c8d-9e0f-1g2h-3i4j-5k6l7m8n9o0p",
+        "platform": "instagram",
+        "url": "https://instagram.com/platform"
+      }
+    ]
   }
 }
 ```
@@ -85,6 +113,19 @@ curl -X GET \
 | data.logo.rounded | string  | Rounded logo URL |
 | data.logo.rectangular | string  | Rectangular logo URL |
 | data.created_at | string  | Creation date (ISO 8601) |
+| data.company_uuid | string  | Company unique identifier (when available) |
+| data.company_name | string  | Company name (when available) |
+| data.slug | string  | Company slug (when available) |
+| data.zipcode | string  | Company ZIP code (when available) |
+| data.country | string  | Company country (when available) |
+| data.state | string  | Company state (when available) |
+| data.city | string  | Company city (when available) |
+| data.company_logos | array   | Company logos (when available) |
+| data.full_address | string  | Full formatted address (when available) |
+| data.links | array   | Company social media links (when available) |
+| data.links[].uuid | string  | Link unique identifier |
+| data.links[].platform | string  | Social platform name |
+| data.links[].url | string  | Social profile URL |
 
 ## HTTP Status
 
@@ -108,10 +149,12 @@ curl -X GET \
 
 ## Notes
 
-- This endpoint returns the details of a specific platform
+- This endpoint returns the complete details of a specific platform
 - Only users with backoffice permission can access
 - Includes platform user count (users_count)
 - The {platform} parameter accepts the platform UUID
+- Response includes relationships with domainArea, company, company.logos, company.address and company.socialMedias
+- Company fields (company_uuid, company_name, slug, zipcode, country, state, city, company_logos, full_address, links) are conditional and only appear when the platform has an associated company
 
 ## Related
 
