@@ -20,7 +20,7 @@ Requerida – Bearer {token} con habilidad `backoffice`
 
 ## Parámetros
 
-Listar todas las áreas de dominio (solo backoffice)
+No se requieren parámetros adicionales.
 
 ## Ejemplos
 
@@ -38,15 +38,44 @@ curl -X GET \
 
 ```json
 {
-  "data": {}
+  "data": [
+    {
+      "id": 1,
+      "uuid": "efa68660-4870-51c2-84be-736f87792f1d",
+      "name": "Article",
+      "slug": "article",
+      "is_active": true,
+      "platforms_total": 5,
+      "categories_total": 12,
+      "item_types_total": 8
+    },
+    {
+      "id": 2,
+      "uuid": "70f8067c-7d68-50ef-b847-c43e3d6c0878",
+      "name": "Bio",
+      "slug": "bio",
+      "is_active": true,
+      "platforms_total": 3,
+      "categories_total": 0,
+      "item_types_total": 0
+    }
+  ]
 }
 ```
 
 ## Estructura JSON Explicada
 
-| Campo | Tipo | Descripción |
-| ----------- | ------- | ----------- |
-| data        | object  | Response data |
+| Campo                      | Tipo    | Descripción                                         |
+| -------------------------- | ------- | --------------------------------------------------- |
+| data                       | array   | Lista de áreas de dominio                           |
+| data[].id                  | integer | ID interno del área de dominio                      |
+| data[].uuid                | string  | UUID único del área de dominio                      |
+| data[].name                | string  | Nombre del área de dominio (formateado)             |
+| data[].slug                | string  | Slug identificador del área de dominio              |
+| data[].is_active           | boolean | Indica si el área de dominio está activa            |
+| data[].platforms_total     | integer | Cantidad total de plataformas asociadas             |
+| data[].categories_total    | integer | Cantidad total de categorías asociadas              |
+| data[].item_types_total    | integer | Cantidad total de tipos de ítem asociados           |
 
 ## Estados HTTP
 
@@ -70,12 +99,16 @@ curl -X GET \
 
 ## Notas
 
-- Listar todas las áreas de dominio (solo backoffice)
+- Lista todas las áreas de dominio con contadores de plataformas, categorías y tipos de ítem
+- Endpoint exclusivo de backoffice que requiere permiso `index.all`
+- Retorna todas las áreas de dominio de una vez (sin paginación)
 
 ## Relacionados
 
-- See other Shared API endpoints
+- [Mostrar Área de Dominio](BackofficeDomainAreaShow.md)
+- [Listar Plataformas](BackofficePlatformIndex.md)
 
 ## Changelog
 
+- 2025-10-25: Actualización de la documentación con estructura completa de respuesta
 - 2025-10-16: Documentación inicial
