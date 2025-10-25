@@ -55,6 +55,8 @@ curl -X GET \
       "birth_date": "1992-05-15T00:00:00Z",
       "email": "john.doe@example.com",
       "avatar": "https://cdn.example.com/avatars/john-doe.jpg",
+      "currency": "USD",
+      "language": "en",
       "created_at": "2024-01-15T10:30:00Z",
       "roles": [
         {
@@ -96,6 +98,8 @@ curl -X GET \
       "birth_date": "1996-08-22T00:00:00Z",
       "email": "jane.smith@example.com",
       "avatar": "https://cdn.example.com/avatars/jane-smith.jpg",
+      "currency": "USD",
+      "language": "en",
       "created_at": "2024-01-20T15:45:00Z",
       "roles": [
         {
@@ -146,6 +150,8 @@ curl -X GET \
 | data[].birth_date | string  | Birth date (ISO 8601) |
 | data[].email | string  | User's email |
 | data[].avatar | string  | Avatar image URL |
+| data[].currency | string  | User's preferred currency (ISO code) |
+| data[].language | string  | User's preferred language (IETF locale) |
 | data[].created_at | string  | Account creation date (ISO 8601) |
 | data[].roles | array   | List of user roles/functions across different platforms |
 | data[].roles[].id | integer | Role ID |
@@ -196,6 +202,7 @@ curl -X GET \
   - `platformRoles.platform`: Platform data associated with roles
 - The `avatar` field is dynamically generated through the `getAvatar()` method
 - The `age` field is automatically calculated from birth date
+- The `currency` and `language` fields are accessors that return data from `regionalInformation`
 - The `roles` field consolidates all user roles with main platform indication
 - Default sorted by creation date
 

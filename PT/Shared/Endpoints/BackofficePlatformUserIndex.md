@@ -55,6 +55,8 @@ curl -X GET \
       "birth_date": "1992-05-15T00:00:00Z",
       "email": "joao.silva@example.com",
       "avatar": "https://cdn.example.com/avatars/joao-silva.jpg",
+      "currency": "BRL",
+      "language": "pt-BR",
       "created_at": "2024-01-15T10:30:00Z",
       "roles": [
         {
@@ -96,6 +98,8 @@ curl -X GET \
       "birth_date": "1996-08-22T00:00:00Z",
       "email": "maria.santos@example.com",
       "avatar": "https://cdn.example.com/avatars/maria-santos.jpg",
+      "currency": "BRL",
+      "language": "pt-BR",
       "created_at": "2024-01-20T15:45:00Z",
       "roles": [
         {
@@ -146,6 +150,8 @@ curl -X GET \
 | data[].birth_date | string  | Data de nascimento (ISO 8601) |
 | data[].email | string  | Email do usuário |
 | data[].avatar | string  | URL da imagem de avatar |
+| data[].currency | string  | Moeda preferencial do usuário (código ISO) |
+| data[].language | string  | Idioma preferencial do usuário (IETF locale) |
 | data[].created_at | string  | Data de criação da conta (ISO 8601) |
 | data[].roles | array   | Lista de funções/papéis do usuário em diferentes plataformas |
 | data[].roles[].id | integer | ID da função |
@@ -196,6 +202,7 @@ curl -X GET \
   - `platformRoles.platform`: Dados das plataformas associadas às funções
 - O campo `avatar` é gerado dinamicamente através do método `getAvatar()`
 - O campo `age` é calculado automaticamente a partir da data de nascimento
+- Os campos `currency` e `language` são acessores que retornam dados de `regionalInformation`
 - O campo `roles` consolida todas as funções do usuário com indicação da plataforma principal
 - Ordenado por padrão pela data de criação
 

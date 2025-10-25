@@ -53,6 +53,8 @@ curl -X GET \
     "birth_date": "1992-05-15T00:00:00Z",
     "email": "john.doe@example.com",
     "avatar": "https://cdn.example.com/avatars/john-doe.jpg",
+    "currency": "USD",
+    "language": "en",
     "created_at": "2024-01-15T10:30:00Z",
     "roles": [
       {
@@ -209,6 +211,8 @@ curl -X GET \
 | data.birth_date | string  | Birth date (ISO 8601) |
 | data.email  | string  | User's email |
 | data.avatar | string  | Avatar image URL |
+| data.currency | string  | User's preferred currency (ISO code) |
+| data.language | string  | User's preferred language (IETF locale) |
 | data.created_at | string  | Account creation date (ISO 8601) |
 | data.roles  | array   | List of user roles/functions across different platforms |
 
@@ -389,6 +393,8 @@ curl -X GET \
 - Conditional fields only appear when relationships are loaded and have data
 - The `avatar` field is dynamically generated through the `getAvatar()` method
 - The `age` field is automatically calculated from birth date
+- The `currency` and `language` fields at root level are accessors that return data from `regionalInformation`
+- The `currency` and `language` fields in "Additional Fields" override the root ones with more specific data
 
 ## Related
 

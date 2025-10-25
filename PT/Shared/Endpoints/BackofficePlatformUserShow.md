@@ -53,6 +53,8 @@ curl -X GET \
     "birth_date": "1992-05-15T00:00:00Z",
     "email": "joao.silva@example.com",
     "avatar": "https://cdn.example.com/avatars/joao-silva.jpg",
+    "currency": "BRL",
+    "language": "pt-BR",
     "created_at": "2024-01-15T10:30:00Z",
     "roles": [
       {
@@ -209,6 +211,8 @@ curl -X GET \
 | data.birth_date | string  | Data de nascimento (ISO 8601) |
 | data.email  | string  | Email do usuário |
 | data.avatar | string  | URL da imagem de avatar |
+| data.currency | string  | Moeda preferencial do usuário (código ISO) |
+| data.language | string  | Idioma preferencial do usuário (IETF locale) |
 | data.created_at | string  | Data de criação da conta (ISO 8601) |
 | data.roles  | array   | Lista de funções/papéis do usuário em diferentes plataformas |
 
@@ -389,6 +393,8 @@ curl -X GET \
 - Campos condicionais aparecem apenas quando os relacionamentos estão carregados e possuem dados
 - O campo `avatar` é gerado dinamicamente através do método `getAvatar()`
 - O campo `age` é calculado automaticamente a partir da data de nascimento
+- Os campos `currency` e `language` na raiz são acessores que retornam dados de `regionalInformation`
+- Os campos `currency` e `language` em "Campos Adicionais" sobrescrevem os da raiz com dados mais específicos
 
 ## Relacionados
 
