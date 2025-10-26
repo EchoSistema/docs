@@ -6,6 +6,10 @@
 GET /api/v1/public/countries/{country}/states/{state}
 ```
 
+## Descrição
+
+Retorna os detalhes de um estado específico de um país. Valida se o estado pertence ao país informado.
+
 ## Autenticação
 
 Nenhuma
@@ -23,31 +27,106 @@ Nenhuma
 
 | Parameter | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| country | string | Yes | Country identifier |
-| state | string | Yes | State identifier |
+| country   | string | Yes      | Country identifier (id, uuid, code, or name) |
+| state     | string | Yes      | State identifier (id, uuid, abbreviation, or name) |
 
 ### Query parameters
 
-| Parameter | Type    | Required | Description | Default/Values |
-| --------- | ------- | -------- | ----------- | -------------- |
-| per_page  | integer | No       | Results per page | 10 (1-100) |
-| page      | integer | No       | Page number | 1 |
+| Parameter | Type         | Required | Description | Default/Values |
+| --------- | ------------ | -------- | ----------- | -------------- |
+| cities    | string/array | No       | Filter cities by id or name | - |
 
 ## Exemplos
 
 ### Request example (curl)
 
 ```bash
+# Buscar estado por abreviação
 curl -X GET \
   -H "X-PUBLIC-KEY: <key>" \
-  "https://sandbox.your-domain.com/api/v1/public/countries/{country}/states/{state}"
+  "https://sandbox.your-domain.com/api/v1/public/countries/BR/states/SP"
+
+# Buscar estado por nome
+curl -X GET \
+  -H "X-PUBLIC-KEY: <key>" \
+  "https://sandbox.your-domain.com/api/v1/public/countries/BR/states/São%20Paulo"
+
+# Buscar estado com cidades filtradas
+curl -X GET \
+  -H "X-PUBLIC-KEY: <key>" \
+  "https://sandbox.your-domain.com/api/v1/public/countries/BR/states/SP?cities=São%20Paulo,Campinas"
 ```
 
 ### Response example
 
+#### Resposta completa
+
 ```json
 {
-  "data": []
+  "data": {
+    "id": 1,
+    "uuid": "state-uuid-1",
+    "country_id": 1,
+    "name": "São Paulo",
+    "abbreviation": "SP",
+    "region": "Sudeste",
+    "country": {
+      "uuid": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Brasil",
+      "official_name": "República Federativa do Brasil",
+      "code": "BR"
+    },
+    "cities": [
+      {
+        "id": 1,
+        "uuid": "city-uuid-1",
+        "name": "São Paulo"
+      },
+      {
+        "id": 2,
+        "uuid": "city-uuid-2",
+        "name": "Campinas"
+      },
+      {
+        "id": 3,
+        "uuid": "city-uuid-3",
+        "name": "Santos"
+      }
+    ]
+  }
+}
+```
+
+#### Resposta com cidades filtradas
+
+```json
+{
+  "data": {
+    "id": 1,
+    "uuid": "state-uuid-1",
+    "country_id": 1,
+    "name": "São Paulo",
+    "abbreviation": "SP",
+    "region": "Sudeste",
+    "country": {
+      "uuid": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Brasil",
+      "official_name": "República Federativa do Brasil",
+      "code": "BR"
+    },
+    "cities": [
+      {
+        "id": 1,
+        "uuid": "city-uuid-1",
+        "name": "São Paulo"
+      },
+      {
+        "id": 2,
+        "uuid": "city-uuid-2",
+        "name": "Campinas"
+      }
+    ]
+  }
 }
 ```
 
@@ -65,14 +144,22 @@ curl -X GET \
 
 ## Notas
 
-- Refer to controller implementation for specific business rules
-- Pagination is available for list endpoints
-- All timestamps are in ISO 8601 format
+- Valida se o estado pertence ao país informado, retornando 404 caso não pertença
+- O estado pode ser identificado por ID, UUID, abreviação ou nome
+- O país pode ser identificado por ID, UUID, código ou nome
+- O parâmetro `cities` aceita IDs ou nomes para filtrar a lista de cidades
+- As cidades são carregadas via relationship eager loading quando disponível
+- O país é sempre incluído na resposta quando disponível
+- Retorna 404 se o estado não for encontrado ou não pertencer ao país
 
 ## Relacionados
 
 - [Microservices Domínio](../README.md)
+- [CountryIndex](./CountryIndex.md)
+- [CountryShow](./CountryShow.md)
+- [CountryCity](./CountryCity.md)
 
 ## Changelog
 
+- 2025-10-26: Enhanced documentation with detailed parameters and examples
 - 2025-10-16: Initial documentation

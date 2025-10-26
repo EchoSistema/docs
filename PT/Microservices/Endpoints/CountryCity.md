@@ -6,6 +6,10 @@
 GET /api/v1/public/countries/{country}/states/{state}/cities/{city}
 ```
 
+## Descrição
+
+Retorna os detalhes de uma cidade específica dentro de um estado e país. Valida a hierarquia completa (país > estado > cidade).
+
 ## Autenticação
 
 Nenhuma
@@ -23,32 +27,59 @@ Nenhuma
 
 | Parameter | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| country | string | Yes | Country identifier |
-| state | string | Yes | State identifier |
-| city | string | Yes | City identifier |
+| country   | string | Yes      | Country identifier (code, name, or slug) |
+| state     | string | Yes      | State identifier (name, slug, or code) |
+| city      | string | Yes      | City identifier (id, uuid, name, or slug) |
 
 ### Query parameters
 
-| Parameter | Type    | Required | Description | Default/Values |
-| --------- | ------- | -------- | ----------- | -------------- |
-| per_page  | integer | No       | Results per page | 10 (1-100) |
-| page      | integer | No       | Page number | 1 |
+Nenhum parâmetro de query.
 
 ## Exemplos
 
 ### Request example (curl)
 
 ```bash
+# Buscar cidade por nome
 curl -X GET \
   -H "X-PUBLIC-KEY: <key>" \
-  "https://sandbox.your-domain.com/api/v1/public/countries/{country}/states/{state}/cities/{city}"
+  "https://sandbox.your-domain.com/api/v1/public/countries/BR/states/SP/cities/São%20Paulo"
+
+# Buscar cidade por UUID
+curl -X GET \
+  -H "X-PUBLIC-KEY: <key>" \
+  "https://sandbox.your-domain.com/api/v1/public/countries/BR/states/SP/cities/city-uuid-123"
+
+# Buscar cidade usando slug no estado
+curl -X GET \
+  -H "X-PUBLIC-KEY: <key>" \
+  "https://sandbox.your-domain.com/api/v1/public/countries/BR/states/sao-paulo/cities/campinas"
 ```
 
 ### Response example
 
 ```json
 {
-  "data": []
+  "data": {
+    "id": 1,
+    "uuid": "city-uuid-1",
+    "state_id": 1,
+    "country_id": 1,
+    "name": "São Paulo",
+    "abbreviation": "SP",
+    "country": {
+      "uuid": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Brasil",
+      "official_name": "República Federativa do Brasil",
+      "code": "BR"
+    },
+    "state": {
+      "uuid": "state-uuid-1",
+      "name": "São Paulo",
+      "abbreviation": "SP",
+      "region": "Sudeste"
+    }
+  }
 }
 ```
 
@@ -66,14 +97,23 @@ curl -X GET \
 
 ## Notas
 
-- Refer to controller implementation for specific business rules
-- Pagination is available for list endpoints
-- All timestamps are in ISO 8601 format
+- Valida toda a hierarquia: país > estado > cidade
+- A cidade pode ser identificada por ID, UUID, nome ou slug
+- O estado pode ser identificado por nome, slug ou código
+- O país é identificado pelo código
+- Busca case-insensitive com LIKE para nome e slug
+- Sempre inclui os dados do país e estado na resposta quando disponível
+- Retorna 404 se a cidade não for encontrada ou não pertencer à hierarquia informada
+- Implementado em src/Domain/Microservices/Http/Controllers/CountryController.php:95
 
 ## Relacionados
 
 - [Microservices Domínio](../README.md)
+- [CountryIndex](./CountryIndex.md)
+- [CountryShow](./CountryShow.md)
+- [CountryState](./CountryState.md)
 
 ## Changelog
 
+- 2025-10-26: Enhanced documentation with detailed parameters and examples
 - 2025-10-16: Initial documentation
