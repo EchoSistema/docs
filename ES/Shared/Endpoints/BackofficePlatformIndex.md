@@ -47,8 +47,10 @@ curl -X GET \
       "total": {
         "users": 150
       },
+      "is_parent": true,
       "domain": {
         "uuid": "8c3d0b1a-2e3f-4g5h-6i7j-8k9l0m1n2o3p",
+        "slug": "ecommerce",
         "name": "E-commerce"
       },
       "name": "Plataforma Demo",
@@ -62,32 +64,36 @@ curl -X GET \
         "rectangular": "https://cdn.example.com/logos/rectangular.png"
       },
       "created_at": "2024-01-15T10:30:00Z",
-      "company_uuid": "7b2c9a0b-1d2e-3f4g-5h6i-7j8k9l0m1n2o",
-      "slug": "plataforma-demo",
-      "country": "España",
-      "state": "Madrid",
-      "city": "Madrid",
-      "company_logos": [
-        {
-          "main": "https://cdn.example.com/company/main.png"
-        },
-        {
-          "square": "https://cdn.example.com/company/square.png"
-        }
-      ],
-      "full_address": "Calle Gran Vía, 1, 28013 Madrid, España",
-      "links": [
-        {
-          "uuid": "6a1b8c9d-0e1f-2g3h-4i5j-6k7l8m9n0o1p",
-          "platform": "facebook",
-          "url": "https://facebook.com/plataforma"
-        },
-        {
-          "uuid": "5a0b7c8d-9e0f-1g2h-3i4j-5k6l7m8n9o0p",
-          "platform": "instagram",
-          "url": "https://instagram.com/plataforma"
-        }
-      ]
+      "company": {
+        "uuid": "7b2c9a0b-1d2e-3f4g-5h6i-7j8k9l0m1n2o",
+        "name": "Empresa Demo Ltda",
+        "slug": "empresa-demo",
+        "zipcode": "01310-100",
+        "country": "Brasil",
+        "state": "São Paulo",
+        "city": "São Paulo",
+        "company_logos": [
+          {
+            "main_logo": "https://cdn.example.com/company/main.png"
+          },
+          {
+            "square_logo": "https://cdn.example.com/company/square.png"
+          }
+        ],
+        "full_address": "Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100",
+        "links": [
+          {
+            "uuid": "6a1b8c9d-0e1f-2g3h-4i5j-6k7l8m9n0o1p",
+            "platform": "Facebook",
+            "url": "https://facebook.com/plataforma"
+          },
+          {
+            "uuid": "5a0b7c8d-9e0f-1g2h-3i4j-5k6l7m8n9o0p",
+            "platform": "Instagram",
+            "url": "https://instagram.com/plataforma"
+          }
+        ]
+      }
     }
   ],
   "links": {
@@ -109,14 +115,18 @@ curl -X GET \
 
 ## Estructura JSON Explicada
 
+### Campos Principales
+
 | Campo | Tipo | Descripción |
 | ----------- | ------- | ----------- |
 | data        | array   | Lista de plataformas |
 | data[].uuid | string  | Identificador único de la plataforma |
-| data[].total | object  | Totalizadores de la plataforma |
+| data[].total | object  | Totalizadores de la plataforma (condicional - solo si hay usuarios) |
 | data[].total.users | integer | Total de usuarios en la plataforma |
+| data[].is_parent | boolean | Indica si la plataforma es una plataforma padre |
 | data[].domain | object  | Información del área de dominio |
 | data[].domain.uuid | string  | Identificador único del área de dominio |
+| data[].domain.slug | string  | Slug del área de dominio |
 | data[].domain.name | string  | Nombre del área de dominio |
 | data[].name | string  | Nombre de la plataforma |
 | data[].email | string  | Email de contacto de la plataforma |
@@ -128,31 +138,67 @@ curl -X GET \
 | data[].logo.rounded | string  | URL del logo redondeado |
 | data[].logo.rectangular | string  | URL del logo rectangular |
 | data[].created_at | string  | Fecha de creación (ISO 8601) |
-| data[].company_uuid | string  | Identificador único de la empresa (cuando está disponible) |
-| data[].slug | string  | Slug de la empresa (cuando está disponible) |
-| data[].country | string  | País de la empresa (cuando está disponible) |
-| data[].state | string  | Estado/Provincia de la empresa (cuando está disponible) |
-| data[].city | string  | Ciudad de la empresa (cuando está disponible) |
-| data[].company_logos | array   | Logos de la empresa (cuando está disponible) |
-| data[].full_address | string  | Dirección completa formateada (cuando está disponible) |
-| data[].links | array   | Enlaces de redes sociales de la empresa (cuando está disponible) |
-| data[].links[].uuid | string  | Identificador único del enlace |
-| data[].links[].platform | string  | Nombre de la plataforma social |
-| data[].links[].url | string  | URL del perfil social |
-| links       | object  | Enlaces de paginación |
-| meta        | object  | Metadatos de paginación |
 
-## Estados HTTP
+### Campos de la Empresa (condicional)
+
+Los campos a continuación están agrupados dentro del objeto `company` y solo aparecen cuando la plataforma tiene una empresa asociada:
+
+| Campo | Tipo | Descripción |
+| ----------- | ------- | ----------- |
+| data[].company | object  | Datos de la empresa (condicional) |
+| data[].company.uuid | string  | Identificador único de la empresa |
+| data[].company.name | string  | Nombre de la empresa |
+| data[].company.slug | string  | Slug de la empresa |
+| data[].company.zipcode | string\|null  | Código postal de la empresa |
+| data[].company.country | string\|null  | País de la empresa |
+| data[].company.state | string\|null  | Estado de la empresa |
+| data[].company.city | string\|null  | Ciudad de la empresa |
+| data[].company.company_logos | array   | Logos de la empresa (array vacío si no está cargado) |
+| data[].company.full_address | string\|null  | Dirección completa formateada |
+| data[].company.links | array   | Enlaces de redes sociales de la empresa (array vacío si no está cargado) |
+| data[].company.links[].uuid | string  | Identificador único del enlace |
+| data[].company.links[].platform | string  | Nombre de la plataforma social |
+| data[].company.links[].url | string  | URL del perfil social |
+
+### Metadatos de Paginación
+
+| Campo | Tipo | Descripción |
+| ----------- | ------- | ----------- |
+| links       | object  | Enlaces de navegación entre páginas |
+| links.first | string  | URL de la primera página |
+| links.last | string  | URL de la última página |
+| links.prev | string\|null  | URL de la página anterior (null si es la primera página) |
+| links.next | string\|null  | URL de la próxima página (null si es la última página) |
+| meta        | object  | Metadatos de la paginación |
+| meta.current_page | integer | Número de la página actual |
+| meta.from | integer | Número del primer registro de la página |
+| meta.last_page | integer | Número de la última página |
+| meta.per_page | integer | Registros por página |
+| meta.to | integer | Número del último registro de la página |
+| meta.total | integer | Total de registros |
+
+## Relaciones Cargadas
+
+Este endpoint carga automáticamente las siguientes relaciones:
+
+- `domainArea` - Área de dominio de la plataforma
+- `company` - Empresa asociada
+- `company.logos` - Logos de la empresa
+- `company.address` - Dirección de la empresa (usado para country, state, city)
+- `company.socialMedias` - Redes sociales de la empresa
+
+## Contadores
+
+- `users_count` - Total de usuarios registrados en la plataforma
+
+## Estado HTTP
 
 - 200: OK
-- 201: Creado
-- 400: Solicitud inválida
-- 401: No autorizado
-- 403: Prohibido
-- 404: No encontrado
-- 422: Entidad no procesable
-- 429: Demasiadas solicitudes
-- 500: Error interno del servidor
+- 401: No autenticado
+- 403: Prohibido (sin permiso `index.all`)
+- 422: Error de validación
+- 429: Límite de solicitudes excedido
+- 500: Error interno
 
 ## Errores
 
@@ -165,10 +211,15 @@ curl -X GET \
 ## Notas
 
 - Este endpoint retorna todas las plataformas registradas en el sistema
-- Solo usuarios con permiso de backoffice pueden acceder
-- La respuesta incluye relaciones con company, company.logos y company.address
-- Incluye conteo de usuarios por plataforma (users_count)
-- Ordenado por fecha de creación (descendente)
+- Solo usuarios con permiso `index.all` pueden acceder
+- Ordenado por fecha de creación (descendente) - las más recientes aparecen primero
+- El campo `total.users` solo aparece cuando la plataforma tiene usuarios registrados
+- El objeto `company` solo aparece cuando la plataforma tiene una empresa asociada
+- Los arrays `company_logos` y `links` retornan array vacío cuando las relaciones no están cargadas
+- Todas las URLs de logo son completas y listas para usar
+- Las fechas siguen el formato ISO 8601
+- La paginación por defecto retorna 25 registros por página
+- Use `no_paginate=true` para obtener todos los resultados sin paginación
 
 ## Relacionados
 
@@ -177,5 +228,5 @@ curl -X GET \
 
 ## Changelog
 
-- 2025-10-25: Actualización completa de la documentación con estructura detallada
+- 2025-10-25: Actualización completa con nueva estructura de company y campos adicionales
 - 2025-10-16: Documentación inicial

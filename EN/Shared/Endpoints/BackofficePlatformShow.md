@@ -6,6 +6,10 @@
 GET /api/v1/backoffice/platforms/{platform}
 ```
 
+## Description
+
+Returns detailed information about a specific platform, including complete company data, regional settings, payment gateways, images, IMAP settings, and aggregated statistics.
+
 ## Authentication
 
 Required – Bearer {token} with ability `backoffice`
@@ -14,7 +18,7 @@ Required – Bearer {token} with ability `backoffice`
 
 | Header     | Type | Required | Description |
 | ---------------- | ------ | -------- | ----------- |
-| Authorization    | string | When required | `Bearer {token}`. |
+| Authorization    | string | When required | `Bearer {token}` credential. |
 | X-PUBLIC-KEY     | string | Yes      | Platform public key. |
 | Accept-Language  | string | No       | IETF locale (e.g., `pt-BR`, `en`, `es`). |
 
@@ -40,104 +44,271 @@ curl -X GET \
 
 ```json
 {
-  "data": {
-    "uuid": "9d4e1c2a-3b4c-5d6e-7f8g-9h0i1j2k3l4m",
-    "total": {
-      "users": 150
-    },
-    "domain": {
-      "uuid": "8c3d0b1a-2e3f-4g5h-6i7j-8k9l0m1n2o3p",
-      "name": "E-commerce"
-    },
-    "name": "Demo Platform",
-    "email": "contact@platform.com",
-    "open_to_register": true,
-    "public_key": "pk_test_123456789",
-    "logo": {
-      "main": "https://cdn.example.com/logos/main.png",
-      "square": "https://cdn.example.com/logos/square.png",
-      "rounded": "https://cdn.example.com/logos/rounded.png",
-      "rectangular": "https://cdn.example.com/logos/rectangular.png"
-    },
-    "created_at": "2024-01-15T10:30:00Z",
-    "company_uuid": "7b2c9a0b-1d2e-3f4g-5h6i-7j8k9l0m1n2o",
-    "company_name": "Demo Company Inc",
-    "slug": "demo-platform",
-    "zipcode": "94102",
-    "country": "United States",
-    "state": "California",
-    "city": "San Francisco",
+  "uuid": "9d4e1c2a-3b4c-5d6e-7f8g-9h0i1j2k3l4m",
+  "total": {
+    "users": 150
+  },
+  "is_parent": true,
+  "domain": {
+    "uuid": "8c3d0b1a-2e3f-4g5h-6i7j-8k9l0m1n2o3p",
+    "slug": "ecommerce",
+    "name": "E-commerce"
+  },
+  "name": "Demo Platform",
+  "email": "contact@platform.com",
+  "open_to_register": true,
+  "public_key": "pk_test_123456789",
+  "logo": {
+    "main": "https://cdn.example.com/logos/main.png",
+    "square": "https://cdn.example.com/logos/square.png",
+    "rounded": "https://cdn.example.com/logos/rounded.png",
+    "rectangular": "https://cdn.example.com/logos/rectangular.png"
+  },
+  "created_at": "2024-01-15T10:30:00Z",
+  "company": {
+    "uuid": "7b2c9a0b-1d2e-3f4g-5h6i-7j8k9l0m1n2o",
+    "name": "Demo Company Ltd",
+    "slug": "demo-company",
+    "zipcode": "01310-100",
+    "country": "Brazil",
+    "state": "São Paulo",
+    "city": "São Paulo",
     "company_logos": [
       {
-        "main": "https://cdn.example.com/company/main.png"
+        "main_logo": "https://cdn.example.com/company/main.png"
       },
       {
-        "square": "https://cdn.example.com/company/square.png"
+        "square_logo": "https://cdn.example.com/company/square.png"
       }
     ],
-    "full_address": "123 Market St, San Francisco, CA 94102",
+    "full_address": "Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100",
     "links": [
       {
         "uuid": "6a1b8c9d-0e1f-2g3h-4i5j-6k7l8m9n0o1p",
-        "platform": "facebook",
+        "platform": "Facebook",
         "url": "https://facebook.com/platform"
       },
       {
         "uuid": "5a0b7c8d-9e0f-1g2h-3i4j-5k6l7m8n9o0p",
-        "platform": "instagram",
+        "platform": "Instagram",
         "url": "https://instagram.com/platform"
       }
     ]
+  },
+  "client_id": "client_abc123xyz",
+  "discord": {
+    "channel_id": "1234567890123456789"
+  },
+  "is_main": true,
+  "is_banned": false,
+  "platform_transactions": {
+    "in": 5000,
+    "out": 3000
+  },
+  "regional_information": {
+    "uuid": "aa0e8400-e29b-41d4-a716-446655440005",
+    "language": "en",
+    "currency": "USD"
+  },
+  "imap_setting": {
+    "uuid": "bb0e8400-e29b-41d4-a716-446655440006",
+    "host": "imap.gmail.com",
+    "port": 993,
+    "encryption": "ssl",
+    "username": "contact@mystore.com",
+    "is_active": true
+  },
+  "payment_gateways": [
+    {
+      "uuid": "cc0e8400-e29b-41d4-a716-446655440007",
+      "name": "Stripe",
+      "is_active": true,
+      "gateway_type": "credit_card"
+    },
+    {
+      "uuid": "dd0e8400-e29b-41d4-a716-446655440008",
+      "name": "PayPal",
+      "is_active": true,
+      "gateway_type": "wallet"
+    }
+  ],
+  "images": [
+    {
+      "uuid": "ee0e8400-e29b-41d4-a716-446655440009",
+      "usage": "banner",
+      "url": "https://cdn.example.com/images/banner.jpg",
+      "created_at": "2024-01-20T14:30:00Z"
+    },
+    {
+      "uuid": "ff0e8400-e29b-41d4-a716-446655440010",
+      "usage": "background",
+      "url": "https://cdn.example.com/images/background.jpg",
+      "created_at": "2024-01-21T09:15:00Z"
+    }
+  ],
+  "total_counts": {
+    "products": 250,
+    "orders": 1500,
+    "articles": 45,
+    "events": 12,
+    "newsletters": 8
   }
 }
 ```
 
 ## JSON Structure Explained
 
+### Main Fields (always present)
+
 | Field | Type | Description |
 | ----------- | ------- | ----------- |
-| data        | object  | Platform data |
-| data.uuid   | string  | Platform unique identifier |
-| data.total  | object  | Platform totals |
-| data.total.users | integer | Total number of users on the platform |
-| data.domain | object  | Domain area information |
-| data.domain.uuid | string  | Domain area unique identifier |
-| data.domain.name | string  | Domain area name |
-| data.name   | string  | Platform name |
-| data.email  | string  | Platform contact email |
-| data.open_to_register | boolean | Indicates if the platform is open for new registrations |
-| data.public_key | string  | Platform public key |
-| data.logo   | object  | Platform logo URLs |
-| data.logo.main | string  | Main logo URL |
-| data.logo.square | string  | Square logo URL |
-| data.logo.rounded | string  | Rounded logo URL |
-| data.logo.rectangular | string  | Rectangular logo URL |
-| data.created_at | string  | Creation date (ISO 8601) |
-| data.company_uuid | string  | Company unique identifier (when available) |
-| data.company_name | string  | Company name (when available) |
-| data.slug | string  | Company slug (when available) |
-| data.zipcode | string  | Company ZIP code (when available) |
-| data.country | string  | Company country (when available) |
-| data.state | string  | Company state (when available) |
-| data.city | string  | Company city (when available) |
-| data.company_logos | array   | Company logos (when available) |
-| data.full_address | string  | Full formatted address (when available) |
-| data.links | array   | Company social media links (when available) |
-| data.links[].uuid | string  | Link unique identifier |
-| data.links[].platform | string  | Social platform name |
-| data.links[].url | string  | Social profile URL |
+| uuid | string  | Platform unique identifier |
+| total | object  | Platform totals (conditional - only if there are users) |
+| total.users | integer | Total registered users |
+| is_parent | boolean | Indicates if the platform is a parent platform |
+| domain | object  | Domain area information |
+| domain.uuid | string  | Domain area unique identifier |
+| domain.slug | string  | Domain area slug |
+| domain.name | string  | Domain area name |
+| name | string  | Platform name |
+| email | string  | Platform contact email |
+| open_to_register | boolean | Indicates if open for new registrations |
+| public_key | string  | Platform public key |
+| logo | object  | Platform logo URLs |
+| logo.main | string  | Main logo URL |
+| logo.square | string  | Square logo URL |
+| logo.rounded | string  | Rounded logo URL |
+| logo.rectangular | string  | Rectangular logo URL |
+| created_at | string  | Creation date (ISO 8601) |
+
+### Company Fields (conditional)
+
+These fields appear within the `company` object only when the platform has an associated company:
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| company | object  | Company data (conditional) |
+| company.uuid | string  | Company UUID |
+| company.name | string  | Company name |
+| company.slug | string  | Company slug |
+| company.zipcode | string\|null | Zip code |
+| company.country | string\|null | Country |
+| company.state | string\|null | State |
+| company.city | string\|null | City |
+| company.company_logos | array  | Company logos |
+| company.full_address | string\|null | Full formatted address |
+| company.links | array  | Social media |
+| company.links[].uuid | string  | Social link UUID |
+| company.links[].platform | string  | Social platform name |
+| company.links[].url | string  | Profile URL |
+
+### Detailed Fields (show exclusive)
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| client_id | string  | OAuth client ID |
+| discord | object  | Discord settings |
+| discord.channel_id | string  | Discord channel ID for notifications |
+
+### Affiliation Fields (conditional - platformAffiliated)
+
+Appear only when the platform has an affiliation relationship:
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| is_main | boolean | If it's the main platform |
+| is_banned | boolean | If it's banned |
+| platform_transactions | object  | Platform transactions |
+| platform_transactions.in | integer | Incoming transactions |
+| platform_transactions.out | integer | Outgoing transactions |
+
+### Regional Information (conditional)
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| regional_information | object  | Regional information (conditional) |
+| regional_information.uuid | string  | Regional information UUID |
+| regional_information.language | string  | Language code (e.g.: pt-BR, en, es) |
+| regional_information.currency | string  | Currency code (e.g.: BRL, USD, EUR) |
+
+### IMAP Settings (conditional)
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| imap_setting | object  | IMAP settings (conditional) |
+| imap_setting.uuid | string  | Configuration UUID |
+| imap_setting.host | string  | IMAP server host |
+| imap_setting.port | integer | IMAP server port |
+| imap_setting.encryption | string  | Encryption type (ssl, tls, none) |
+| imap_setting.username | string  | Authentication username |
+| imap_setting.is_active | boolean | If the configuration is active |
+
+### Payment Gateways (conditional)
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| payment_gateways | array  | Gateway list (conditional) |
+| payment_gateways[].uuid | string  | Gateway UUID |
+| payment_gateways[].name | string  | Gateway name |
+| payment_gateways[].is_active | boolean | If it's active |
+| payment_gateways[].gateway_type | string  | Gateway type |
+
+### Images (conditional)
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| images | array  | Platform images (conditional) |
+| images[].uuid | string  | Image UUID |
+| images[].usage | string  | Image usage (banner, background, etc) |
+| images[].url | string  | Full image URL |
+| images[].created_at | string  | Creation date (ISO 8601) |
+
+### Aggregated Counters
+
+| Field | Type | Description |
+| ----------- | ------- | ----------- |
+| total_counts | object  | Aggregated counters |
+| total_counts.products | integer | Total products (only if > 0) |
+| total_counts.orders | integer | Total orders (only if > 0) |
+| total_counts.articles | integer | Total articles (only if > 0) |
+| total_counts.events | integer | Total events (only if > 0) |
+| total_counts.newsletters | integer | Total newsletters (only if > 0) |
+
+## Loaded Relationships
+
+This endpoint automatically loads the following relationships:
+
+- `domainArea` - Domain area
+- `company` - Associated company
+- `company.logos` - Company logos
+- `company.address` - Company address
+- `company.socialMedias` - Company social media
+- `regionalInformation` - Regional information
+- `imapSetting` - IMAP settings
+- `userRoles` - User roles
+- `userRoles.user` - User data
+- `paymentGateways` - Payment gateways
+- `images` - Platform images
+- `affiliated` - Affiliated platforms
+
+## Counters
+
+- `users_count` - Total users
+- `products_count` - Total products
+- `orders_count` - Total orders
+- `articles_count` - Total articles
+- `events_count` - Total events
+- `newsletters_count` - Total newsletters
 
 ## HTTP Status
 
 - 200: OK
-- 201: Created
-- 400: Bad Request
-- 401: Unauthorized
-- 403: Forbidden
-- 404: Not Found
-- 422: Unprocessable Entity
-- 429: Too Many Requests
-- 500: Internal Server Error
+- 401: Unauthenticated
+- 403: Forbidden (without `show.all` permission)
+- 404: Platform not found
+- 422: Validation error
+- 429: Rate limit exceeded
+- 500: Internal error
 
 ## Errors
 
@@ -147,14 +318,27 @@ curl -X GET \
 }
 ```
 
+## Conditional Fields
+
+The following field blocks are conditional and only appear when applicable:
+
+- **company**: Only when the platform has an associated company
+- **is_main, is_banned, platform_transactions**: Only when it has platformAffiliated relationship
+- **regional_information**: Only when the relationship is loaded
+- **imap_setting**: Only when configured and the relationship is loaded
+- **payment_gateways**: Only when the relationship is loaded
+- **images**: Only when the relationship is loaded
+- **Counters in total_counts**: Only if the value is greater than 0
+
 ## Notes
 
-- This endpoint returns the complete details of a specific platform
-- Only users with backoffice permission can access
-- Includes platform user count (users_count)
-- The {platform} parameter accepts the platform UUID
-- Response includes relationships with domainArea, company, company.logos, company.address and company.socialMedias
-- Company fields (company_uuid, company_name, slug, zipcode, country, state, city, company_logos, full_address, links) are conditional and only appear when the platform has an associated company
+- This endpoint returns much more detailed information than the index
+- The `client_id` is only exposed in show, not in index
+- Discord settings include the platform-specific channel or the default channel
+- All arrays return empty when relationships are not available
+- All dates follow ISO 8601 format
+- Logo and image URLs are complete and ready to use
+- Aggregated counters provide an overview of platform activity
 
 ## Related
 
@@ -163,5 +347,5 @@ curl -X GET \
 
 ## Changelog
 
-- 2025-10-25: Complete documentation update with detailed structure
+- 2025-10-25: Complete update with all detailed fields including client_id, discord, regional_information, imap_setting, payment_gateways, images and total_counts
 - 2025-10-16: Initial documentation
