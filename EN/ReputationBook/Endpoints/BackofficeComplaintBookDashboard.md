@@ -6,7 +6,7 @@ Backoffice endpoint to retrieve complaint book dashboard metrics. Returns aggreg
 
 ## Endpoint
 
-**GET** `/api/v1/backoffice/reputationbook/title/{title}`
+**GET** `/api/v1/backoffice/reputation-book/title/{title}`
 
 ## Authentication
 
@@ -390,7 +390,7 @@ All time views are mathematically consistent:
 ### cURL
 
 ```bash
-curl -X GET "https://api.example.com/api/v1/backoffice/reputationbook/title/general-metrics" \
+curl -X GET "https://api.example.com/api/v1/backoffice/reputation-book/title/general-metrics" \
   -H "Authorization: Bearer {your-token}" \
   -H "Accept: application/json"
 ```
@@ -398,7 +398,7 @@ curl -X GET "https://api.example.com/api/v1/backoffice/reputationbook/title/gene
 ### JavaScript (Fetch)
 
 ```javascript
-fetch('https://api.example.com/api/v1/backoffice/reputationbook/title/general-metrics', {
+fetch('https://api.example.com/api/v1/backoffice/reputation-book/title/general-metrics', {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer {your-token}',
@@ -415,7 +415,7 @@ fetch('https://api.example.com/api/v1/backoffice/reputationbook/title/general-me
 use GuzzleHttp\Client;
 
 $client = new Client();
-$response = $client->get('https://api.example.com/api/v1/backoffice/reputationbook/title/general-metrics', [
+$response = $client->get('https://api.example.com/api/v1/backoffice/reputation-book/title/general-metrics', [
     'headers' => [
         'Authorization' => 'Bearer {your-token}',
         'Accept' => 'application/json',

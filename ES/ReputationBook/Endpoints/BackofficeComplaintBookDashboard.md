@@ -6,7 +6,7 @@ Endpoint de backoffice para obtener métricas del panel del libro de quejas. Ret
 
 ## Endpoint
 
-**GET** `/api/v1/backoffice/reputationbook/title/{title}`
+**GET** `/api/v1/backoffice/reputation-book/title/{title}`
 
 ## Autenticación
 
@@ -390,7 +390,7 @@ Todas las vistas temporales son matemáticamente consistentes:
 ### cURL
 
 ```bash
-curl -X GET "https://api.example.com/api/v1/backoffice/reputationbook/title/general-metrics" \
+curl -X GET "https://api.example.com/api/v1/backoffice/reputation-book/title/general-metrics" \
   -H "Authorization: Bearer {tu-token}" \
   -H "Accept: application/json"
 ```
@@ -398,7 +398,7 @@ curl -X GET "https://api.example.com/api/v1/backoffice/reputationbook/title/gene
 ### JavaScript (Fetch)
 
 ```javascript
-fetch('https://api.example.com/api/v1/backoffice/reputationbook/title/general-metrics', {
+fetch('https://api.example.com/api/v1/backoffice/reputation-book/title/general-metrics', {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer {tu-token}',
@@ -415,7 +415,7 @@ fetch('https://api.example.com/api/v1/backoffice/reputationbook/title/general-me
 use GuzzleHttp\Client;
 
 $client = new Client();
-$response = $client->get('https://api.example.com/api/v1/backoffice/reputationbook/title/general-metrics', [
+$response = $client->get('https://api.example.com/api/v1/backoffice/reputation-book/title/general-metrics', [
     'headers' => [
         'Authorization' => 'Bearer {tu-token}',
         'Accept' => 'application/json',
