@@ -44,7 +44,8 @@ El usuario autenticado debe tener uno de los siguientes permisos:
     "company_id": null,
     "title": "general-metrics",
     "metrics": {
-      "daily": {
+      "complaint_by_status": {
+        "daily": {
         "period": {
           "type": "daily",
           "categories": ["00h", "01h", "02h", "03h", "04h", "05h", "06h", "07h", "08h", "09h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h", "18h", "19h", "20h", "21h", "22h", "23h"],
@@ -303,6 +304,7 @@ El usuario autenticado debe tener uno de los siguientes permisos:
           ],
           "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         }
+      }
       }
     },
     "createdAt": "2024-10-20T00:00:00.000Z",
