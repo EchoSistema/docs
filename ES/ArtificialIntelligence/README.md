@@ -1,23 +1,44 @@
-# ArtificialIntelligence Dominio
+# API de Inteligencia Artificial - EchoIntel
 
-This domain provides API endpoints for artificialintelligence management.
+Este documento proporciona una visión completa de todos los endpoints de inteligencia artificial disponibles a través de la integración con la plataforma EchoIntel.
 
-## Overview
+## Visión General
 
-For detailed information about each endpoint, please refer to the individual endpoint documentation in the Endpoints directory.
+La API de Inteligencia Artificial proporciona **41 endpoints** organizados en **7 categorías principales**, ofreciendo soluciones de machine learning, análisis predictivo, optimización y procesamiento de lenguaje natural para diversos casos de uso empresariales.
 
-## Authentication
+### URL Base
 
-Most endpoints require authentication via Bearer token with `X-PUBLIC-KEY` header.
+```
+https://your-domain.com/api/v1/ai/echointel
+```
 
-## Available Endpoints
+## Autenticación
 
-See [Endpoints/README.md](./Endpoints/README.md) for the complete list.
+Todos los endpoints requieren autenticación vía **Bearer token** (Sanctum) y pueden requerir headers adicionales:
 
-## Relacionados
+| Header             | Requerido   | Descripción |
+| ------------------ | ----------- | ----------- |
+| Authorization      | Sí          | `Bearer {token}` |
+| X-Customer-Api-Id  | Condicional | UUID del tenant (v4). |
+| X-Secret           | Condicional | Secret de 64 caracteres. Debe rotarse cada 90 días. |
+| Accept-Language    | No          | Idioma (`en`, `es`, `pt`). Por defecto: `en`. |
+| Content-Type       | Sí          | `application/json` |
 
-- [API Documentation](../README.md)
+## Categorías de Endpoints
 
-## Changelog
+Ver documentación completa en inglés (EN) o portugués (PT) para lista detallada de los 41 endpoints organizados en 7 categorías:
+- Customer Intelligence (14 endpoints)
+- Propensity (3 endpoints)
+- Recommendations (6 endpoints)
+- Forecast (6 endpoints)
+- Inventory (6 endpoints)
+- Risk (5 endpoints)
+- Analytics (5 endpoints)
 
-- 2025-10-16: Initial documentation
+## Referencias
+
+- **Documentación EchoIntel:** https://github.com/EchoSistema/abintel-documentation
+- **Controller:** `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php`
+- **Rutas:** `src/Domain/ArtificialIntelligence/routes/api.php`
+
+**Última actualización:** 2025-01-07
