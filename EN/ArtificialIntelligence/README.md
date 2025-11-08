@@ -84,7 +84,7 @@ POST /customer-intelligence/segment-cluster-profiles
 ```
 POST /customer-intelligence/segmentation
 ```
-**What it does:** [📄 See full documentation](./Endpoints/CustomerIntelligence/CustomerSegmentation.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/CustomerIntelligence/CustomerSegmentation.md)
 
 Performs automatic customer segmentation analysis using clustering algorithms (K-means, Hierarchical, DBSCAN).
 
@@ -104,7 +104,7 @@ POST /customer-intelligence/loyalty
 ```
 POST /customer-intelligence/rfm
 ```
-**What it does:** [📄 See full documentation](./Endpoints/CustomerIntelligence/CustomerRFM.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/CustomerIntelligence/CustomerRFM.md)
 
 Performs RFM (Recency, Frequency, Monetary) analysis to segment customers and generate action recommendations.
 
@@ -124,7 +124,7 @@ POST /customer-intelligence/clv-forecast
 ```
 POST /customer-intelligence/churn-risk
 ```
-**What it does:** [📄 See full documentation](./Endpoints/CustomerIntelligence/ChurnRisk.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/CustomerIntelligence/ChurnRisk.md)
 
 Identifies customers at risk of churn (cancellation/abandonment) and provides personalized retention recommendations.
 
@@ -150,7 +150,7 @@ Predictive propensity models for specific actions.
 ```
 POST /propensity/buy-product
 ```
-**What it does:** [📄 See full documentation](./Endpoints/Propensity/PropensityBuyProduct.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/Propensity/PropensityBuyProduct.md)
 
 Calculates the probability of customers purchasing specific products, identifying the most likely for targeted campaigns.
 
@@ -176,7 +176,7 @@ Recommendation systems based on collaborative and content-based filtering.
 ```
 POST /recommendations/user-items
 ```
-**What it does:** [📄 See full documentation](./Endpoints/Recommendations/RecommendUserItems.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/Recommendations/RecommendUserItems.md)
 
 Generates personalized product recommendations for specific users based on history and preferences.
 
@@ -220,7 +220,7 @@ Time series predictions for strategic planning.
 ```
 POST /forecast/revenue
 ```
-**What it does:** [📄 See full documentation](./Endpoints/Forecast/ForecastRevenue.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/Forecast/ForecastRevenue.md)
 
 Predicts future revenue using ARIMA, SARIMA, and Prophet models, with confidence intervals.
 
@@ -270,7 +270,7 @@ POST /inventory/history-improved
 ```
 POST /inventory/optimization
 ```
-**What it does:** [📄 See full documentation](./Endpoints/Inventory/InventoryOptimization.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/Inventory/InventoryOptimization.md)
 
 Optimizes inventory levels by calculating reorder point, economic order quantity (EOQ), and safety stock.
 
@@ -308,7 +308,7 @@ Various risk analysis and scoring.
 ```
 POST /risk/credit-score
 ```
-**What it does:** [📄 See full documentation](./Endpoints/Risk/CreditRiskScore.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/Risk/CreditRiskScore.md)
 
 Calculates credit risk score (300-850) analyzing multiple financial and behavioral variables.
 
@@ -370,7 +370,7 @@ POST /analytics/sentiment-report
 ```
 POST /analytics/sentiment-realtime
 ```
-**What it does:** [📄 See full documentation](./Endpoints/Analytics/SentimentAnalysis.md)
+**What it does:** [📄 See full documentation](Endpoints/EchoIntel/Analytics/SentimentAnalysis.md)
 
 Performs real-time sentiment analysis of texts using NLP, with support for multiple languages and aspect-based analysis.
 
