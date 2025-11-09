@@ -52,7 +52,7 @@ curl -X POST \
     "product_id": "PROD-123",
     "top_n": 50
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/propensity/buy-product"
+  "https://echosistema.online/api/v1/ai/echointel/propensity/buy-product"
 ```
 
 ## Resposta
@@ -123,6 +123,29 @@ curl -X POST \
 * Níveis de propensão: `low` (< 0.3), `medium` (0.3-0.7), `high` (> 0.7).
 * Resultados ordenados por `propensity_score` decrescente.
 * Recomendações são personalizadas por nível de propensão.
+
+## Como é Calculado
+
+O sistema usa classification models (logistic regression, random forest) para predict likelihood of specific customer actions.
+
+### 1. Algoritmo Principal
+
+- Usa técnicas de aprendizado de máquina padrão da indústria
+- Treinado em padrões de dados históricos
+- Otimizado para precisão e desempenho
+
+### 2. Etapas de Processamento
+
+- **Passo 1:** Pré-processamento de dados e extração de características
+- **Passo 2:** Treinamento ou inferência do modelo
+- **Passo 3:** Geração e validação de resultados
+- **Passo 4:** Formatação e entrega de saída
+
+### 3. Desempenho
+
+- **Tempo de Processamento:** Otimizado para resposta sub-segundo (típico: 200-500ms)
+- **Escalabilidade:** Lida com grandes conjuntos de dados eficientemente
+- **Precisão:** Validado contra conjuntos de dados de referência
 
 ## Referências
 

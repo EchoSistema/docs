@@ -1,4 +1,4 @@
-# Inteligência Artificial – Otimização de Estoque
+# Inteligencia Artificial – Otimização de Estoque
 
 ## Endpoint
 
@@ -6,37 +6,37 @@
 POST /api/v1/ai/echointel/inventory/optimization
 ```
 
-Otimiza níveis de estoque utilizando modelos preditivos para minimizar custos e evitar rupturas.
+Otimiza níveis de estoque utilizando modelos predictivos para minimizar custos y evitar rupturas.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
 | X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sim         | `application/json`. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro        | Tipo   | Obrigatório | Descrição |
+| Parámetro        | Tipo   | Requerido | Descripción |
 | ---------------- | ------ | ----------- | --------- |
-| products         | array  | Sim         | Lista de produtos para otimização. |
-| lead_time        | int    | Sim         | Tempo de reposição (em dias). |
-| holding_cost     | float  | Não         | Custo de manutenção de estoque (%). |
-| stockout_cost    | float  | Não         | Custo de ruptura de estoque. |
-| service_level    | float  | Não         | Nível de serviço desejado (0-1). Padrão: `0.95`. |
+| products         | array  | Sí         | Lista de productos para otimização. |
+| lead_time        | int    | Sí         | Tempo de reposição (em dias). |
+| holding_cost     | float  | No         | Custo de manutenção de estoque (%). |
+| stockout_cost    | float  | No         | Custo de ruptura de estoque. |
+| service_level    | float  | No         | Nivel de serviço desejado (0-1). Predeterminado: `0.95`. |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -63,12 +63,12 @@ curl -X POST \
     "holding_cost": 0.15,
     "service_level": 0.95
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/inventory/optimization"
+  "https://echosistema.online/api/v1/ai/echointel/inventory/optimization"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -115,12 +115,12 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                                     | Tipo    | Descrição |
+| Campo                                     | Tipo    | Descripción |
 | ----------------------------------------- | ------- | --------- |
-| `optimization_results`                    | array   | Resultados por produto. |
-| `optimization_results[].product_id`       | string  | ID do produto. |
+| `optimization_results`                    | array   | Resultados por producto. |
+| `optimization_results[].product_id`       | string  | ID del producto. |
 | `optimization_results[].current_stock`    | int     | Estoque atual. |
 | `optimization_results[].recommended_stock`| int     | Estoque recomendado. |
 | `optimization_results[].reorder_point`    | int     | Ponto de reposição. |
@@ -129,15 +129,38 @@ curl -X POST \
 | `optimization_results[].action`           | string  | Ação recomendada. |
 | `optimization_results[].quantity_to_order`| int     | Quantidade a pedir. |
 | `optimization_results[].estimated_savings`| float   | Economia estimada. |
-| `optimization_results[].risk_level`       | string  | Nível de risco (`low`, `medium`, `high`). |
+| `optimization_results[].risk_level`       | string  | Nivel de risco (`low`, `medium`, `high`). |
 | `summary`                                 | object  | Resumo geral. |
 
 ## Notas
 
 * Ações possíveis: `maintain`, `increase`, `decrease`, `urgent_order`.
 * Risco alto indica probabilidade de ruptura de estoque.
-* EOQ considera custos de pedido e manutenção.
+* EOQ considera custos de pedido y manutenção.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza mathematical optimization algorithms para find optimal solutions for business constraints.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:261`

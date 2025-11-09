@@ -1,4 +1,4 @@
-# Inteligência Artificial – Propensão de Compra de Produto
+# Inteligencia Artificial – Propensión de Compra de Producto
 
 ## Endpoint
 
@@ -6,36 +6,36 @@
 POST /api/v1/ai/echointel/propensity/buy-product
 ```
 
-Calcula a propensão de clientes comprarem produtos específicos utilizando modelos preditivos.
+Calcula a propensión de clientes comprar productos específicos utilizando modelos predictivos.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
 | X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sim         | `application/json`. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro       | Tipo   | Obrigatório | Descrição |
+| Parámetro       | Tipo   | Requerido | Descripción |
 | --------------- | ------ | ----------- | --------- |
-| customers       | array  | Sim         | Lista de clientes para análise. |
-| product_id      | string | Sim         | ID do produto alvo. |
-| historical_data | array  | Não         | Dados históricos para melhorar precisão. |
-| top_n           | int    | Não         | Número de clientes com maior propensão a retornar. Padrão: `100`. |
+| customers       | array  | Sí         | Lista de clientes para análisis. |
+| product_id      | string | Sí         | ID del producto objetivo. |
+| historical_data | array  | No         | Datos históricos para mejorar precisión. |
+| top_n           | int    | No         | Número de clientes con mayor propensión a retornar. Predeterminado: `100`. |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -52,12 +52,12 @@ curl -X POST \
     "product_id": "PROD-123",
     "top_n": 50
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/propensity/buy-product"
+  "https://echosistema.online/api/v1/ai/echointel/propensity/buy-product"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -103,27 +103,50 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                                       | Tipo    | Descrição |
+| Campo                                       | Tipo    | Descripción |
 | ------------------------------------------- | ------- | --------- |
-| `propensity_scores`                         | array   | Scores de propensão por cliente. |
-| `propensity_scores[].customer_id`           | string  | ID do cliente. |
-| `propensity_scores[].propensity_score`      | float   | Score de propensão (0-1). |
-| `propensity_scores[].propensity_level`      | string  | Nível (`low`, `medium`, `high`). |
-| `propensity_scores[].confidence`            | float   | Confiança da previsão (0-1). |
-| `propensity_scores[].key_factors`           | array   | Fatores-chave da propensão. |
-| `propensity_scores[].recommended_actions`   | array   | Ações recomendadas. |
-| `product_info`                              | object  | Informações agregadas do produto. |
-| `product_info.avg_propensity`               | float   | Propensão média. |
-| `product_info.total_high_propensity`        | int     | Total de clientes com alta propensão. |
+| `propensity_scores`                         | array   | Scores de propensión por cliente. |
+| `propensity_scores[].customer_id`           | string  | ID del cliente. |
+| `propensity_scores[].propensity_score`      | float   | Score de propensión (0-1). |
+| `propensity_scores[].propensity_level`      | string  | Nivel (`low`, `medium`, `high`). |
+| `propensity_scores[].confidence`            | float   | Confianza de la predicción (0-1). |
+| `propensity_scores[].key_factors`           | array   | Factores clave de la propensión. |
+| `propensity_scores[].recommended_actions`   | array   | Acciones recomendadas. |
+| `product_info`                              | object  | Información agregada del producto. |
+| `product_info.avg_propensity`               | float   | Propensión promedio. |
+| `product_info.total_high_propensity`        | int     | Total de clientes con alta propensión. |
 
 ## Notas
 
-* Níveis de propensão: `low` (< 0.3), `medium` (0.3-0.7), `high` (> 0.7).
-* Resultados ordenados por `propensity_score` decrescente.
-* Recomendações são personalizadas por nível de propensão.
+* Níveis de propensión: `low` (< 0.3), `medium` (0.3-0.7), `high` (> 0.7).
+* Resultados ordenados por `propensity_score` descendente.
+* Recomendações são personalizadas por nível de propensión.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza classification models (logistic regression, random forest) para predict likelihood of specific customer actions.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:177`

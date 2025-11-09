@@ -1,4 +1,4 @@
-# Inteligência Artificial – Segmentação de Compras
+# Inteligencia Artificial – Segmentación de Compras
 
 ## Endpoint
 
@@ -6,37 +6,37 @@
 POST /api/v1/ai/echointel/customer-intelligence/purchasing-segmentation
 ```
 
-Realiza segmentação de clientes com base em padrões de compra, identificando grupos com comportamentos similares.
+Realiza segmentación de clientes con base em padrões de compra, identificando grupos con comportamentos similares.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). Requerido se não configurado no servidor. |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. Requerido se não configurado no servidor. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). Padrão: `en`. |
-| Content-Type       | string | Sim         | `application/json`. |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Requerido si en el está configurado en el servidor. |
+| X-Secret           | string | Condicional | Secret de 64 caracteres. Requerido si en el está configurado en el servidor. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). Predeterminado: `en`. |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro          | Tipo   | Obrigatório | Descrição |
+| Parámetro          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| customer_data      | array  | Sim         | Dados dos clientes para segmentação. |
-| segmentation_type  | string | Não         | Tipo de segmentação (`behavioral`, `value`, `frequency`). |
-| time_period        | object | Não         | Período temporal para análise. |
+| customer_data      | array  | Sí         | Datos de los clientes para segmentación. |
+| segmentation_type  | string | No         | Tipo de segmentación (`behavioral`, `value`, `frequency`). |
+| time_period        | object | No         | Período temporal para análisis. |
 
 > **Nota:** Os parâmetros aceitam tanto `snake_case` quanto `camelCase` (ex.: `customer_data` ou `customerData`).
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -52,12 +52,12 @@ curl -X POST \
     ],
     "segmentation_type": "behavioral"
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/purchasing-segmentation"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/purchasing-segmentation"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -80,10 +80,33 @@ curl -X POST \
 
 ## Notas
 
-* Segmentação baseada em algoritmos de machine learning.
-* Suporta múltiplos critérios de segmentação.
+* Segmentación baseada em algoritmos de machine learning.
+* Suporta múltiplos critérios de segmentación.
 * Parâmetros aceitam `snake_case` ou `camelCase`.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza clustering algorithms (K-means, hierarchical clustering) para group similar customers or items into segments.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:105`

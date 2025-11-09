@@ -59,13 +59,13 @@ curl -X POST \
     "model_type": "xgboost",
     "threshold": 0.7
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/churn-risk"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/churn-risk"
 ```
 
 ### Exemplo de requisição (JavaScript)
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/churn-risk', {
+const response = await fetch('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/churn-risk', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <token>',

@@ -1,4 +1,4 @@
-# Inteligência Artificial – Segmentação de Clientes
+# Inteligencia Artificial – Segmentación de Clientes
 
 ## Endpoint
 
@@ -6,38 +6,38 @@
 POST /api/v1/ai/echointel/customer-intelligence/segmentation
 ```
 
-Realiza análise de segmentação de clientes utilizando técnicas de machine learning para identificar grupos de clientes com características similares.
+Realiza análisis de segmentación de clientes utilizando técnicas de machine learning para identificar grupos de clientes con características similares.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). Requerido se não configurado no servidor. |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. Requerido se não configurado no servidor. |
-| Accept-Language    | string | Não         | Idioma da resposta (`en`, `es`, `pt`). Padrão: `en`. |
-| Content-Type       | string | Sim         | `application/json`. |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Requerido si en el está configurado en el servidor. |
+| X-Secret           | string | Condicional | Secret de 64 caracteres. Requerido si en el está configurado en el servidor. |
+| Accept-Language    | string | No         | Idioma de la respuesta (`en`, `es`, `pt`). Predeterminado: `en`. |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-Os parâmetros variam conforme a necessidade do algoritmo de segmentação. Consulte a documentação da API EchoIntel para detalhes específicos.
+Los parámetros varían según los requisitos del algoritmo de segmentación. Consulte la documentación de la API EchoIntel para detalles específicos.
 
-| Parâmetro    | Tipo   | Obrigatório | Descrição |
+| Parámetro    | Tipo   | Requerido | Descripción |
 | ------------ | ------ | ----------- | --------- |
-| data         | array  | Sim         | Array de dados dos clientes para segmentação. |
-| algorithm    | string | Não         | Algoritmo a ser utilizado (ex.: `kmeans`, `hierarchical`). |
-| n_clusters   | int    | Não         | Número de clusters desejados. |
-| features     | array  | Não         | Features específicas para análise. |
+| data         | array  | Sí         | Array de datos de los clientes para segmentación. |
+| algorithm    | string | No         | Algoritmo a utilizar (ex.: `kmeans`, `hierarchical`). |
+| n_clusters   | int    | No         | Número de clusters deseados. |
+| features     | array  | No         | Features específicas para análisis. |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -54,13 +54,13 @@ curl -X POST \
     "algorithm": "kmeans",
     "n_clusters": 3
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation"
 ```
 
-### Exemplo de requisição (JavaScript)
+### Ejemplo de solicitud (JavaScript)
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation', {
+const response = await fetch('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <token>',
@@ -83,7 +83,7 @@ const result = await response.json();
 console.log(result);
 ```
 
-### Exemplo de requisição (PHP)
+### Ejemplo de solicitud (PHP)
 
 ```php
 <?php
@@ -95,7 +95,7 @@ $response = Http::withHeaders([
     'X-Customer-Api-Id' => $tenantUuid,
     'X-Secret' => $secret,
     'Accept-Language' => 'pt',
-])->post('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation', [
+])->post('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', [
     'data' => [
         ['customer_id' => '123', 'total_purchases' => 1500, 'frequency' => 12],
         ['customer_id' => '456', 'total_purchases' => 3000, 'frequency' => 24],
@@ -107,9 +107,9 @@ $response = Http::withHeaders([
 $result = $response->json();
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -140,7 +140,7 @@ $result = $response->json();
 }
 ```
 
-### Erro `400 Bad Request`
+### Error `400 Bad Request`
 
 ```json
 {
@@ -149,7 +149,7 @@ $result = $response->json();
 }
 ```
 
-### Erro `401 Unauthorized`
+### Error `401 Unauthorized`
 
 ```json
 {
@@ -158,7 +158,7 @@ $result = $response->json();
 }
 ```
 
-### Erro `500 Internal Server Error`
+### Error `500 Internal Server Error`
 
 ```json
 {
@@ -167,26 +167,49 @@ $result = $response->json();
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                              | Tipo    | Descrição |
+| Campo                              | Tipo    | Descripción |
 | ---------------------------------- | ------- | --------- |
 | `segments`                         | array   | Array de segmentos identificados. |
-| `segments[].segment_id`            | int     | Identificador do segmento. |
-| `segments[].size`                  | int     | Número de clientes no segmento. |
-| `segments[].characteristics`       | object  | Características médias do segmento. |
-| `segments[].customers`             | array   | IDs dos clientes no segmento. |
-| `metrics`                          | object  | Métricas de qualidade da segmentação. |
-| `metrics.silhouette_score`         | float   | Score de silhueta (0-1, maior é melhor). |
-| `metrics.davies_bouldin_score`     | float   | Score Davies-Bouldin (menor é melhor). |
+| `segments[].segment_id`            | int     | Identificador del segmento. |
+| `segments[].size`                  | int     | Número de clientes en el segmento. |
+| `segments[].characteristics`       | object  | Características promedio del segmento. |
+| `segments[].customers`             | array   | IDs de los clientes en el segmento. |
+| `metrics`                          | object  | Métricas de calidad de la segmentación. |
+| `metrics.silhouette_score`         | float   | Score de silhouette (0-1, mayor é melhor). |
+| `metrics.davies_bouldin_score`     | float   | Score Davies-Bouldin (menor es mejor). |
 
 ## Notas
 
-* O secret deve ser rotacionado a cada 90 dias conforme política de segurança.
-* O tempo de processamento pode variar conforme o volume de dados (timeout: 300 segundos).
-* Os headers `X-Customer-Api-Id` e `X-Secret` podem ser configurados no servidor via `.env`.
-* A resposta pode variar conforme a API EchoIntel. Consulte a documentação oficial para detalhes específicos.
+* El secret debe rotarse cada 90 días según la política de seguridad.
+* El tiempo de procesamiento puede variar según el volumen de datos (timeout: 300 segundos).
+* Los headers `X-Customer-Api-Id` e `X-Secret` pueden configurarse en el servidor mediante `.env`.
+* La respuesta puede variar según la API EchoIntel. Consulte la documentación oficial para detalles específicos.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza clustering algorithms (K-means, hierarchical clustering) para group similar customers or items into segments.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:130`

@@ -1,4 +1,4 @@
-# Inteligência Artificial – Previsão de Receita
+# Inteligencia Artificial – Previsión de Ingresos
 
 ## Endpoint
 
@@ -6,37 +6,37 @@
 POST /api/v1/ai/echointel/forecast/revenue
 ```
 
-Realiza previsão de receita futura utilizando séries temporais e modelos de machine learning.
+Realiza previsión de receita futura utilizando series temporales y modelos de machine learning.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
 | X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sim         | `application/json`. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro          | Tipo   | Obrigatório | Descrição |
+| Parámetro          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| historical_revenue | array  | Sim         | Dados históricos de receita. |
-| forecast_periods   | int    | Sim         | Número de períodos futuros a prever. |
-| granularity        | string | Não         | Granularidade temporal (`daily`, `weekly`, `monthly`). Padrão: `monthly`. |
-| confidence_level   | float  | Não         | Nível de confiança para intervalos (0-1). Padrão: `0.95`. |
-| external_factors   | object | Não         | Fatores externos (sazonalidade, promoções, etc.). |
+| historical_revenue | array  | Sí         | Datos históricos de receita. |
+| forecast_periods   | int    | Sí         | Número de períodos futuros a prever. |
+| granularity        | string | No         | Granularidade temporal (`daily`, `weekly`, `monthly`). Predeterminado: `monthly`. |
+| confidence_level   | float  | No         | Nivel de confianza para intervalos (0-1). Predeterminado: `0.95`. |
+| external_factors   | object | No         | Factores externos (sazonalidade, promoções, etc.). |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -57,12 +57,12 @@ curl -X POST \
     "granularity": "monthly",
     "confidence_level": 0.95
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/forecast/revenue"
+  "https://echosistema.online/api/v1/ai/echointel/forecast/revenue"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -104,21 +104,21 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                          | Tipo    | Descrição |
+| Campo                          | Tipo    | Descripción |
 | ------------------------------ | ------- | --------- |
-| `forecast`                     | array   | Previsões por período. |
-| `forecast[].period`            | string  | Período da previsão. |
-| `forecast[].predicted_revenue` | float   | Receita prevista. |
-| `forecast[].lower_bound`       | float   | Limite inferior do intervalo de confiança. |
-| `forecast[].upper_bound`       | float   | Limite superior do intervalo de confiança. |
-| `forecast[].confidence`        | float   | Nível de confiança. |
+| `forecast`                     | array   | Previsiones por período. |
+| `forecast[].period`            | string  | Período de la previsión. |
+| `forecast[].predicted_revenue` | float   | Ingresos previstos. |
+| `forecast[].lower_bound`       | float   | Límite inferior del intervalo de confianza. |
+| `forecast[].upper_bound`       | float   | Límite superior del intervalo de confianza. |
+| `forecast[].confidence`        | float   | Nivel de confianza. |
 | `total_forecast`               | object  | Métricas agregadas. |
-| `total_forecast.sum`           | float   | Soma total prevista. |
-| `total_forecast.avg`           | float   | Média prevista. |
-| `total_forecast.growth_rate`   | float   | Taxa de crescimento estimada. |
-| `model_metrics`                | object  | Métricas de performance. |
+| `total_forecast.sum`           | float   | Suma total prevista. |
+| `total_forecast.avg`           | float   | Promedio previsto. |
+| `total_forecast.growth_rate`   | float   | Tasa de crecimiento estimada. |
+| `model_metrics`                | object  | Métricas de rendimiento. |
 | `model_metrics.mae`            | float   | Mean Absolute Error. |
 | `model_metrics.rmse`           | float   | Root Mean Squared Error. |
 | `model_metrics.mape`           | float   | Mean Absolute Percentage Error. |
@@ -127,10 +127,10 @@ curl -X POST \
 
 ## Notas
 
-* MAPE baixo indica melhor precisão (< 0.10 é considerado excelente).
-* R² próximo de 1 indica melhor ajuste do modelo.
-* Intervalos de confiança indicam a incerteza da previsão.
+* MAPE bajo indica mejor precisión (< 0.10 é considerado excelente).
+* R² cercano a 1 indica mejor ajuste del modelo.
+* Los intervalos de confianza indican la incertidumbre de la previsión.
 
-## Referências
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:224`

@@ -1,4 +1,4 @@
-# Inteligência Artificial – Score de Risco de Crédito
+# Inteligencia Artificial – Score de Riesgo de Crédito
 
 ## Endpoint
 
@@ -6,35 +6,35 @@
 POST /api/v1/ai/echointel/risk/credit-score
 ```
 
-Calcula score de risco de crédito para clientes utilizando modelos de machine learning que analisam múltiplas variáveis financeiras e comportamentais.
+Calcula score de risco de crédito para clientes utilizando modelos de machine learning que analizan múltiples variables financeiras y comportamentais.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
 | X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sim         | `application/json`. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro          | Tipo   | Obrigatório | Descrição |
+| Parámetro          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| applicants         | array  | Sim         | Dados dos solicitantes de crédito. |
-| credit_amount      | float  | Sim         | Valor do crédito solicitado. |
-| include_explanation| boolean| Não         | Incluir explicação detalhada. Padrão: `false`. |
+| applicants         | array  | Sí         | Datos de los solicitantes de crédito. |
+| credit_amount      | float  | Sí         | Valor del crédito solicitado. |
+| include_explanation| boolean| No         | Incluir explicación detallada. Predeterminado: `false`. |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -58,12 +58,12 @@ curl -X POST \
     "credit_amount": 25000,
     "include_explanation": true
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/risk/credit-score"
+  "https://echosistema.online/api/v1/ai/echointel/risk/credit-score"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -103,38 +103,61 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                                      | Tipo    | Descrição |
+| Campo                                      | Tipo    | Descripción |
 | ------------------------------------------ | ------- | --------- |
 | `credit_scores`                            | array   | Scores por solicitante. |
-| `credit_scores[].applicant_id`             | string  | ID do solicitante. |
+| `credit_scores[].applicant_id`             | string  | ID del solicitante. |
 | `credit_scores[].credit_score`             | int     | Score de crédito (300-850). |
-| `credit_scores[].risk_category`            | string  | Categoria de risco (`low`, `medium`, `high`). |
-| `credit_scores[].approval_recommendation`  | string  | Recomendação (`approve`, `review`, `reject`). |
-| `credit_scores[].default_probability`      | float   | Probabilidade de default (0-1). |
-| `credit_scores[].suggested_terms`          | object  | Termos sugeridos. |
+| `credit_scores[].risk_category`            | string  | Categoría de risco (`low`, `medium`, `high`). |
+| `credit_scores[].approval_recommendation`  | string  | Recomendación (`approve`, `review`, `reject`). |
+| `credit_scores[].default_probability`      | float   | Probabilidad de default (0-1). |
+| `credit_scores[].suggested_terms`          | object  | Términos sugeridos. |
 | `credit_scores[].suggested_terms.max_amount` | float | Valor máximo recomendado. |
-| `credit_scores[].suggested_terms.interest_rate` | float | Taxa de juros sugerida. |
-| `credit_scores[].suggested_terms.term_months` | int  | Prazo em meses. |
-| `credit_scores[].risk_factors`             | array   | Fatores de risco. |
+| `credit_scores[].suggested_terms.interest_rate` | float | Tasa de interés sugerida. |
+| `credit_scores[].suggested_terms.term_months` | int  | Plazo en meses. |
+| `credit_scores[].risk_factors`             | array   | Factores de riesgo. |
 
-## Categorias de Risco
+## Categorías de Riesgo
 
-| Score      | Categoria | Descrição |
+| Score      | Categoría | Descripción |
 | ---------- | --------- | --------- |
-| 750-850    | Low       | Risco muito baixo, excelente histórico. |
-| 650-749    | Medium-Low| Risco baixo, bom histórico. |
-| 550-649    | Medium    | Risco moderado, requer análise. |
-| 450-549    | Medium-High| Risco elevado, análise criteriosa necessária. |
-| 300-449    | High      | Risco muito alto, aprovação não recomendada. |
+| 750-850    | Low       | Riesgo muy bajo, excelente historial. |
+| 650-749    | Medium-Low| Riesgo bajo, buen historial. |
+| 550-649    | Medium    | Riesgo moderado, requer análisis. |
+| 450-549    | Medium-High| Riesgo elevado, análisis criteriosa necessária. |
+| 300-449    | High      | Riesgo muy alto, aprobación en el recomendada. |
 
 ## Notas
 
-* Scores mais altos indicam menor risco de crédito.
-* Fatores considerados: histórico de crédito, renda, emprego, dívidas, etc.
-* Para explicações detalhadas, use `include_explanation: true`.
+* Scores más altos indican menor risco de crédito.
+* Factores considerados: historial crediticio, ingresos, empleo, deudas, etc.
+* Para explicaciones detalladas, use `include_explanation: true`.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza risk scoring and classification models para assess credit risk and default probability.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:288`

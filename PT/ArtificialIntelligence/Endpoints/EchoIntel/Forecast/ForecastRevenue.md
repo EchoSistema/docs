@@ -57,7 +57,7 @@ curl -X POST \
     "granularity": "monthly",
     "confidence_level": 0.95
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/forecast/revenue"
+  "https://echosistema.online/api/v1/ai/echointel/forecast/revenue"
 ```
 
 ## Resposta

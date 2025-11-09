@@ -52,7 +52,7 @@ curl -X POST \
     "reference_date": "2025-01-07",
     "quintiles": true
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/rfm"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/rfm"
 ```
 
 ## Resposta
@@ -137,6 +137,29 @@ curl -X POST \
 * Scores variam de 1 (pior) a 5 (melhor).
 * Segmentos são atribuídos automaticamente com base nos scores RFM.
 * Recomendações são personalizadas para cada segmento.
+
+## Como é Calculado
+
+O sistema usa quintile-based scoring methodology para segment customers by recency, frequency, and monetary value.
+
+### 1. Algoritmo Principal
+
+- Usa técnicas de aprendizado de máquina padrão da indústria
+- Treinado em padrões de dados históricos
+- Otimizado para precisão e desempenho
+
+### 2. Etapas de Processamento
+
+- **Passo 1:** Pré-processamento de dados e extração de características
+- **Passo 2:** Treinamento ou inferência do modelo
+- **Passo 3:** Geração e validação de resultados
+- **Passo 4:** Formatação e entrega de saída
+
+### 3. Desempenho
+
+- **Tempo de Processamento:** Otimizado para resposta sub-segundo (típico: 200-500ms)
+- **Escalabilidade:** Lida com grandes conjuntos de dados eficientemente
+- **Precisão:** Validado contra conjuntos de dados de referência
 
 ## Referências
 

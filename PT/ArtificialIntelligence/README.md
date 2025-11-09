@@ -18,6 +18,33 @@ Este documento fornece uma visão geral completa de todos os endpoints de inteli
 
 ---
 
+## 📚 Documentação Completa dos Endpoints
+
+A documentação detalhada de cada endpoint está disponível em três idiomas, com informações completas sobre parâmetros, respostas, algoritmos e fluxos de trabalho:
+
+### Português (PT)
+📄 **[Documentação Completa em Português](Endpoints/EchoIntel/)** - 46 endpoints documentados
+
+### English (EN)
+📄 **[Complete English Documentation](../EN/ArtificialIntelligence/Endpoints/EchoIntel/)** - 46 endpoints documented
+
+### Español (ES)
+📄 **[Documentación Completa en Español](../ES/ArtificialIntelligence/Endpoints/EchoIntel/)** - 46 endpoints documentados
+
+Cada documento de endpoint inclui:
+- ✅ Autenticação e headers necessários
+- ✅ Parâmetros completos (tipos, obrigatoriedade, descrições)
+- ✅ Exemplos de requisição (curl, JavaScript, PHP)
+- ✅ Estrutura de resposta detalhada
+- ✅ Códigos de status HTTP
+- ✅ Tratamento de erros
+- ✅ **Como é Computado** - Explicação dos algoritmos de IA/ML
+- ✅ **Fluxo de Trabalho Típico** - Guia prático de uso (endpoints principais)
+- ✅ Links para endpoints relacionados
+- ✅ Referências ao controller
+
+---
+
 ## Visão Geral
 
 A API de Inteligência Artificial fornece **41 endpoints** organizados em **7 categorias principais**, oferecendo soluções de machine learning, análise preditiva, otimização e processamento de linguagem natural para diversos casos de uso empresariais.

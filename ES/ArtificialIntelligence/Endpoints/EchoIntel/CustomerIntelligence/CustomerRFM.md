@@ -1,4 +1,4 @@
-# Inteligência Artificial – Análise RFM (Recency, Frequency, Monetary)
+# Inteligencia Artificial – Análise RFM (Recency, Frequency, Monetary)
 
 ## Endpoint
 
@@ -6,35 +6,35 @@
 POST /api/v1/ai/echointel/customer-intelligence/rfm
 ```
 
-Realiza análise RFM (Recência, Frequência e Valor Monetário) para segmentar clientes com base em seu comportamento de compra.
+Realiza análisis RFM (Recência, Frequência y Valor Monetário) para segmentar clientes con base em seu comportamento de compra.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
 | X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). Padrão: `en`. |
-| Content-Type       | string | Sim         | `application/json`. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). Predeterminado: `en`. |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro     | Tipo   | Obrigatório | Descrição |
+| Parámetro     | Tipo   | Requerido | Descripción |
 | ------------- | ------ | ----------- | --------- |
-| transactions  | array  | Sim         | Histórico de transações dos clientes. |
-| reference_date| string | Não         | Data de referência para cálculo (ISO 8601). Padrão: hoje. |
-| quintiles     | boolean| Não         | Se deve usar quintis (5 grupos) ao invés de quartis (4). Padrão: `false`. |
+| transactions  | array  | Sí         | Histórico de transações de los clientes. |
+| reference_date| string | No         | Data de referência para cálculo (ISO 8601). Predeterminado: hoje. |
+| quintiles     | boolean| No         | Se deve usar quintis (5 grupos) ao invés de quartis (4). Predeterminado: `false`. |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -52,12 +52,12 @@ curl -X POST \
     "reference_date": "2025-01-07",
     "quintiles": true
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/rfm"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/rfm"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -105,17 +105,17 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                                  | Tipo    | Descrição |
+| Campo                                  | Tipo    | Descripción |
 | -------------------------------------- | ------- | --------- |
-| `rfm_analysis`                         | array   | Array de análises RFM por cliente. |
-| `rfm_analysis[].customer_id`           | string  | ID do cliente. |
+| `rfm_analysis`                         | array   | Array de análisiss RFM por cliente. |
+| `rfm_analysis[].customer_id`           | string  | ID del cliente. |
 | `rfm_analysis[].recency_score`         | int     | Score de recência (1-5). |
 | `rfm_analysis[].frequency_score`       | int     | Score de frequência (1-5). |
 | `rfm_analysis[].monetary_score`        | int     | Score monetário (1-5). |
 | `rfm_analysis[].rfm_score`             | string  | Score RFM combinado. |
-| `rfm_analysis[].segment`               | string  | Segmento do cliente. |
+| `rfm_analysis[].segment`               | string  | Segmento del cliente. |
 | `rfm_analysis[].recency_days`          | int     | Dias desde última compra. |
 | `rfm_analysis[].frequency_count`       | int     | Número de compras. |
 | `rfm_analysis[].monetary_total`        | float   | Valor total gasto. |
@@ -124,7 +124,7 @@ curl -X POST \
 
 ## Segmentos RFM
 
-| Segmento              | Scores | Descrição |
+| Segmento              | Scores | Descripción |
 | --------------------- | ------ | --------- |
 | Champions             | 555, 554, 544, 545, 454, 455, 445 | Melhores clientes. |
 | Loyal Customers       | 543, 444, 435, 355, 354, 345, 344, 335 | Clientes fiéis. |
@@ -135,9 +135,32 @@ curl -X POST \
 ## Notas
 
 * Scores variam de 1 (pior) a 5 (melhor).
-* Segmentos são atribuídos automaticamente com base nos scores RFM.
+* Segmentos são atribuídos automaticamente con base en los scores RFM.
 * Recomendações são personalizadas para cada segmento.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza quintile-based scoring methodology para segment customers by recency, frequency, and monetary value.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:145`

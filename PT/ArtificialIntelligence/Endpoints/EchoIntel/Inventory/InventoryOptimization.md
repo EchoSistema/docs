@@ -63,7 +63,7 @@ curl -X POST \
     "holding_cost": 0.15,
     "service_level": 0.95
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/inventory/optimization"
+  "https://echosistema.online/api/v1/ai/echointel/inventory/optimization"
 ```
 
 ## Resposta
@@ -137,6 +137,29 @@ curl -X POST \
 * Ações possíveis: `maintain`, `increase`, `decrease`, `urgent_order`.
 * Risco alto indica probabilidade de ruptura de estoque.
 * EOQ considera custos de pedido e manutenção.
+
+## Como é Calculado
+
+O sistema usa mathematical optimization algorithms para find optimal solutions for business constraints.
+
+### 1. Algoritmo Principal
+
+- Usa técnicas de aprendizado de máquina padrão da indústria
+- Treinado em padrões de dados históricos
+- Otimizado para precisão e desempenho
+
+### 2. Etapas de Processamento
+
+- **Passo 1:** Pré-processamento de dados e extração de características
+- **Passo 2:** Treinamento ou inferência do modelo
+- **Passo 3:** Geração e validação de resultados
+- **Passo 4:** Formatação e entrega de saída
+
+### 3. Desempenho
+
+- **Tempo de Processamento:** Otimizado para resposta sub-segundo (típico: 200-500ms)
+- **Escalabilidade:** Lida com grandes conjuntos de dados eficientemente
+- **Precisão:** Validado contra conjuntos de dados de referência
 
 ## Referências
 

@@ -1,4 +1,4 @@
-# Inteligência Artificial – Análise RFM (Recency, Frequency, Monetary)
+# Artificial Intelligence – RFM Analysis (Recency, Frequency, Monetary)
 
 ## Endpoint
 
@@ -6,35 +6,35 @@
 POST /api/v1/ai/echointel/customer-intelligence/rfm
 ```
 
-Realiza análise RFM (Recência, Frequência e Valor Monetário) para segmentar clientes com base em seu comportamento de compra.
+Performs RFM analysis (Recency, Frequency and Monetary Value) to segment customers based on their purchasing behavior.
 
-## Autenticação
+## Authentication
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Required – Bearer {token} with middleware `auth:sanctum`
 
-## Cabeçalhos
+## Headers
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). Padrão: `en`. |
-| Content-Type       | string | Sim         | `application/json`. |
+| Authorization      | string | Yes         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
+| X-Secret           | string | Conditional | 64-character secret. |
+| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). Default: `en`. |
+| Content-Type       | string | Yes         | `application/json`. |
 
-## Parâmetros
+## Parameters
 
-### Parâmetros do corpo
+### Body Parameters
 
-| Parâmetro     | Tipo   | Obrigatório | Descrição |
+| Parameter     | Type   | Required | Description |
 | ------------- | ------ | ----------- | --------- |
-| transactions  | array  | Sim         | Histórico de transações dos clientes. |
-| reference_date| string | Não         | Data de referência para cálculo (ISO 8601). Padrão: hoje. |
-| quintiles     | boolean| Não         | Se deve usar quintis (5 grupos) ao invés de quartis (4). Padrão: `false`. |
+| transactions  | array  | Yes         | Customer transaction history. |
+| reference_date| string | No         | Reference date for calculation (ISO 8601). Default: today. |
+| quintiles     | boolean| No         | Whether to use quintiles (5 groups) instead of quartiles (4). Default: `false`. |
 
-## Exemplos
+## Examples
 
-### Exemplo de requisição (curl)
+### Request Example (curl)
 
 ```bash
 curl -X POST \
@@ -52,12 +52,12 @@ curl -X POST \
     "reference_date": "2025-01-07",
     "quintiles": true
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/rfm"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/rfm"
 ```
 
-## Resposta
+## Response
 
-### Sucesso `200 OK`
+### Success `200 OK`
 
 ```json
 {
@@ -105,39 +105,136 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## JSON Structure
 
-| Campo                                  | Tipo    | Descrição |
+| Field                                  | Type    | Description |
 | -------------------------------------- | ------- | --------- |
-| `rfm_analysis`                         | array   | Array de análises RFM por cliente. |
-| `rfm_analysis[].customer_id`           | string  | ID do cliente. |
-| `rfm_analysis[].recency_score`         | int     | Score de recência (1-5). |
-| `rfm_analysis[].frequency_score`       | int     | Score de frequência (1-5). |
-| `rfm_analysis[].monetary_score`        | int     | Score monetário (1-5). |
-| `rfm_analysis[].rfm_score`             | string  | Score RFM combinado. |
-| `rfm_analysis[].segment`               | string  | Segmento do cliente. |
-| `rfm_analysis[].recency_days`          | int     | Dias desde última compra. |
-| `rfm_analysis[].frequency_count`       | int     | Número de compras. |
-| `rfm_analysis[].monetary_total`        | float   | Valor total gasto. |
-| `rfm_analysis[].recommendations`       | array   | Recomendações de ação. |
-| `segments_summary`                     | object  | Resumo de clientes por segmento. |
+| `rfm_analysis`                         | array   | Array of RFM analyses per customer. |
+| `rfm_analysis[].customer_id`           | string  | Customer ID. |
+| `rfm_analysis[].recency_score`         | int     | Recency score (1-5). |
+| `rfm_analysis[].frequency_score`       | int     | Frequency score (1-5). |
+| `rfm_analysis[].monetary_score`        | int     | Monetary score (1-5). |
+| `rfm_analysis[].rfm_score`             | string  | Combined RFM score. |
+| `rfm_analysis[].segment`               | string  | Customer segment. |
+| `rfm_analysis[].recency_days`          | int     | Days since last purchase. |
+| `rfm_analysis[].frequency_count`       | int     | Number of purchases. |
+| `rfm_analysis[].monetary_total`        | float   | Total amount spent. |
+| `rfm_analysis[].recommendations`       | array   | Action recommendations. |
+| `segments_summary`                     | object  | Summary of customers per segment. |
 
-## Segmentos RFM
+## RFM Segments
 
-| Segmento              | Scores | Descrição |
+| Segment               | Scores | Description |
 | --------------------- | ------ | --------- |
-| Champions             | 555, 554, 544, 545, 454, 455, 445 | Melhores clientes. |
-| Loyal Customers       | 543, 444, 435, 355, 354, 345, 344, 335 | Clientes fiéis. |
-| Potential Loyalists   | 553, 551, 552, 541, 542, 533, 532, 531, 452, 451, 442, 441, 431, 453, 433, 432, 423, 353, 352, 351, 342, 341, 333, 323 | Clientes promissores. |
-| At Risk               | 255, 254, 245, 244, 253, 252, 243, 242, 235, 234, 225, 224, 153, 152, 145, 143, 142, 135, 134, 133, 125, 124 | Em risco de churn. |
-| Lost                  | 111, 112, 121, 131, 141,211, 212, 114, 214, 141, 221, 213, 113, 222, 132 | Clientes perdidos. |
+| Champions             | 555, 554, 544, 545, 454, 455, 445 | Best customers. |
+| Loyal Customers       | 543, 444, 435, 355, 354, 345, 344, 335 | Loyal customers. |
+| Potential Loyalists   | 553, 551, 552, 541, 542, 533, 532, 531, 452, 451, 442, 441, 431, 453, 433, 432, 423, 353, 352, 351, 342, 341, 333, 323 | Promising customers. |
+| At Risk               | 255, 254, 245, 244, 253, 252, 243, 242, 235, 234, 225, 224, 153, 152, 145, 143, 142, 135, 134, 133, 125, 124 | At risk of churn. |
+| Lost                  | 111, 112, 121, 131, 141,211, 212, 114, 214, 141, 221, 213, 113, 222, 132 | Lost customers. |
 
-## Notas
+## HTTP Status
 
-* Scores variam de 1 (pior) a 5 (melhor).
-* Segmentos são atribuídos automaticamente com base nos scores RFM.
-* Recomendações são personalizadas para cada segmento.
+| Status Code | Description |
+|-------------|-------------|
+| 200 OK | Request successful. Returns RFM analysis results. |
+| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
+| 401 Unauthorized | Missing or invalid Bearer token. |
+| 403 Forbidden | Valid token but insufficient permissions. |
+| 422 Unprocessable Entity | Request validation failed. See response for details. |
+| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
+| 500 Internal Server Error | Server error. Contact support if persistent. |
+| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
 
-## Referências
+## Errors
+
+### Common Error Responses
+
+#### Missing Required Parameters
+```json
+{
+  "error": "Validation failed",
+  "message": "Required parameter 'data' is missing",
+  "code": "MISSING_PARAMETER",
+  "details": {
+    "parameter": "data",
+    "location": "body"
+  }
+}
+```
+
+**Solution:** Ensure all required parameters are provided in the request body.
+
+#### Invalid Authentication
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired authentication token",
+  "code": "AUTH_FAILED"
+}
+```
+
+**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+
+## Notes
+
+* Scores range from 1 (worst) to 5 (best).
+* Segments are automatically assigned based on RFM scores.
+* Recommendations are personalized for each segment.
+
+## How It Is Computed
+
+The RFM analysis uses quintile-based scoring to segment customers by purchasing behavior patterns:
+
+### Primary Algorithm
+
+The system calculates three key customer metrics and assigns scores:
+
+- **Recency (R):** Days since last purchase - lower is better, scored 1-5 (5 = most recent)
+- **Frequency (F):** Number of purchases in time period - higher is better, scored 1-5
+- **Monetary (M):** Total spend amount - higher is better, scored 1-5
+- **Scoring Method:** Quintile-based (divides customers into 5 equal groups per metric) or quartile-based (4 groups)
+
+### Processing Steps
+
+1. **Transaction Aggregation:** Aggregate customer transactions to calculate R, F, M raw values
+2. **Quintile Assignment:** Divide customers into 5 groups per metric using percentile thresholds (20th, 40th, 60th, 80th)
+3. **Score Assignment:** Assign scores 1-5 based on quintile position (5 = best quintile)
+4. **RFM Combination:** Concatenate scores to create RFM code (e.g., "543" = R:5, F:4, M:3)
+5. **Segment Mapping:** Map RFM codes to business segments (Champions, Loyal, At Risk, etc.)
+
+### Performance
+
+- **Processing Time:** 100-300ms for 10,000 customers
+- **Data Requirements:** Minimum 3 months of transaction history for stable scores
+
+## Typical Workflow
+
+### Step 1: Prepare Data
+Gather customer transaction data with customer_id, transaction_date, and transaction_amount. Ensure data covers sufficient time period (6-12 months recommended) for meaningful analysis.
+
+### Step 2: Configure Parameters
+Set reference_date (typically today or end of analysis period) and choose quintiles vs quartiles scoring. Define time window for analysis if different from full history.
+
+### Step 3: Make Request
+Send transaction data via API. System automatically calculates RFM scores, assigns segments, and generates actionable recommendations for each customer segment.
+
+### Step 4: Analyze Results
+Review segment distribution (Champions, Loyal, At Risk, Lost). Identify key opportunities: Champions for upsell, At Risk for retention, Lost for reactivation campaigns.
+
+### Step 5: Take Action
+- **Champions (555, 554):** VIP programs, early access, premium support, referral rewards
+- **Loyal (543, 444):** Loyalty programs, personalized offers, thank-you campaigns
+- **At Risk (255, 254):** Win-back campaigns, surveys, special discounts
+- **Lost (111, 121):** Reactivation campaigns, feedback surveys, incentive offers
+
+## Related
+
+- [Customer Segmentation](CustomerSegmentation.md) - ML-based customer segmentation
+- [CLV Forecast](CustomerClvForecast.md) - Predict customer lifetime value
+- [Customer Loyalty](CustomerLoyalty.md) - Loyalty scoring and prediction
+- [Purchasing Segmentation](PurchasingSegmentation.md) - Behavioral purchase segmentation
+- [Churn Label](ChurnLabel.md) - Identify at-risk customers
+
+## References
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:145`

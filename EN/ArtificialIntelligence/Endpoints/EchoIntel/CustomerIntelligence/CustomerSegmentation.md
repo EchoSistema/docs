@@ -1,4 +1,4 @@
-# Inteligência Artificial – Segmentação de Clientes
+# Artificial Intelligence – Customer Segmentation
 
 ## Endpoint
 
@@ -6,38 +6,38 @@
 POST /api/v1/ai/echointel/customer-intelligence/segmentation
 ```
 
-Realiza análise de segmentação de clientes utilizando técnicas de machine learning para identificar grupos de clientes com características similares.
+Performs customer segmentation analysis using machine learning techniques to identify groups of customers with similar characteristics.
 
-## Autenticação
+## Authentication
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Required – Bearer {token} with middleware `auth:sanctum`
 
-## Cabeçalhos
+## Headers
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). Requerido se não configurado no servidor. |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. Requerido se não configurado no servidor. |
-| Accept-Language    | string | Não         | Idioma da resposta (`en`, `es`, `pt`). Padrão: `en`. |
-| Content-Type       | string | Sim         | `application/json`. |
+| Authorization      | string | Yes         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Required if not configured on the server. |
+| X-Secret           | string | Conditional | 64-character secret. Required if not configured on the server. |
+| Accept-Language    | string | No         | Response language (`en`, `es`, `pt`). Default: `en`. |
+| Content-Type       | string | Yes         | `application/json`. |
 
-## Parâmetros
+## Parameters
 
-### Parâmetros do corpo
+### Request Body Parameters
 
-Os parâmetros variam conforme a necessidade do algoritmo de segmentação. Consulte a documentação da API EchoIntel para detalhes específicos.
+Parameters vary according to the segmentation algorithm requirements. Consult the EchoIntel API documentation for specific details.
 
-| Parâmetro    | Tipo   | Obrigatório | Descrição |
+| Parameter    | Type   | Required | Description |
 | ------------ | ------ | ----------- | --------- |
-| data         | array  | Sim         | Array de dados dos clientes para segmentação. |
-| algorithm    | string | Não         | Algoritmo a ser utilizado (ex.: `kmeans`, `hierarchical`). |
-| n_clusters   | int    | Não         | Número de clusters desejados. |
-| features     | array  | Não         | Features específicas para análise. |
+| data         | array  | Yes         | Array of data of the customers for segmentation. |
+| algorithm    | string | No         | Algorithm to be used (ex.: `kmeans`, `hierarchical`). |
+| n_clusters   | int    | No         | Number of clusters desired. |
+| features     | array  | No         | Specific features for analysis. |
 
-## Exemplos
+## Examples
 
-### Exemplo de requisição (curl)
+### Request Example (curl)
 
 ```bash
 curl -X POST \
@@ -54,13 +54,13 @@ curl -X POST \
     "algorithm": "kmeans",
     "n_clusters": 3
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation"
 ```
 
-### Exemplo de requisição (JavaScript)
+### Request Example (JavaScript)
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation', {
+const response = await fetch('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <token>',
@@ -83,7 +83,7 @@ const result = await response.json();
 console.log(result);
 ```
 
-### Exemplo de requisição (PHP)
+### Request Example (PHP)
 
 ```php
 <?php
@@ -95,7 +95,7 @@ $response = Http::withHeaders([
     'X-Customer-Api-Id' => $tenantUuid,
     'X-Secret' => $secret,
     'Accept-Language' => 'pt',
-])->post('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation', [
+])->post('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', [
     'data' => [
         ['customer_id' => '123', 'total_purchases' => 1500, 'frequency' => 12],
         ['customer_id' => '456', 'total_purchases' => 3000, 'frequency' => 24],
@@ -107,9 +107,9 @@ $response = Http::withHeaders([
 $result = $response->json();
 ```
 
-## Resposta
+## Response
 
-### Sucesso `200 OK`
+### Success `200 OK`
 
 ```json
 {
@@ -140,7 +140,7 @@ $result = $response->json();
 }
 ```
 
-### Erro `400 Bad Request`
+### Error `400 Bad Request`
 
 ```json
 {
@@ -149,7 +149,7 @@ $result = $response->json();
 }
 ```
 
-### Erro `401 Unauthorized`
+### Error `401 Unauthorized`
 
 ```json
 {
@@ -158,7 +158,7 @@ $result = $response->json();
 }
 ```
 
-### Erro `500 Internal Server Error`
+### Error `500 Internal Server Error`
 
 ```json
 {
@@ -167,26 +167,123 @@ $result = $response->json();
 }
 ```
 
-## Estrutura JSON
+## JSON Structure
 
-| Campo                              | Tipo    | Descrição |
+| Field                              | Type    | Description |
 | ---------------------------------- | ------- | --------- |
-| `segments`                         | array   | Array de segmentos identificados. |
-| `segments[].segment_id`            | int     | Identificador do segmento. |
-| `segments[].size`                  | int     | Número de clientes no segmento. |
-| `segments[].characteristics`       | object  | Características médias do segmento. |
-| `segments[].customers`             | array   | IDs dos clientes no segmento. |
-| `metrics`                          | object  | Métricas de qualidade da segmentação. |
-| `metrics.silhouette_score`         | float   | Score de silhueta (0-1, maior é melhor). |
-| `metrics.davies_bouldin_score`     | float   | Score Davies-Bouldin (menor é melhor). |
+| `segments`                         | array   | Array of segments identified. |
+| `segments[].segment_id`            | int     | Identifier of segment. |
+| `segments[].size`                  | int     | Number of customers in the segment. |
+| `segments[].characteristics`       | object  | Average characteristics of the segment. |
+| `segments[].customers`             | array   | IDs of the customers in the segment. |
+| `metrics`                          | object  | Quality metrics of the segmentation. |
+| `metrics.silhouette_score`         | float   | Silhouette score (0-1, higher is better). |
+| `metrics.davies_bouldin_score`     | float   | Score Davies-Bouldin (lower is better). |
 
-## Notas
+## HTTP Status
 
-* O secret deve ser rotacionado a cada 90 dias conforme política de segurança.
-* O tempo de processamento pode variar conforme o volume de dados (timeout: 300 segundos).
-* Os headers `X-Customer-Api-Id` e `X-Secret` podem ser configurados no servidor via `.env`.
-* A resposta pode variar conforme a API EchoIntel. Consulte a documentação oficial para detalhes específicos.
+| Status Code | Description |
+|-------------|-------------|
+| 200 OK | Request successful. Returns customer segmentation results. |
+| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
+| 401 Unauthorized | Missing or invalid Bearer token. |
+| 403 Forbidden | Valid token but insufficient permissions. |
+| 422 Unprocessable Entity | Request validation failed. See response for details. |
+| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
+| 500 Internal Server Error | Server error. Contact support if persistent. |
+| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
 
-## Referências
+## Errors
+
+### Common Error Responses
+
+#### Missing Required Parameters
+```json
+{
+  "error": "Validation failed",
+  "message": "Required parameter 'data' is missing",
+  "code": "MISSING_PARAMETER",
+  "details": {
+    "parameter": "data",
+    "location": "body"
+  }
+}
+```
+
+**Solution:** Ensure all required parameters are provided in the request body.
+
+#### Invalid Authentication
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired authentication token",
+  "code": "AUTH_FAILED"
+}
+```
+
+**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+
+## Notes
+
+* The secret must be rotated every 90 days according to security policy.
+* Processing time may vary depending on data volume (timeout: 300 seconds).
+* The headers `X-Customer-Api-Id` and `X-Secret` can be configured on the server via `.env`.
+* The response may vary depending on the EchoIntel API. Consult the official documentation for specific details.
+
+## How It Is Computed
+
+The customer segmentation system uses unsupervised machine learning to discover natural customer groups:
+
+### Primary Algorithm
+
+The system employs multiple clustering algorithms to identify customer segments:
+
+- **K-Means Clustering:** Partitions customers into k clusters by minimizing within-cluster variance
+- **Hierarchical Clustering:** Builds dendrogram of nested clusters using agglomerative or divisive methods
+- **DBSCAN:** Density-based clustering that identifies clusters of arbitrary shape and detects outliers
+- **Gaussian Mixture Models:** Probabilistic clustering using EM algorithm for soft cluster assignments
+
+### Processing Steps
+
+1. **Feature Selection:** Choose discriminative features (RFM, demographics, behavior, engagement)
+2. **Preprocessing:** Standardize features using z-score normalization, handle missing values
+3. **Optimal K Selection:** Determine number of clusters using elbow method, silhouette analysis, or BIC
+4. **Clustering:** Apply selected algorithm to assign each customer to segment
+5. **Profiling:** Calculate segment characteristics (size, means, medians) and business interpretations
+
+### Performance
+
+- **Processing Time:** 300ms-2s for 100,000 customers (depends on features and algorithm)
+- **Data Requirements:** Minimum 500 customers for stable segmentation
+
+## Typical Workflow
+
+### Step 1: Prepare Data
+Collect customer data including transactional (purchases, amounts), behavioral (website visits, engagement), and demographic features. Clean data and handle missing values.
+
+### Step 2: Configure Parameters
+Specify clustering algorithm (kmeans, hierarchical, dbscan), number of clusters (or use auto-detection), and features to include. Set validation method (silhouette, davies-bouldin).
+
+### Step 3: Make Request
+Submit customer data with configuration. API performs clustering, validates results using quality metrics, and returns segment assignments with interpretable characteristics.
+
+### Step 4: Analyze Results
+Review segment profiles (size, avg_purchases, avg_frequency, characteristics). Check quality metrics (silhouette_score >0.5 is good, davies_bouldin_score <1.0 is good). Interpret business meaning of each segment.
+
+### Step 5: Take Action
+- **High-Value Segment:** Premium services, account management, exclusive offers
+- **Growth Segment:** Nurture campaigns, upsell opportunities, education content
+- **Price-Sensitive Segment:** Discount campaigns, value propositions, bundle offers
+- **At-Risk Segment:** Retention programs, feedback collection, reactivation efforts
+
+## Related
+
+- [Customer RFM](CustomerRFM.md) - RFM-based customer segmentation
+- [Purchasing Segmentation](PurchasingSegmentation.md) - Behavior-based purchase segmentation
+- [Segmentation Report](SegmentationReport.md) - Comprehensive segmentation analysis
+- [Segment Cluster Profiles](SegmentClusterProfiles.md) - Detailed cluster profiling
+- [CLV Forecast](CustomerClvForecast.md) - Predict value by segment
+
+## References
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:130`

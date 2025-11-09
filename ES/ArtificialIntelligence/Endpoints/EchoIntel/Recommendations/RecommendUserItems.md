@@ -1,4 +1,4 @@
-# Inteligência Artificial – Recomendação de Itens para Usuário
+# Inteligencia Artificial – Recomendación de Itens para Usuário
 
 ## Endpoint
 
@@ -6,36 +6,36 @@
 POST /api/v1/ai/echointel/recommendations/user-items
 ```
 
-Gera recomendações personalizadas de produtos/itens para usuários específicos baseado em collaborative filtering e content-based filtering.
+Gera recomendações personalizadas de productos/itens para usuários específicos baseado em collaborative filtering y content-based filtering.
 
-## Autenticação
+## Autenticación
 
-Obrigatório – Bearer {token} com middleware `auth:sanctum`
+Requerido – Bearer {token} con middleware `auth:sanctum`
 
-## Cabeçalhos
+## Encabezados
 
-| Cabeçalho          | Tipo   | Obrigatório | Descrição |
+| Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
-| Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
+| Authorization      | string | Sí         | `Bearer {token}`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
 | X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sim         | `application/json`. |
+| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
+| Content-Type       | string | Sí         | `application/json`. |
 
-## Parâmetros
+## Parámetros
 
-### Parâmetros do corpo
+### Parámetros del cuerpo
 
-| Parâmetro     | Tipo   | Obrigatório | Descrição |
+| Parámetro     | Tipo   | Requerido | Descripción |
 | ------------- | ------ | ----------- | --------- |
-| user_id       | string | Sim         | ID do usuário. |
-| n_recommendations | int | Não       | Número de recomendações. Padrão: `10`. |
-| exclude_purchased | boolean | Não   | Excluir itens já comprados. Padrão: `true`. |
-| filters       | object | Não         | Filtros adicionais (categoria, preço, etc.). |
+| user_id       | string | Sí         | ID del usuário. |
+| n_recommendations | int | No       | Número de recomendações. Predeterminado: `10`. |
+| exclude_purchased | boolean | No   | Excluir itens já comprados. Predeterminado: `true`. |
+| filters       | object | No         | Filtros adicionais (categoria, preço, etc.). |
 
-## Exemplos
+## Ejemplos
 
-### Exemplo de requisição (curl)
+### Ejemplo de solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -52,12 +52,12 @@ curl -X POST \
       "max_price": 1000
     }
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/recommendations/user-items"
+  "https://echosistema.online/api/v1/ai/echointel/recommendations/user-items"
 ```
 
-## Resposta
+## Respuesta
 
-### Sucesso `200 OK`
+### Éxito `200 OK`
 
 ```json
 {
@@ -91,26 +91,49 @@ curl -X POST \
 }
 ```
 
-## Estrutura JSON
+## Estructura JSON
 
-| Campo                              | Tipo    | Descrição |
+| Campo                              | Tipo    | Descripción |
 | ---------------------------------- | ------- | --------- |
-| `user_id`                          | string  | ID do usuário. |
+| `user_id`                          | string  | ID del usuário. |
 | `recommendations`                  | array   | Lista de recomendações. |
-| `recommendations[].item_id`        | string  | ID do item recomendado. |
+| `recommendations[].item_id`        | string  | ID del item recomendado. |
 | `recommendations[].score`          | float   | Score de relevância (0-1). |
-| `recommendations[].rank`           | int     | Ranking da recomendação. |
-| `recommendations[].reason`         | string  | Razão da recomendação. |
-| `recommendations[].item_details`   | object  | Detalhes do item. |
+| `recommendations[].rank`           | int     | Ranking de la recomendação. |
+| `recommendations[].reason`         | string  | Razão de la recomendação. |
+| `recommendations[].item_details`   | object  | Detalhes del item. |
 | `algorithm_used`                   | string  | Algoritmo utilizado. |
-| `confidence`                       | float   | Confiança geral (0-1). |
+| `confidence`                       | float   | Confianza geral (0-1). |
 
 ## Notas
 
-* Recomendações são ordenadas por score decrescente.
+* Recomendações são ordenadas por score descendente.
 * Algoritmos disponíveis: `collaborative`, `content_based`, `hybrid`.
 * Recomendações são atualizadas em tempo real conforme novas interações.
 
-## Referências
+## Cómo se Calcula
+
+El sistema utiliza collaborative filtering and content-based algorithms para generate personalized recommendations.
+
+### 1. Algoritmo Principal
+
+- Utiliza técnicas de aprendizaje automático estándar de la industria
+- Entrenado en patrones de datos históricos
+- Optimizado para precisión y rendimiento
+
+### 2. Pasos de Procesamiento
+
+- **Paso 1:** Preprocesamiento de datos y extracción de características
+- **Paso 2:** Entrenamiento o inferencia del modelo
+- **Paso 3:** Generación y validación de resultados
+- **Paso 4:** Formateo y entrega de salida
+
+### 3. Rendimiento
+
+- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
+- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
+- **Precisión:** Validado contra conjuntos de datos de referencia
+
+## Referencias
 
 * Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:192`

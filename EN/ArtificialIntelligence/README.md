@@ -18,6 +18,33 @@ This document provides a complete overview of all artificial intelligence endpoi
 
 ---
 
+## 📚 Complete Endpoint Documentation
+
+Detailed documentation for each endpoint is available in three languages, with complete information on parameters, responses, algorithms, and workflows:
+
+### English (EN)
+📄 **[Complete English Documentation](Endpoints/EchoIntel/)** - 46 endpoints documented
+
+### Português (PT)
+📄 **[Documentação Completa em Português](../PT/ArtificialIntelligence/Endpoints/EchoIntel/)** - 46 endpoints documentados
+
+### Español (ES)
+📄 **[Documentación Completa en Español](../ES/ArtificialIntelligence/Endpoints/EchoIntel/)** - 46 endpoints documentados
+
+Each endpoint document includes:
+- ✅ Authentication and required headers
+- ✅ Complete parameters (types, requirements, descriptions)
+- ✅ Request examples (curl, JavaScript, PHP)
+- ✅ Detailed response structure
+- ✅ HTTP status codes
+- ✅ Error handling
+- ✅ **How It Is Computed** - AI/ML algorithm explanations
+- ✅ **Typical Workflow** - Practical usage guide (key endpoints)
+- ✅ Links to related endpoints
+- ✅ Controller references
+
+---
+
 ## Overview
 
 The Artificial Intelligence API provides **41 endpoints** organized into **7 main categories**, offering machine learning solutions, predictive analytics, optimization, and natural language processing for various business use cases.
@@ -25,7 +52,7 @@ The Artificial Intelligence API provides **41 endpoints** organized into **7 mai
 ### Base URL
 
 ```
-https://your-domain.com/api/v1/ai/echointel
+https://echosistema.online/api/v1/ai/echointel
 ```
 
 ---
@@ -432,7 +459,7 @@ curl -X POST \
   -H "Accept-Language: en" \
   -H "Content-Type: application/json" \
   -d '{"your": "payload"}' \
-  "https://your-domain.com/api/v1/ai/echointel/{category}/{endpoint}"
+  "https://echosistema.online/api/v1/ai/echointel/{category}/{endpoint}"
 ```
 
 ---

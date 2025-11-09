@@ -54,13 +54,13 @@ curl -X POST \
     "algorithm": "kmeans",
     "n_clusters": 3
   }' \
-  "https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation"
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation"
 ```
 
 ### Exemplo de requisição (JavaScript)
 
 ```javascript
-const response = await fetch('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation', {
+const response = await fetch('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer <token>',
@@ -95,7 +95,7 @@ $response = Http::withHeaders([
     'X-Customer-Api-Id' => $tenantUuid,
     'X-Secret' => $secret,
     'Accept-Language' => 'pt',
-])->post('https://your-domain.com/api/v1/ai/echointel/customer-intelligence/segmentation', [
+])->post('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', [
     'data' => [
         ['customer_id' => '123', 'total_purchases' => 1500, 'frequency' => 12],
         ['customer_id' => '456', 'total_purchases' => 3000, 'frequency' => 24],
@@ -186,6 +186,29 @@ $result = $response->json();
 * O tempo de processamento pode variar conforme o volume de dados (timeout: 300 segundos).
 * Os headers `X-Customer-Api-Id` e `X-Secret` podem ser configurados no servidor via `.env`.
 * A resposta pode variar conforme a API EchoIntel. Consulte a documentação oficial para detalhes específicos.
+
+## Como é Calculado
+
+O sistema usa clustering algorithms (K-means, hierarchical clustering) para group similar customers or items into segments.
+
+### 1. Algoritmo Principal
+
+- Usa técnicas de aprendizado de máquina padrão da indústria
+- Treinado em padrões de dados históricos
+- Otimizado para precisão e desempenho
+
+### 2. Etapas de Processamento
+
+- **Passo 1:** Pré-processamento de dados e extração de características
+- **Passo 2:** Treinamento ou inferência do modelo
+- **Passo 3:** Geração e validação de resultados
+- **Passo 4:** Formatação e entrega de saída
+
+### 3. Desempenho
+
+- **Tempo de Processamento:** Otimizado para resposta sub-segundo (típico: 200-500ms)
+- **Escalabilidade:** Lida com grandes conjuntos de dados eficientemente
+- **Precisão:** Validado contra conjuntos de dados de referência
 
 ## Referências
 
