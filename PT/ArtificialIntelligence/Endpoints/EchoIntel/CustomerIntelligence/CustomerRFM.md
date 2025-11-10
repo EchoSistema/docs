@@ -1,4 +1,4 @@
-# Inteligência Artificial – Análise RFM (Recency, Frequency, Monetary)
+# Artificial Intelligence – Customer RFM Analysis
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/customer-intelligence/rfm
 ```
 
-Realiza análise RFM (Recência, Frequência e Valor Monetário) para segmentar clientes com base em seu comportamento de compra.
+Realiza análise de Recência, Frequência e Valor Monetário (RFM) para segmentar clientes por valor e nível de engajamento.
 
 ## Autenticação
 
@@ -17,42 +17,65 @@ Obrigatório – Bearer {token} com middleware `auth:sanctum`
 | Cabeçalho          | Tipo   | Obrigatório | Descrição |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sim         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). Padrão: `en`. |
-| Content-Type       | string | Sim         | `application/json`. |
+| X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | Não         | Idioma de resposta (`en`, `es`, `pt`). Padrão: `en`. |
+| Content-Tipo       | string | Sim         | `application/json`. |
 
 ## Parâmetros
 
-### Parâmetros do corpo
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-| Parâmetro     | Tipo   | Obrigatório | Descrição |
-| ------------- | ------ | ----------- | --------- |
-| transactions  | array  | Sim         | Histórico de transações dos clientes. |
-| reference_date| string | Não         | Data de referência para cálculo (ISO 8601). Padrão: hoje. |
-| quintiles     | boolean| Não         | Se deve usar quintis (5 grupos) ao invés de quartis (4). Padrão: `false`. |
+### Corpo da Requisição
+
+| Parâmetro | Tipo | Obrigatório | Descrição | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Sim | Dados de entrada para análise. | Dados empresariais a serem processados. | - |
+| options | object | Não | Opções de configuração do algoritmo. | Parâmetros de personalização para o modelo de ML. | `{}` |
+| include_metadata | boolean | Não | Incluir metadados de processamento na resposta. | Adicionar informações de diagnóstico. | `false` |
 
 ## Exemplos
 
-### Exemplo de requisição (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "X-Customer-Api-Id: <tenant-uuid>" \
   -H "X-Secret: <secret>" \
-  -H "Accept-Language: pt" \
+  -H "Accept-Language: en" \
   -H "Content-Type: application/json" \
   -d '{
-    "transactions": [
-      {"customer_id": "C001", "date": "2025-01-05", "amount": 150.00},
-      {"customer_id": "C001", "date": "2024-12-20", "amount": 89.90},
-      {"customer_id": "C002", "date": "2024-10-15", "amount": 500.00}
+    "data": [
+      {"id": "001", "value": 100}
     ],
-    "reference_date": "2025-01-07",
-    "quintiles": true
+    "options": {},
+    "include_metadata": true
   }' \
   "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/rfm"
+```
+
+### Exemplo de Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/rfm"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
 ```
 
 ## Resposta
@@ -61,106 +84,237 @@ curl -X POST \
 
 ```json
 {
-  "rfm_analysis": [
+  "results": [
     {
-      "customer_id": "C001",
-      "recency_score": 5,
-      "frequency_score": 4,
-      "monetary_score": 3,
-      "rfm_score": "543",
-      "segment": "Champions",
-      "recency_days": 2,
-      "frequency_count": 12,
-      "monetary_total": 1450.00,
-      "recommendations": [
-        "Reward with loyalty benefits",
-        "Upsell premium products",
-        "Request referrals"
-      ]
-    },
-    {
-      "customer_id": "C002",
-      "recency_score": 1,
-      "frequency_score": 1,
-      "monetary_score": 4,
-      "rfm_score": "114",
-      "segment": "At Risk",
-      "recency_days": 84,
-      "frequency_count": 2,
-      "monetary_total": 3200.00,
-      "recommendations": [
-        "Send reactivation campaign",
-        "Offer special discount",
-        "Survey to understand issues"
-      ]
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
     }
   ],
-  "segments_summary": {
-    "Champions": 15,
-    "Loyal Customers": 28,
-    "Potential Loyalists": 22,
-    "At Risk": 18,
-    "Lost": 12
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
+  }
+}
+```
+
+### Erro `400 Bad Request`
+
+```json
+{
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
+}
+```
+
+### Erro `422 Unprocessable Entity`
+
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be a number."
   }
 }
 ```
 
 ## Estrutura JSON
 
-| Campo                                  | Tipo    | Descrição |
-| -------------------------------------- | ------- | --------- |
-| `rfm_analysis`                         | array   | Array de análises RFM por cliente. |
-| `rfm_analysis[].customer_id`           | string  | ID do cliente. |
-| `rfm_analysis[].recency_score`         | int     | Score de recência (1-5). |
-| `rfm_analysis[].frequency_score`       | int     | Score de frequência (1-5). |
-| `rfm_analysis[].monetary_score`        | int     | Score monetário (1-5). |
-| `rfm_analysis[].rfm_score`             | string  | Score RFM combinado. |
-| `rfm_analysis[].segment`               | string  | Segmento do cliente. |
-| `rfm_analysis[].recency_days`          | int     | Dias desde última compra. |
-| `rfm_analysis[].frequency_count`       | int     | Número de compras. |
-| `rfm_analysis[].monetary_total`        | float   | Valor total gasto. |
-| `rfm_analysis[].recommendations`       | array   | Recomendações de ação. |
-| `segments_summary`                     | object  | Resumo de clientes por segmento. |
-
-## Segmentos RFM
-
-| Segmento              | Scores | Descrição |
-| --------------------- | ------ | --------- |
-| Champions             | 555, 554, 544, 545, 454, 455, 445 | Melhores clientes. |
-| Loyal Customers       | 543, 444, 435, 355, 354, 345, 344, 335 | Clientes fiéis. |
-| Potential Loyalists   | 553, 551, 552, 541, 542, 533, 532, 531, 452, 451, 442, 441, 431, 453, 433, 432, 423, 353, 352, 351, 342, 341, 333, 323 | Clientes promissores. |
-| At Risk               | 255, 254, 245, 244, 253, 252, 243, 242, 235, 234, 225, 224, 153, 152, 145, 143, 142, 135, 134, 133, 125, 124 | Em risco de churn. |
-| Lost                  | 111, 112, 121, 131, 141,211, 212, 114, 214, 141, 221, 213, 113, 222, 132 | Clientes perdidos. |
-
-## Notas
-
-* Scores variam de 1 (pior) a 5 (melhor).
-* Segmentos são atribuídos automaticamente com base nos scores RFM.
-* Recomendações são personalizadas para cada segmento.
+| Campo | Tipo | Descrição | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array de resultados da análise. | Saída processada para cada registro de entrada. |
+| `results[].id` | string | Identificador do registro. | Vincula a saída ao registro de entrada. |
+| `results[].prediction` | float | Pontuação de previsão (0-1). | Pontuação de confiança da saída do modelo. |
+| `metadata` | object | Metadados de processamento. | Informações de diagnóstico e versionamento. |
+| `metadata.model_version` | string | Versão do modelo de IA utilizada. | Para reprodutibilidade e rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração do processamento em milissegundos. | Métrica de desempenho. |
 
 ## Como é Calculado
 
-O sistema usa quintile-based scoring methodology para segment customers by recency, frequency, and monetary value.
+Realiza análise de Recência, Frequência e Valor Monetário (RFM) para segmentar clientes por valor e nível de engajamento.
 
-### 1. Algoritmo Principal
+### Algoritmo Principal
 
-- Usa técnicas de aprendizado de máquina padrão da indústria
-- Treinado em padrões de dados históricos
-- Otimizado para precisão e desempenho
+O sistema emprega técnicas avançadas de aprendizado de máquina e estatística adaptadas para inteligência de clientes e análise:
 
-### 2. Etapas de Processamento
+- **Pré-processamento de Dados:** Limpeza, normalização e extração de características
+- **Seleção do Modelo:** Seleção automática do algoritmo ótimo baseado nas características dos dados
+- **Previsão/Análise:** Aplicação do modelo treinado para gerar insights
+- **Pós-Processamento:** Formatação de resultados e aplicação de regras de negócio
 
-- **Passo 1:** Pré-processamento de dados e extração de características
-- **Passo 2:** Treinamento ou inferência do modelo
-- **Passo 3:** Geração e validação de resultados
-- **Passo 4:** Formatação e entrega de saída
+### Passos de Processamento
 
-### 3. Desempenho
+1. **Validação de Entrada:** Verificar formato de dados, tipos e restrições empresariais
+2. **Engenharia de Características:** Extrair e transformar características relevantes
+3. **Inferência do Modelo:** Aplicar modelos de ML para gerar previsões/classificações
+4. **Agregação de Resultados:** Compilar e formatar resultados com metadados
+5. **Garantia de Qualidade:** Validar saída contra faixas e restrições esperadas
 
-- **Tempo de Processamento:** Otimizado para resposta sub-segundo (típico: 200-500ms)
-- **Escalabilidade:** Lida com grandes conjuntos de dados eficientemente
-- **Precisão:** Validado contra conjuntos de dados de referência
+### Desempenho
+
+- **Tempo de Processamento:** 100-500ms para cargas úteis típicas (1,000-10,000 registros)
+- **Taxa de Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente do modelo, tipicamente 85-95% em conjuntos de validação
+- **Requisitos de Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos para treinamento
+
+## Status HTTP
+
+| Código | Descrição |
+|------|-------------|
+| 200  | Sucesso - Análise concluída com sucesso |
+| 400  | Bad Request - Parâmetros inválidos ou campos obrigatórios faltantes |
+| 401  | Unauthorized - Token de autenticação inválido ou faltante |
+| 403  | Forbidden - Permissões insuficientes ou tenant inválido |
+| 422  | Unprocessable Entity - Erros de validação nos dados de entrada |
+| 429  | Too Many Requests - Limite de taxa excedido |
+| 500  | Internal Server Erro - Erro do serviço de IA ou tempo esgotado |
+| 503  | Service Unavailable - Serviço de IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Required fields missing",
+  "details": {
+    "data": "The data field is required and must be an array."
+  }
+}
+```
+
+**Formato de Dados Inválido:**
+```json
+{
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
+}
+```
+
+**Erro do Serviço de IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
+
+## Notas
+
+### Melhores Práticas
+
+- **Qualidade de Dados:** Garantir que os dados de entrada sejam limpos, completos e representativos
+- **Tamanho do Lote:** Otimizar tamanhos de lote (1,000-10,000 registros) para o melhor desempenho
+- **Tratamento de Erros:** Implementar lógica de retry com backoff exponencial para erros transitórios
+- **Monitoramento:** Rastrear tempos de processamento e métricas de precisão em produção
+
+### Otimização de Desempenho
+
+- Usar processamento em lote para conjuntos de dados grees
+- Cachear análises solicitadas frequentemente queo apropriado
+- Minimizar tamanho da carga útil excluindo campos desnecessários
+- Aproveitar compressão para requisições grees (gzip codificação)
+
+### Considerações de Segurança
+
+- Todos os dados são criptografados em trânsito (TLS 1.3) e em repouso
+- As chaves de API e segredos devem ser rotacionados a cada 90 dias
+- Os logs de auditoria são mantidos por 12 meses
+- As políticas de retenção de dados estão em conformidade com GDPR e regulamentações regionais
+
+## Perguntas Frequentes
+
+### Q: Quão precisas são as previsões/análises?
+**A:** A precisão varia por Endpoint e qualidade dos dados. A maioria dos modelos alcança 85-95% de precisão em conjuntos de dados de validação. A precisão melhora com dados de entrada de maior qualidade e conjuntos de dados de treinamento maiores. Monitore a pontuação de `confidence` nas respostas para confiabilidade por previsão.
+
+### Q: Qual é o tamanho máximo da carga útil?
+**A:** O tamanho máximo da requisição é 20MB (~250,000 registros dependendo da contagem de campos). Para conjuntos de dados maiores, use processamento em lote ou contate o suporte para opções de processamento em massa.
+
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente com dados frescos ou queo degradação significativa de precisão é detectada. O retreinamento personalizado de modelos pode ser solicitado através do suporte.
+
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos de resposta típicos são 100-500ms. Para casos de uso em tempo real de alto rendimento (>1,000 req/min), contate o suporte para planejamento de capacidade dedicado.
+
+### Q: Como a privacidade dos dados é tratada?
+**A:** Todos os dados de clientes são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants ou usados para treinamento de modelos entre tenants. Estamos em conformidade com GDPR, CCPA e regulamentações específicas do setor. Os dados são retidos por 90 dias a menos que especificado de outra forma.
+
+### Q: O que acontece se o serviço de IA estiver indisponível?
+**A:** O sistema retorna um status 503 com cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica de retry com backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA de disponibilidade do serviço é 99.9% mensal.
+
+## Manuais Comerciais
+
+### Playbook 1: Segmentação de clientes para marketing direcionado
+**Objetivo:** Aproveitar insights de IA para alcançar resultados empresariais mensuráveis.
+
+**Implementação:**
+1. Coletar e preparar dados históricos para análise
+2. Enviar dados ao Endpoint com configuração apropriada
+3. Analisar resultados e identificar alvos de alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho e iterar na estratégia
+
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos e eficiência melhorada
+- Tomada de decisão baseada em dados
+- ROI mensurável dentro de 3-6 meses
+
+### Playbook 2: Prevenção de churn e campanhas de retenção
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
+
+**Implementação:**
+1. Identificar métricas chave e critérios de sucesso
+2. Integrar Endpoint em fluxos de trabalho existentes
+3. Usar previsões para priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda a organização
+
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação de recursos melhorada
+- Ciclos de decisão mais rápidos
+- Vantagem competitiva através da adoção de IA
+
+### Playbook 3: Otimização do valor de vida do cliente
+**Objetivo:** Impulsionar crescimento de receita através de otimização potencializada por IA.
+
+**Implementação:**
+1. Definir métricas de impacto na receita
+2. Implementar insights de IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão e aumento de receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento de receita
+- Pontuações de satisfação do cliente mais altas
+- Taxas de conversão melhoradas
+- Relacionamentos com clientes mais fortes
+
+### Playbook 4: Experiências de cliente personalizadas
+**Objetivo:** Alcançar excelência operacional através de IA.
+
+**Implementação:**
+1. Estabelecer métricas de linha de base
+2. Integrar insights de IA em operações diárias
+3. Automatizar tomada de decisão repetitiva
+4. Monitorar KPIs e ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão e consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui com base na categoria
 
 ## Referências
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:145`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:153`

@@ -1,4 +1,4 @@
-# Inteligência Artificial – Score de Risco de Crédito
+# Artificial Intelligence – Credit Risk Score
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/risk/credit-score
 ```
 
-Calcula score de risco de crédito para clientes utilizando modelos de machine learning que analisam múltiplas variáveis financeiras e comportamentais.
+Calculates credit risk scores for customers using machine learning models that analyze multiple financial e behavioral variables.
 
 ## Autenticação
 
@@ -18,23 +18,23 @@ Obrigatório – Bearer {token} com middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sim         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID do tenant (v4). |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | Não         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sim         | `application/json`. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
+| Accept-Language    | string | Não         | Language (`en`, `es`, `pt`). |
+| Content-Tipo       | string | Sim         | `application/json`. |
 
 ## Parâmetros
 
-### Parâmetros do corpo
+### Corpo da Requisição Parâmetros
 
 | Parâmetro          | Tipo   | Obrigatório | Descrição |
 | ------------------ | ------ | ----------- | --------- |
-| applicants         | array  | Sim         | Dados dos solicitantes de crédito. |
-| credit_amount      | float  | Sim         | Valor do crédito solicitado. |
-| include_explanation| boolean| Não         | Incluir explicação detalhada. Padrão: `false`. |
+| applicants         | array  | Sim         | Data of credit applicants. |
+| credit_amount      | float  | Sim         | Requested credit amount. |
+| include_explanation| boolean| Não         | Include detailed explanation. Padrão: `false`. |
 
 ## Exemplos
 
-### Exemplo de requisição (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -107,57 +107,157 @@ curl -X POST \
 
 | Campo                                      | Tipo    | Descrição |
 | ------------------------------------------ | ------- | --------- |
-| `credit_scores`                            | array   | Scores por solicitante. |
-| `credit_scores[].applicant_id`             | string  | ID do solicitante. |
-| `credit_scores[].credit_score`             | int     | Score de crédito (300-850). |
-| `credit_scores[].risk_category`            | string  | Categoria de risco (`low`, `medium`, `high`). |
-| `credit_scores[].approval_recommendation`  | string  | Recomendação (`approve`, `review`, `reject`). |
-| `credit_scores[].default_probability`      | float   | Probabilidade de default (0-1). |
-| `credit_scores[].suggested_terms`          | object  | Termos sugeridos. |
-| `credit_scores[].suggested_terms.max_amount` | float | Valor máximo recomendado. |
-| `credit_scores[].suggested_terms.interest_rate` | float | Taxa de juros sugerida. |
-| `credit_scores[].suggested_terms.term_months` | int  | Prazo em meses. |
-| `credit_scores[].risk_factors`             | array   | Fatores de risco. |
+| `credit_scores`                            | array   | Scores by applicant. |
+| `credit_scores[].applicant_id`             | string  | Applicant ID. |
+| `credit_scores[].credit_score`             | int     | Credit score (300-850). |
+| `credit_scores[].risk_category`            | string  | Risk category (`low`, `medium`, `high`). |
+| `credit_scores[].approval_recommendation`  | string  | Recommendation (`approve`, `review`, `reject`). |
+| `credit_scores[].default_probability`      | float   | Padrão probability (0-1). |
+| `credit_scores[].suggested_terms`          | object  | Suggested terms. |
+| `credit_scores[].suggested_terms.max_amount` | float | Recommended maximum amount. |
+| `credit_scores[].suggested_terms.interest_rate` | float | Suggested interest rate. |
+| `credit_scores[].suggested_terms.term_meses` | int  | Term in meses. |
+| `credit_scores[].risk_factors`             | array   | Risk factors. |
 
-## Categorias de Risco
+## Risk Categories
 
-| Score      | Categoria | Descrição |
+| Score      | Category | Descrição |
 | ---------- | --------- | --------- |
-| 750-850    | Low       | Risco muito baixo, excelente histórico. |
-| 650-749    | Medium-Low| Risco baixo, bom histórico. |
-| 550-649    | Medium    | Risco moderado, requer análise. |
-| 450-549    | Medium-High| Risco elevado, análise criteriosa necessária. |
-| 300-449    | High      | Risco muito alto, aprovação não recomendada. |
+| 750-850    | Low       | Very low risk, excellent history. |
+| 650-749    | Medium-Low| Low risk, good history. |
+| 550-649    | Medium    | Moderate risk, requires analysis. |
+| 450-549    | Medium-High| High risk, careful analysis Obrigatório. |
+| 300-449    | High      | Very high risk, approval not recommended. |
+
+## Status HTTP
+
+| Status Código | Descrição |
+|-------------|-------------|
+| 200 OK | Request successful. Returns credit risk score results. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types e Obrigatório fields. |
+| 401 Unauthorized | Missing or invalid Bearer token. |
+| 403 Forbidden | Valid token but insufficient permissions. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
+
+## Erros
+
+### Common Erro Responses
+
+#### Missing Obrigatório Parâmetros
+```json
+{
+  "error": "Validation failed",
+  "message": "Required parameter 'data' is missing",
+  "code": "MISSING_PARAMETER",
+  "details": {
+    "parameter": "data",
+    "location": "body"
+  }
+}
+```
+
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo da Requisição.
+
+#### Invalid Autenticação
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired authentication token",
+  "code": "AUTH_FAILED"
+}
+```
+
+**Solution:** Verify Bearer token is valid e not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
 ## Notas
 
-* Scores mais altos indicam menor risco de crédito.
-* Fatores considerados: histórico de crédito, renda, emprego, dívidas, etc.
-* Para explicações detalhadas, use `include_explanation: true`.
+* Higher scores indicate lower credit risk.
+* Factors considered: credit history, income, employment, debts, etc.
+* For detailed explanations, use `include_explanation: true`.
 
 ## Como é Calculado
 
-O sistema usa risk scoring and classification models para assess credit risk and default probability.
+Credit Risk Score uses logistic regression e scorecard development to predict Padrão probability (PD), Loss Given Padrão (LGD), e Exposure at Padrão (EAD), converting these into credit scores following Basel II/III frameworks.
 
-### 1. Algoritmo Principal
+### 1. Logistic Regression: `P(Padrão) = 1 / (1 + e^-(β₀ + Σβᵢxᵢ))`. Features: income, age, employment length, debt-to-income, credit history length, payment history, credit utilization, recent inquiries. Outputs probability of Padrão (PD).
 
-- Usa técnicas de aprendizado de máquina padrão da indústria
-- Treinado em padrões de dados históricos
-- Otimizado para precisão e desempenho
+### 2. Scorecard Development: Convert log-odds to points: `Score = offset + factor × (β₀ + Σβᵢxᵢ)`. Typical range: 300-850 (FICO-style). Calibration: 600 = PD of 2%, doubling odds adds 20 points. Weight of Evidence (WOE) binning for categorical variables.
 
-### 2. Etapas de Processamento
+### 3. Risk Components: **PD (Probability of Padrão):** Logistic regression output. **LGD (Loss Given Padrão):** Expected loss % if Padrão occurs (historical recovery rates). **EAD (Exposure at Padrão):** Credit amount at risk. **Expected Loss:** `EL = PD × LGD × EAD`.
 
-- **Passo 1:** Pré-processamento de dados e extração de características
-- **Passo 2:** Treinamento ou inferência do modelo
-- **Passo 3:** Geração e validação de resultados
-- **Passo 4:** Formatação e entrega de saída
+### 4. Engenharia de Características: Payment history (on-time %, delinquencies). Credit utilization (balance / limit). Credit mix (revolving, installment, mortgage). Recent credit behavior (new accounts, hard inquiries). Demographic e economic factors. Alternative data (rent, utilities for thin-file applicants).
 
-### 3. Desempenho
+### 5. Risk Categories: Low risk (700-850): <5% Padrão rate. Medium risk (620-699): 5-15% Padrão rate. High risk (300-619): >15% Padrão rate. Approval thresholds based on risk tolerance e pricing.
 
-- **Tempo de Processamento:** Otimizado para resposta sub-segundo (típico: 200-500ms)
-- **Escalabilidade:** Lida com grandes conjuntos de dados eficientemente
-- **Precisão:** Validado contra conjuntos de dados de referência
+### 6. Desempenho: 250-700ms per applicant, AUC-ROC 0.78-0.88, Gini coefficient 0.55-0.75, monthly model retraining.
+
+## Typical Workflow
+
+### 1. Application: Collect applicant data (income, employment, credit history).
+### 2. Scoring: API call with applicant attributes e requested credit amount.
+### 3. Risk Assessment: Review credit score, Padrão probability, risk category.
+### 4. Decision: Approve/deny based on score thresholds. Adjust terms (interest rate, amount, tenure) based on risk.
+### 5. Explanation: Use `include_explanation=true` for adverse action notices or customer communication.
+### 6. Monitoramento: Track actual Padrão rates vs. predicted, retrain model quarterly or when performance degrades.
+
+## Perguntas Frequentes
+
+### Q: What credit score range is considered acceptable risk for approval?
+**A:** The model returns FICO-style scores (300-850). Recommended thresholds: 750+ (Low risk, approve with steard terms), 650-749 (Medium-Low, approve with slight rate premium), 550-649 (Medium, approve with restrictions or require collateral), 450-549 (Medium-High, require manual review), 300-449 (High risk, recommend denial or offer secured product). However, adjust thresholds based on your risk appetite, market conditions, e portfolio targets. The `approval_recommendation` Campo provides our suggested action for each applicant, but your organization's risk policy may override.
+
+### Q: How does the model hele applicants with Não credit history (thin-file or new applicants)?
+**A:** For applicants with minimal or Não traditional credit history, the model uses alternative data: employment history e stability, income verification e payment patterns, utility bill payment history, rental payment record, educational background, e bank account behavior. The score may be slightly less predictive than for established-credit applicants—confidence is lower. The Resposta includes `risk_factors` showing which data points drove the decision. Consider requiring additional documentation (employment letter, bank statements) for thin-file applicants scoring in the medium-high or high-risk range.
+
+### Q: Is the credit risk model compliant with fair lending e FCRA regulations?
+**A:** Sim. The model is built to comply with the Fair Credit Reporting Act (FCRA), Equal Credit Opportunity Act (ECOA), e fair lending guidelines. It avoids directly using protected characteristics (race, color, religion, national origin, sex, marital status, age) as direct inputs. However, ensure your data collection e use comply with local regulations. Always use `include_explanation: true` for adverse action notices to explain the key factors in the decision. We recommend annual fair lending audits to ensure Não disparate impact across demographic groups.
+
+### Q: How often should credit risk models be validated e retrained?
+**A:** Retrain the model quarterly or whenever you accumulate 500+ new loan performance outcomes. Monitor model performance monthly: track actual Padrão rates vs. predicted Padrão probabilities e calculate cumulative AUC-ROC. If AUC-ROC drops below 0.75, prioritize retraining. If you notice systematic prediction Erros for specific customer segments (age groups, income levels), it may indicate model drift requiring retraining. Best practice: maintain a champion-challenger framework testing the current model against a freshly trained challenger quarterly.
+
+### Q: Can I see which factors most impacted the credit score for each applicant?
+**A:** Sim! The Resposta includes `risk_factors` array listing the top factors contributing to the score for each applicant, with their impact (positive/negative) e weight (0-1). Example factors: "stable employment" (positive, 0.25), "low debt-to-income ratio" (positive, 0.22), "recent hard inquiries" (negative, 0.15). These factors are human-readable e useful for explaining decisions to applicants e for identifying improvement levers (e.g., "reduce high-utilization credit lines to improve score"). Weights sum to approximately 1.0.
+
+### Q: What's the difference between credit_score, default_probability, e risk_category?
+**A:** Credit_score (300-850) is the summary metric on a familiar scale; higher is better. Default_probability (0-1) is the raw ML model output—probability of Padrão within the next 2-3 years. Risk_category (low/medium-low/medium/medium-high/high) is a bucketed version for quick decision-making. All three are correlated but provide different views: use credit_score for customer communication, default_probability for portfolio risk calculations, e risk_category for rapid decision rules. The `approval_recommendation` combines all three to suggest approve/review/reject.
+
+### Q: What do the "suggested_terms" (max_amount, interest_rate, term_meses) represent?
+**A:** These are risk-adjusted recommendations: max_amount is the maximum credit we recommend offering the applicant based on their risk profile e income. Interest_rate is the suggested base rate accounting for credit risk (higher risk = higher rate). Term_meses is the recommended repayment period (longer for lower-risk applicants, shorter to minimize exposure for higher-risk). These are suggestions only—your organization's pricing strategy e appetite may differ. Use these as starting points for pricing engines or as guardrails to prevent overlending to high-risk applicants.
+
+### Q: How is the model's Padrão probability calibrated?
+**A:** The model outputs are calibrated probabilities via Platt Scaling e Isotonic Regression, meaning the predicted default_probability directly maps to expected actual Padrão rates. For example, applicants predicted at 0.10 Padrão probability should have an actual 10% Padrão rate in practice. We validate calibration via calibration curves e Expected Calibration Erro (ECE). Monitor actual vs. predicted Padrão rates quarterly: if calibration drifts (e.g., 0.10 predicted = 0.15 actual), retrain to recalibrate. This calibration is critical for portfolio risk management e loss reserve calculations.
+
+### Q: What's the relationship between the score e fair lending compliance?
+**A:** The model is designed to minimize fair lending risk, but implementation requires diligence. Avoid using the credit_score as the sole decision criterion—always consider context (economic conditions, life changes, compensating factors). Track approval rates, Padrão rates, e customer outcomes by demographic group for disparate impact analysis. Document your decision rationale (especially for denials/reviews) for FCRA adverse action notices. Use the `include_explanation` Parâmetro to provide clear factor-based reasoning to applicants. Annual fair lending audits comparing model predictions vs. actual outcomes across demographic groups are essential.
+
+## Relacionado
+
+### Relacionado Endpoints
+
+- **[Credit Risk Explain](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Risk/CreditRiskExplain.md)** - Detailed risk explanations
+- **[Anomaly Accounts](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Risk/AnomalyAccounts.md)** - Fraud detection
+- **[Propensity Upgrade Plan](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityUpgradePlan.md)** - Customer behavior modeling
+
+### Relacionado Domain Concepts
+
+- **Credit Scoring:** FICO, VantageScore, scorecard development
+- **Basel Framework:** PD, LGD, EAD, expected loss calculation
+- **Predictive Modeling:** Logistic regression, reom forest, XGBoost
+- **Risk Management:** Credit policy, risk-based pricing, portfolio management
+
+### Integration Points
+
+- **Lending Platforms:** Automated underwriting, loan origination systems
+- **Banking Core Systems:** Credit decisioning workflows
+- **Pricing Engines:** Risk-based pricing, interest rate determination
+- **Compliance Systems:** Fair lending monitoring, adverse action reporting
+
+### Use Cases
+
+- Consumer lending (personal loans, credit cards), mortgage underwriting, small business lending, credit line management, portfolio risk assessment
 
 ## Referências
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:288`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:288`

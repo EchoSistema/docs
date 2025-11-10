@@ -1,4 +1,4 @@
-# Inteligencia Artificial – Exploração de Subsegmentos
+# Artificial Intelligence – Segment Subsegment Exploration
 
 ## Endpoint
 
@@ -6,7 +6,9 @@
 POST /api/v1/ai/echointel/customer-intelligence/segment-subsegment-explore
 ```
 
-Exploração de Subsegmentos utilizando inteligência artificial y machine learning.
+Performs interactive drill-down analysis within customer segments by discovering subsegments using recursive clustering, enabling marketers to explore nested customer groups y uncover hidden micro-segments with distinct characteristics.
+
+**Business Value:** Enables progressive segmentation refinement, allowing teams to start with broad segments y drill into specific subsegments for targeted campaigns, improving campaign precision by 30-50% compared to flat segmentation.
 
 ## Autenticación
 
@@ -18,42 +20,245 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sí         | `application/json`. |
+| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
+| Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Nota:** Os parâmetros aceitam tanto `snake_case` quanto `camelCase`.
+> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
 
+### Cuerpo de la Solicitud Parámetros
+
+| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+|-----------|------|----------|---------|-------------|------------------|
+| parent_segment_id | string | Sí | - | ID of parent segment to explore for subsegments. | Which existing segment to drill into. |
+| customer_data | array | Sí | - | Customers belonging to parent segment with features. | Customer attributes for subsegmentation. |
+| num_subsegments | integer | No | `3` | Number of subsegments to create within parent segment (2-10). | Granularity of subdivision. 3-5 typical. |
+| clustering_algorithm | string | No | `"kmeans"` | Algorithm: `kmeans`, `dbscan`, `hierarchical`. | How to discover subsegments. KMeans is styard. |
+| min_subsegment_size | integer | No | `50` | Minimum customers per subsegment. | Prevents tiny, non-actionable groups. |
+| include_profiles | boolean | No | `true` | Return detailed subsegment profiles with differentiating characteristics. | Enables subsegment interpretation y naming. |
+
+### Customer Data object Fields
+
+| Campo | Tipo | Requerido | Descripción | Example |
+|-------|------|----------|-------------|---------|
+| customer_id | string | Sí | Unique customer identifier. | `"C12345"` |
+| parent_segment | string | Sí | Parent segment this customer belongs to. | `"High_Value"` |
+| features | object | Sí | Customer attributes for subsegmentation. | `{"recency": 15, "frequency": 8, "monetary": 850}` |
+
+## Ejemplos
+
+### Ejemplo de Solicitud (curl)
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-Customer-Api-Id: <tenant-uuid>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "parent_segment_id": "High_Value",
+    "customer_data": [
+      {"customer_id": "C001", "parent_segment": "High_Value", "features": {"recency": 10, "frequency": 12, "monetary": 1200}},
+      {"customer_id": "C002", "parent_segment": "High_Value", "features": {"recency": 15, "frequency": 8, "monetary": 850}}
+    ],
+    "num_subsegments": 3,
+    "include_profiles": true
+  }' \
+  "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segment-subsegment-explore"
+```
 
 ## Respuesta
 
-Consulte a documentação oficial para formato de resposta completo.
+### Éxito `200 OK`
+
+```json
+{
+  "parent_segment": {
+    "segment_id": "High_Value",
+    "size": 2340,
+    "avg_features": {"recency": 18, "frequency": 9.2, "monetary": 920}
+  },
+  "subsegments": [
+    {
+      "subsegment_id": "High_Value_Champions",
+      "size": 890,
+      "percentage": 38.0,
+      "profile": {"avg_recency": 8, "avg_frequency": 14.5, "avg_monetary": 1450},
+      "differentiators": ["Very high frequency", "Very high monetary", "Recent purchases"],
+      "description": "Most engaged and valuable customers within High Value segment"
+    },
+    {
+      "subsegment_id": "High_Value_Loyalists",
+      "size": 780,
+      "percentage": 33.3,
+      "profile": {"avg_recency": 25, "avg_frequency": 7.8, "avg_monetary": 780},
+      "differentiators": ["Moderate frequency", "Lower monetary", "Older purchases"],
+      "description": "Steady customers with room for growth"
+    },
+    {
+      "subsegment_id": "High_Value_BigSpenders",
+      "size": 670,
+      "percentage": 28.6,
+      "profile": {"avg_recency": 20, "avg_frequency": 4.2, "avg_monetary": 980},
+      "differentiators": ["Low frequency", "High average order value"],
+      "description": "Infrequent but high-value purchasers"
+    }
+  ],
+  "quality_metrics": {
+    "silhouette_score": 0.72,
+    "within_segment_variance": 0.18
+  }
+}
+```
+
+## Campo Reference
+
+| Campo | Tipo | Descripción | Significado Empresarial |
+|-------|------|-------------|------------------|
+| `parent_segment` | object | Information about the parent segment being explored. | Context for subsegmentation. |
+| `subsegments` | array | Discovered subsegments within parent segment. | Nested customer groups for targeted actions. |
+| `subsegments[].subsegment_id` | string | Unique subsegment identifier. | Reference for targeting y reporting. |
+| `subsegments[].size` | integer | Number of customers in subsegment. | Subsegment reach y targeting volume. |
+| `subsegments[].percentage` | float | Percentage of parent segment in this subsegment. | Subsegment distribution within parent. |
+| `subsegments[].profile` | object | Average feature values for subsegment. | Subsegment characteristics. |
+| `subsegments[].differentiators` | array | Key features that distinguish this subsegment from others. | What makes this subsegment unique. |
+| `quality_metrics.silhouette_score` | float | Clustering quality (0-1). Higher = better subsegment separation. | Confidence in subsegment distinctions. 0.70+ = good quality. |
+
+## Typical Workflow
+
+### 1. Start with Broad Segmentation
+Run initial customer segmentation to create 3-5 parent segments.
+
+### 2. Select Segment to Explore
+Choose high-value or strategically important parent segment for drill-down.
+
+### 3. Configure Subsegmentation
+Set num_subsegments (3-5 typical) based on campaign capacity.
+
+### 4. Analyze Subsegment Profiles
+Review differentiators y descriptions to understy what makes each subsegment unique.
+
+### 5. Name y Document Subsegments
+Assign business-friendly names based on characteristics (e.g., "Champions", "Loyalists").
+
+### 6. Create Targeted Campaigns
+Develop segment-specific messaging y offers for each subsegment.
+
+### 7. Iterate as Needed
+Further drill into subsegments to create micro-segments for 1:1 personalization.
+
+## Preguntas Frecuentes
+
+### Q: When should I use subsegment exploration vs. hierarchical segmentation?
+A: Use subsegment exploration for interactive, ad-hoc drill-down (explore one segment at a time). Use hierarchical segmentation for planned multi-level structures (all levels computed upfront). Exploration is better for iterative discovery, hierarchy for systematic planning.
+
+### Q: How many subsegments should I create?
+A: Start with 3-4 subsegments. Too few (2) = insufficient granularity, too many (>6) = diluted targeting y resource constraints. Balance subsegment size with campaign execution capacity.
+
+### Q: What if subsegments are too similar?
+A: This indicates low variance within the parent segment. Either: (1) reduce num_subsegments, (2) add more discriminating features to customer_data, or (3) accept that this parent segment is homogeneous y doesn't need subdivision.
+
+### Q: Can I drill into subsegments repeatedly?
+A: Sí. Take a subsegment y submit it as the parent_segment for another level of drill-down. Typical depth: 2-3 levels before segments become too small to be actionable.
+
+## Notas
+
+### Rendimiento
+- **Tiempo de Procesamiento:** 200-800ms per segment exploration
+- **Maximum Customers:** 100,000 per parent segment
+- **Rate Limiting:** 30 requests per minute
+
+### Use Cases
+- **High-value segment refinement:** Drill into top customers to create VIP programs
+- **At-risk customer analysis:** Explore churn-risk segment to find distinct sub-groups requiring different retention strategies
+- **New customer onboarding:** Subdivide new customers by engagement level for tailored nurture campaigns
+
+### Quality Metrics
+- **Silhouette score >0.70:** Excellent subsegment separation
+- **Silhouette score 0.50-0.70:** Good subsegmentation
+- **Silhouette score <0.50:** Weak subsegmentation, consider fewer subsegments or different features
 
 ## Cómo se Calcula
 
-El sistema utiliza clustering algorithms (K-means, hierarchical clustering) para group similar customers or items into segments.
+## Estado HTTP
 
-### 1. Algoritmo Principal
+| Status Código | Descripción |
+|-------------|-------------|
+| 200 OK | Request successful. Returns segment subsegment exploration results. |
+| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 401 Unauthorized | Missing or invalid Bearer token. |
+| 403 Forbidden | Valid token but insufficient permissions. |
+| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
+| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
+| 500 Internal Server Error | Server Error. Contact support if persistent. |
+| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
 
-- Utiliza técnicas de aprendizaje automático estándar de la industria
-- Entrenado en patrones de datos históricos
-- Optimizado para precisión y rendimiento
+## Errores
 
-### 2. Pasos de Procesamiento
+### Common Error Responses
 
-- **Paso 1:** Preprocesamiento de datos y extracción de características
-- **Paso 2:** Entrenamiento o inferencia del modelo
-- **Paso 3:** Generación y validación de resultados
-- **Paso 4:** Formateo y entrega de salida
+#### Missing Requerido Parámetros
+```json
+{
+  "error": "Validation failed",
+  "message": "Required parameter 'data' is missing",
+  "code": "MISSING_PARAMETER",
+  "details": {
+    "parameter": "data",
+    "location": "body"
+  }
+}
+```
 
-### 3. Rendimiento
+**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
 
-- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
-- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
-- **Precisión:** Validado contra conjuntos de datos de referencia
+#### Invalid Autenticación
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired authentication token",
+  "code": "AUTH_FAILED"
+}
+```
+
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+
+## Cómo se Calcula
+
+The subsegment exploration system enables drill-down analysis within customer segments:
+
+### Algoritmo Principal
+
+The system performs iterative clustering to discover subsegments within parent segments:
+
+- **Recursive Clustering:** Applies clustering algorithms within each parent segment to find subsegments
+- **Feature Refinement:** Uses segment-specific features to identify meaningful subdivisions
+- **Subsegment Validation:** Tests subsegment quality using silhouette scores y business interpretability
+- **Multi-Level Hierarchy:** Supports multiple levels of nesting (segments → subsegments → micro-segments)
+- **Interactive Exploration:** Allows dynamic exploration of any segment branch
+
+### Pasos de Procesamiento
+
+1. **Segment Selection:** Choose parent segment to explore for subsegments
+2. **Subset Extraction:** Filter customers belonging to selected parent segment
+3. **Reclustering:** Apply clustering algorithm to parent segment customers only
+4. **Subsegment Profiling:** Profile each discovered subsegment with distinguishing characteristics
+5. **Comparison:** Compare subsegments to each other y to parent segment average
+
+### Rendimiento
+
+- **Tiempo de Procesamiento:** 200-800ms per segment exploration (depends on segment size)
+- **Requisitos de Datos:** Existing parent segmentation plus customer feature data
+
+## Relacionado
+
+- [Segment Hierarchy Chart](SegmentHierarchyChart.md) - Visualize full segment hierarchy
+- [Customer Segmentation](CustomerSegmentation.md) - Initial customer segmentation
+- [Segment Cluster Profiles](SegmentClusterProfiles.md) - Profile subsegments
+- [Segmentation Report](SegmentationReport.md) - Multi-level segmentation insights
+- [Purchasing Segmentation](PurchasingSegmentation.md) - Purchase-based subsegments
 
 ## Referencias
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:120`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:120`

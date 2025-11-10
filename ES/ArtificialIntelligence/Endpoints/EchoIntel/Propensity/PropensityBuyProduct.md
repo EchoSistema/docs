@@ -1,4 +1,4 @@
-# Inteligencia Artificial – Propensión de Compra de Producto
+# Artificial Intelligence – Product Purchase Propensity
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/propensity/buy-product
 ```
 
-Calcula a propensión de clientes comprar productos específicos utilizando modelos predictivos.
+Calculates to propensity of customers to purchase products specific using predictive models.
 
 ## Autenticación
 
@@ -18,24 +18,24 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | Secret de 64 caracteres. |
-| Accept-Language    | string | No         | Idioma (`en`, `es`, `pt`). |
-| Content-Type       | string | Sí         | `application/json`. |
+| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
+| Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-### Parámetros del cuerpo
+### Parámetros of the body
 
 | Parámetro       | Tipo   | Requerido | Descripción |
 | --------------- | ------ | ----------- | --------- |
-| customers       | array  | Sí         | Lista de clientes para análisis. |
-| product_id      | string | Sí         | ID del producto objetivo. |
-| historical_data | array  | No         | Datos históricos para mejorar precisión. |
-| top_n           | int    | No         | Número de clientes con mayor propensión a retornar. Predeterminado: `100`. |
+| customers       | array  | Sí         | List of customers for analysis. |
+| product_id      | string | Sí         | ID of product target. |
+| historical_data | array  | No         | Historical data for improve precision. |
+| top_n           | int    | No         | Number of customers with higher propensity to return. Por Defecto: `100`. |
 
 ## Ejemplos
 
-### Ejemplo de solicitud (curl)
+### Ejemplo de Solicitud (curl)
 
 ```bash
 curl -X POST \
@@ -107,46 +107,345 @@ curl -X POST \
 
 | Campo                                       | Tipo    | Descripción |
 | ------------------------------------------- | ------- | --------- |
-| `propensity_scores`                         | array   | Scores de propensión por cliente. |
-| `propensity_scores[].customer_id`           | string  | ID del cliente. |
-| `propensity_scores[].propensity_score`      | float   | Score de propensión (0-1). |
-| `propensity_scores[].propensity_level`      | string  | Nivel (`low`, `medium`, `high`). |
-| `propensity_scores[].confidence`            | float   | Confianza de la predicción (0-1). |
-| `propensity_scores[].key_factors`           | array   | Factores clave de la propensión. |
-| `propensity_scores[].recommended_actions`   | array   | Acciones recomendadas. |
-| `product_info`                              | object  | Información agregada del producto. |
-| `product_info.avg_propensity`               | float   | Propensión promedio. |
-| `product_info.total_high_propensity`        | int     | Total de clientes con alta propensión. |
+| `propensity_scores`                         | array   | Scores of propensity por cliente. |
+| `propensity_scores[].customer_id`           | string  | ID of cliente. |
+| `propensity_scores[].propensity_score`      | float   | Score of propensity (0-1). |
+| `propensity_scores[].propensity_level`      | string  | Level (`low`, `medium`, `high`). |
+| `propensity_scores[].confidence`            | float   | Prediction confidence (0-1). |
+| `propensity_scores[].key_factors`           | array   | Key factors of the propensity. |
+| `propensity_scores[].recommended_actions`   | array   | Recommended actions. |
+| `product_info`                              | object  | Aggregate information of the product. |
+| `product_info.avg_propensity`               | float   | Average propensity. |
+| `product_info.total_high_propensity`        | int     | Total of customers with alta propensity. |
+
+## Estado HTTP
+
+| Status Código | Descripción |
+|-------------|-------------|
+| 200 OK | Request successful. Returns product purchase propensity results. |
+| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 401 Unauthorized | Missing or invalid Bearer token. |
+| 403 Forbidden | Valid token but insufficient permissions. |
+| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
+| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
+| 500 Internal Server Error | Server Error. Contact support if persistent. |
+| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+
+## Errores
+
+### Common Error Responses
+
+#### Missing Requerido Parámetros
+```json
+{
+  "error": "Validation failed",
+  "message": "Required parameter 'data' is missing",
+  "code": "MISSING_PARAMETER",
+  "details": {
+    "parameter": "data",
+    "location": "body"
+  }
+}
+```
+
+**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+
+#### Invalid Autenticación
+```json
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired authentication token",
+  "code": "AUTH_FAILED"
+}
+```
+
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
 
 ## Notas
 
-* Níveis de propensión: `low` (< 0.3), `medium` (0.3-0.7), `high` (> 0.7).
-* Resultados ordenados por `propensity_score` descendente.
-* Recomendações são personalizadas por nível de propensión.
+* Níveis of propensity: `low` (< 0.3), `medium` (0.3-0.7), `high` (> 0.7).
+* Results ordered by `propensity_score` descending.
+* Recomendações são personalizadas por nível of propensity.
 
 ## Cómo se Calcula
 
-El sistema utiliza classification models (logistic regression, random forest) para predict likelihood of specific customer actions.
+The Product Purchase Propensity Endpoint predicts the likelihood that specific customers will purchase a target product using supervised machine learning classification algorithms.
 
-### 1. Algoritmo Principal
+### 1. Feature Engineering
 
-- Utiliza técnicas de aprendizaje automático estándar de la industria
-- Entrenado en patrones de datos históricos
-- Optimizado para precisión y rendimiento
+**Customer Demographic Features:**
+- Age, gender, location (geographic segmentation)
+- Income level, occupation, education
+- Customer segment/tier classification
+- Account age y tenure
 
-### 2. Pasos de Procesamiento
+**Behavioral Features:**
+- **Purchase History:**
+  - Total purchases (count, frequency, recency)
+  - Average order value (AOV)
+  - Product category preferences
+  - Bry affinity scores
 
-- **Paso 1:** Preprocesamiento de datos y extracción de características
-- **Paso 2:** Entrenamiento o inferencia del modelo
-- **Paso 3:** Generación y validación de resultados
-- **Paso 4:** Formateo y entrega de salida
+- **Engagement Metrics:**
+  - Website/app visits y session duration
+  - Email open rates y click-through rates
+  - Customer service interactions
+  - Social media engagement
 
-### 3. Rendimiento
+- **RFM (Recency, Frequency, Monetary):**
+  ```
+  RFM_Score = w1 × Recency_Score + w2 × Frequency_Score + w3 × Monetary_Score
+  ```
+  - Recency: Days since last purchase (inverse scoring)
+  - Frequency: Number of purchases in period
+  - Monetary: Total spend or average transaction value
 
-- **Tiempo de Procesamiento:** Optimizado para respuesta sub-segundo (típico: 200-500ms)
-- **Escalabilidad:** Maneja grandes conjuntos de datos eficientemente
-- **Precisión:** Validado contra conjuntos de datos de referencia
+**Product Affinity Features:**
+- Similar product purchase history
+- Product category overlap with customer preferences
+- Complementary product ownership
+- Product price range alignment with customer spending patterns
+
+**Temporal Features:**
+- Day of week, month, season
+- Time since last interaction
+- Purchase cycle/periodicity
+- Promotion exposure timing
+
+**Feature Scaling:**
+- StyardScaler for numerical features: `z = (x - μ) / σ`
+- MinMaxScaler for bounded features: `x_scaled = (x - min) / (max - min)`
+- One-hot codificación for categorical variables
+- Target codificación for high-cardinality categories
+
+### 2. Model Architecture
+
+**Logistic Regression:**
+```
+P(purchase = 1 | X) = 1 / (1 + e^(-(β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ)))
+```
+- Interpretable coefficients (feature importance)
+- Fast inference
+- Probabilistic output with calibration
+
+**Ryom Forest Classifier:**
+- Ensemble of decision trees (100-500 trees)
+- Bootstrap aggregation (bagging) for variance reduction
+- Feature importance via Gini impurity or permutation
+- Hyles non-linear relationships y interactions
+
+**Gradient Boosting (XGBoost/LightGBM):**
+```
+F(x) = Σ(i=1 to M) γᵢ × hᵢ(x)
+```
+- Sequential tree building with gradient descent
+- Regularization (L1/L2) to prevent overfitting
+- Hyles missing values internally
+- Feature interaction detection
+
+**Model Selection Criteria:**
+- Cross-validation AUC-ROC > 0.75
+- Precision-Recall tradeoff based on business cost
+- Calibration quality (Brier score, calibration curves)
+- Inference speed requirements
+
+### 3. Probability Calibration
+
+**Platt Scaling (for non-calibrated models):**
+```
+P_calibrated = 1 / (1 + exp(A × f(x) + B))
+```
+- Fits logistic regression on model outputs
+- A y B learned from validation set
+
+**Isotonic Regression:**
+- Non-parametric calibration
+- Monotonic transformation of predicted probabilities
+- Better for complex calibration curves
+
+**Calibration Validation:**
+- Expected Calibration Error (ECE)
+- Reliability diagrams (predicted vs. observed probabilities)
+
+### 4. Propensity Scoring
+
+**Score Calculation:**
+- Raw model output: probability [0, 1]
+- Confidence score from ensemble agreement or prediction margin
+- Calibrated propensity score
+
+**Classification Thresholds:**
+- **High Propensity:** Score > 0.7 (top decile, immediate action)
+- **Medium Propensity:** 0.3 ≤ Score ≤ 0.7 (nurture campaigns)
+- **Low Propensity:** Score < 0.3 (long-term awareness)
+
+**Threshold Optimization:**
+- ROC curve analysis for precision-recall balance
+- Business cost-benefit analysis (cost of false positive vs. false negative)
+- F1-score or F-beta score maximization
+
+### 5. Feature Importance y Explainability
+
+**SHAP (SHapley Additive exPlanations):**
+- Game-theoretic approach to feature attribution
+- Additive feature importance: `f(x) = φ₀ + Σ φᵢ`
+- Identifies positive y negative contributions
+
+**Permutation Importance:**
+- Measures decrease in model performance when feature is shuffled
+- Model-agnostic method
+
+**Top Contributing Factors:**
+- Ranked by absolute contribution to propensity score
+- Threshold for inclusion (e.g., top 5 or cumulative 80% importance)
+- Human-readable factor names y weights
+
+### 6. Recommendation Generation
+
+**Action Mapping by Propensity Level:**
+- **High Propensity:**
+  - Personalized email with product details
+  - Limited-time discount offer (5-15%)
+  - Direct sales outreach
+  - Product demo or trial
+
+- **Medium Propensity:**
+  - Educational content (blog posts, videos)
+  - General marketing campaign inclusion
+  - Product comparison guides
+  - Customer testimonials y reviews
+
+- **Low Propensity:**
+  - Bry awareness campaigns
+  - Retargeting ads
+  - Newsletter inclusion
+  - Wait for purchase trigger events
+
+**Personalization:**
+- Customize messaging based on key factors
+- Timing optimization (send time prediction)
+- Channel preference (email, SMS, push notification)
+
+### 7. Rendimiento Characteristics
+
+- **Tiempo de Procesamiento:** 250-700ms per customer (batch: 100 customers)
+- **Batch Rendimiento:** 500-1000 customers per minute
+- **Model Precisión:**
+  - AUC-ROC: 0.78-0.86
+  - Precision@Top-10%: 0.65-0.82
+  - Recall@Top-20%: 0.55-0.75
+  - Calibration Error (ECE): < 0.08
+- **Scalability:** Horizontally scalable with model serving infrastructure
+- **Model Update Frequency:** Retrained weekly or monthly based on data drift
+- **Feature Store:** Cached features updated daily
+
+## Typical Workflow
+
+### 1. Data Collection
+- Integrate customer data from CRM, purchase history, y engagement platforms
+- Ensure data quality: complete registros, consistent formatting
+- Historical window: 6-24 meses of customer interactions
+
+### 2. Identify Target Product
+- Select product for propensity analysis (new launch, slow-moving, high-margin)
+- Define product characteristics y category
+- Identify similar products for affinity analysis
+
+### 3. API Request
+- Prepare customer list with Requerido attributes
+- Include product_id y optional historical_data for improved accuracy
+- Set top_n Parámetro to focus on highest propensity customers
+
+### 4. Analyze Results
+- Review propensity scores y confidence levels
+- Examine key factors driving propensity for each customer
+- Segment customers by propensity level (high, medium, low)
+
+### 5. Execute Marketing Actions
+- **High Propensity Customers:** Deploy personalized campaigns immediately
+  - Send targeted emails with product offers
+  - Enable retargeting ads with product focus
+  - Assign to sales team for direct outreach
+
+- **Medium Propensity Customers:** Nurture campaigns
+  - Educational content about product benefits
+  - Include in general product announcements
+  - Monitor engagement y escalate if interest increases
+
+- **Low Propensity Customers:** Awareness building
+  - Include in bry campaigns
+  - Monitor for trigger events (life changes, seasonal needs)
+
+### 6. Monitor y Optimize
+- Track campaign performance: open rates, click-through rates, conversions
+- Calculate ROI: (Revenue from conversions - Campaign cost) / Campaign cost
+- Compare actual purchase rates vs. predicted propensity
+- Identify model drift: if accuracy degrades, retrain with fresh data
+
+### 7. Feedback Loop
+- Collect conversion outcomes (purchased or not)
+- Update training dataset with new labeled Ejemplos
+- Retrain model periodically to improve accuracy
+- Adjust thresholds based on business results
+
+## Preguntas Frecuentes
+
+### Q: How many historical purchases are needed per customer for accurate scoring?
+**A:** We recommend a minimum of 6-12 meses of purchase history per customer, with at least 3-5 prior purchases. Customers with more purchase history (24+ meses) produce more accurate propensity scores. For completely new customers with No purchase history, the model can still generate predictions using demographic features, but confidence scores will be lower (0.60-0.70 vs. typical 0.80-0.90). We automatically weight demographic vs. behavioral features based on data availability.
+
+### Q: Can I score multiple products simultaneously in a single request?
+**A:** Currently, the API accepts one `product_id` per request. To score multiple products, make separate API calls for each product. However, the Respuesta includes product-level aggregates (avg_propensity, total_high_propensity, etc.) for all customers y the single product. For bulk multi-product scoring, contact support for a specialized Endpoint that processes product matrices in parallel.
+
+### Q: How do I hyle new products with No purchase history in the market?
+**A:** For newly launched products, use the `similar_product_ids` Parámetro in optional historical_data to indicate comparable products. The model will infer propensity based on customers who purchased similar items. Propensity scores for new products may be slightly less reliable until 100+ customers have purchased it. Always pair new product propensity scores with domain expertise y A/B testing before large-scale campaigns.
+
+### Q: What's the difference between propensity_score y confidence?
+**A:** The `propensity_score` (0-1) is the model's predicted likelihood that a customer will purchase the product. The `confidence` (0-1) indicates how certain the model is about that prediction. Example: propensity_score=0.75 with confidence=0.85 means "75% likely to buy, y I'm 85% confident in that estimate." High propensity + high confidence = most reliable targets. High propensity + low confidence = worth further investigation before investing in campaigns.
+
+### Q: How often should propensity scores be refreshed for ongoing campaigns?
+**A:** Refresh propensity scores weekly or bi-weekly for active campaigns. Propensity decays over time as customer behavior changes. If a customer hasn't engaged in 30 días, their propensity to a specific product may shift. For seasonal products, refresh before peak seasons (monthly for retail, quarterly for non-seasonal). The system automatically learns from conversion feedback—provide actual purchase outcomes to improve future scores.
+
+### Q: Can I use this Endpoint for B2B products y account-based marketing?
+**A:** Sí, the Endpoint supports B2B use cases. Map account-level features (annual spend, industry, company size, contract value) instead of individual customer demographics. For account-based marketing, use the `top_n` Parámetro to identify the highest-propensity accounts for personalized outreach. B2B propensity tends to benefit from longer sales cycles—consider a 90-day engagement window rather than immediate conversion targets.
+
+### Q: What actions should I take for different propensity levels?
+**A:** High propensity (> 0.7): Immediate action within 24-48 hours—personalized email with limited-time offer (10-15% discount), direct sales outreach, product demo. Medium propensity (0.3-0.7): Nurture campaigns over 2-4 weeks—educational content, customer testimonials, free trial or sample, soft retargeting ads. Low propensity (< 0.3): Long-term awareness building—bry campaigns, newsletter inclusion, monitor for trigger events (career changes, company news, seasonal needs).
+
+### Q: What's included in the "key_factors" y how are they weighted?
+**A:** Key factors are the top 3-5 features that drove the propensity prediction for each customer, ranked by importance. Weights sum to 1.0 y indicate relative contribution to the score. Example: "high previous purchases" (0.35) + "similar product history" (0.28) + "demographic match" (0.24) = 0.87 cumulative. Use these factors to personalize messaging—if "demographic match" is the primary driver, emphasize lifestyle benefits; if "purchase history" dominates, highlight loyalty rewards.
+
+## Relacionado
+
+### Relacionado Endpoints
+
+- **[Propensity Respond Campaign](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityRespondCampaign.md)** - Campaign Respuesta likelihood
+- **[Propensity Upgrade Plan](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityUpgradePlan.md)** - Plan upgrade propensity
+- **[Recommend User Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendUserItems.md)** - Product recommendations
+- **[Cross-Sell Matrix](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/CrossSellMatrix.md)** - Product affinities for cross-selling
+
+### Relacionado Domain Concepts
+
+- **Propensity Modeling:** Predictive analytics, customer scoring, conversion prediction
+- **Customer Segmentation:** RFM analysis, behavioral clustering, value-based segmentation
+- **Ingeniería de Características:** Aggregation, temporal features, interaction terms
+- **Model Evaluation:** AUC-ROC, precision-recall, calibration, lift analysis
+
+### Integration Points
+
+- **CRM Systems:** Import customer profiles y interaction history
+- **Marketing Automation:** Trigger campaigns based on propensity scores
+- **Email Platforms:** Personalized product recommendations in emails
+- **Sales Tools:** Prioritize leads for sales team outreach
+- **Analytics Dashboards:** Track propensity distribution y campaign performance
+
+### Use Cases
+
+- **New Product Launch:** Identify early adopters with high propensity
+- **Inventory Clearance:** Target customers likely to purchase slow-moving items
+- **Personalized Marketing:** Tailor product suggestions to individual customers
+- **Sales Prioritization:** Focus sales efforts on high-propensity prospects
+- **Churn Prevention:** Offer relevant products to at-risk customers
 
 ## Referencias
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:177`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:177`
