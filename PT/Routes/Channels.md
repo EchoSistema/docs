@@ -13,14 +13,20 @@ Este guia descreve as regras de autorização definidas em `routes/channels.php`
 - **Objetivo:** permitir que apenas o próprio usuário receba eventos direcionados ao seu UUID.
 - **Regra:** compara o `uuid` fornecido com o do usuário autenticado usando `hash_equals` para mitigar *timing attacks*.
 
+### `backoffice`
+- **Objetivo:** canal global para eventos do painel administrativo.
+- **Regra:** o usuário precisa possuir pelo menos uma `Role` cujo método `can('backoffice.all')` retorne `true`.
+- **Dica:** o teste deve carregar as relações de `roles` para evitar consultas extras em produção.
+
 ### `conversation.{uuid}`
 - **Objetivo:** restringir mensagens de chat aos participantes da conversa.
-- **Regra:** consulta `Domain\Shared\Models\Chat\Conversation` filtrando pelo `uuid` e verifica a existência do usuário na relação `participants`.
+- **Regra:** busca `Conversation::where('uuid', $uuid)` e usa `whereHas('participants', fn ($query) => $query->where('user_id', $user->id))` antes de autorizar.
 - **Observação:** mantenha o `uuid` consistente entre MySQL (`conversations`) e MongoDB (`messages`).
 
 ### `platform.{publicKey}`
-- **Objetivo:** liberar canais específicos por plataforma.
-- **Regra:** autoriza somente se existir `Platform::where('public_key', $publicKey)` correspondente.
+- **Objetivo:** liberar canais específicos por plataforma (ex.: dashboards em tempo real).
+- **Regra:** autoriza somente se existir um registro em `Domain\Shared\Models\Platform\Platform` com a `public_key` informada.
+- **Fallback:** se necessário, cacheie as plataformas com `cacheBasicData` para reduzir leituras no banco.
 
 ## Boas Práticas
 - Use comentários no formato `/** canal: descrição. */` antes de cada `Broadcast::channel`.
