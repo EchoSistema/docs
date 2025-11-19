@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/customer-intelligence/segmentation
 ```
 
-Performs customer segmentation analysis using machine learning techniques to identify groups of customers with similar characteristics.
+Segments customers into behavioral clusters using machine learning algorithms (K-Means, DBSCAN, Hierarchical).
 
 ## Authentication
 
@@ -17,94 +17,65 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Required if not configured on the server. |
-| X-Secret           | string | Conditional | 64-character secret. Required if not configured on the server. |
-| Accept-Language    | string | No         | Response language (`en`, `es`, `pt`). Default: `en`. |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-### Request Body Parameters
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-Parameters vary according to the segmentation algorithm requirements. Consult the EchoIntel API documentation for specific details.
+### Corpo of the Requisição
 
-| Parameter    | Type   | Required | Description |
-| ------------ | ------ | ----------- | --------- |
-| data         | array  | Yes         | Array of data of the customers for segmentation. |
-| algorithm    | string | No         | Algorithm to be used (ex.: `kmeans`, `hierarchical`). |
-| n_clusters   | int    | No         | Number of clusters desired. |
-| features     | array  | No         | Specific features for analysis. |
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
 ## Examples
 
-### Request Example (curl)
+### Exemplo of Requisição (curl)
 
 ```bash
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "X-Customer-Api-Id: <tenant-uuid>" \
   -H "X-Secret: <secret>" \
-  -H "Accept-Language: pt" \
+  -H "Accept-Language: en" \
   -H "Content-Type: application/json" \
   -d '{
     "data": [
-      {"customer_id": "123", "total_purchases": 1500, "frequency": 12},
-      {"customer_id": "456", "total_purchases": 3000, "frequency": 24}
+      {"id": "001", "value": 100}
     ],
-    "algorithm": "kmeans",
-    "n_clusters": 3
+    "options": {},
+    "include_metadata": true
   }' \
   "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation"
 ```
 
-### Request Example (JavaScript)
+### Exemplo of Requisição (Python)
 
-```javascript
-const response = await fetch('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer <token>',
-    'X-Customer-Api-Id': '<tenant-uuid>',
-    'X-Secret': '<secret>',
-    'Accept-Language': 'pt',
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    data: [
-      {customer_id: '123', total_purchases: 1500, frequency: 12},
-      {customer_id: '456', total_purchases: 3000, frequency: 24}
-    ],
-    algorithm: 'kmeans',
-    n_clusters: 3
-  })
-});
+```python
+import requests
 
-const result = await response.json();
-console.log(result);
-```
+url = "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
 
-### Request Example (PHP)
-
-```php
-<?php
-
-use Illuminate\Support\Facades\Http;
-
-$response = Http::withHeaders([
-    'Authorization' => 'Bearer ' . $token,
-    'X-Customer-Api-Id' => $tenantUuid,
-    'X-Secret' => $secret,
-    'Accept-Language' => 'pt',
-])->post('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/segmentation', [
-    'data' => [
-        ['customer_id' => '123', 'total_purchases' => 1500, 'frequency' => 12],
-        ['customer_id' => '456', 'total_purchases' => 3000, 'frequency' => 24],
-    ],
-    'algorithm' => 'kmeans',
-    'n_clusters' => 3,
-]);
-
-$result = $response->json();
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
 ```
 
 ## Response
@@ -113,29 +84,16 @@ $result = $response->json();
 
 ```json
 {
-  "segments": [
+  "results": [
     {
-      "segment_id": 0,
-      "size": 150,
-      "characteristics": {
-        "avg_purchases": 1200,
-        "avg_frequency": 10
-      },
-      "customers": ["123", "789"]
-    },
-    {
-      "segment_id": 1,
-      "size": 200,
-      "characteristics": {
-        "avg_purchases": 3500,
-        "avg_frequency": 25
-      },
-      "customers": ["456"]
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
     }
   ],
-  "metrics": {
-    "silhouette_score": 0.72,
-    "davies_bouldin_score": 0.45
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
   }
 }
 ```
@@ -145,145 +103,218 @@ $result = $response->json();
 ```json
 {
   "error": "Invalid parameters",
-  "message": "The data field is required."
+  "message": "The data field is required and must contain at least one record."
 }
 ```
 
-### Error `401 Unauthorized`
+### Error `422 Unprocessable Entity`
 
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid authentication credentials"
-}
-```
-
-### Error `500 Internal Server Error`
-
-```json
-{
-  "error": "Failed to communicate with AI service",
-  "message": "Internal server error"
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
 }
 ```
 
 ## JSON Structure
 
-| Field                              | Type    | Description |
-| ---------------------------------- | ------- | --------- |
-| `segments`                         | array   | Array of segments identified. |
-| `segments[].segment_id`            | int     | Identifier of segment. |
-| `segments[].size`                  | int     | Number of customers in the segment. |
-| `segments[].characteristics`       | object  | Average characteristics of the segment. |
-| `segments[].customers`             | array   | IDs of the customers in the segment. |
-| `metrics`                          | object  | Quality metrics of the segmentation. |
-| `metrics.silhouette_score`         | float   | Silhouette score (0-1, higher is better). |
-| `metrics.davies_bouldin_score`     | float   | Score Davies-Bouldin (lower is better). |
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-## HTTP Status
+## Como é Calculado
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns customer segmentation results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+Segments customers into behavioral clusters using machine learning algorithms (K-Means, DBSCAN, Hierarchical).
 
-## Errors
+### Algoritmo Principal
 
-### Common Error Responses
+O sistema emprega técnicas avançadas of aprendizado of máquina and estatística adaptadas for inteligência of customers and analysis:
 
-#### Missing Required Parameters
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
+
+### Passos of Processamento
+
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
+
+### Desempenho
+
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
+
+## Status HTTP
+
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
 ```json
 {
   "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
+  "message": "Required fields missing",
   "details": {
-    "parameter": "data",
-    "location": "body"
+    "data": "The data field is required and must be an array."
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
-
-#### Invalid Authentication
+**Formato of Dados Inválido:**
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
 
 ## Notes
 
-* The secret must be rotated every 90 days according to security policy.
-* Processing time may vary depending on data volume (timeout: 300 seconds).
-* The headers `X-Customer-Api-Id` and `X-Secret` can be configured on the server via `.env`.
-* The response may vary depending on the EchoIntel API. Consult the official documentation for specific details.
+### Melhores Práticas
 
-## How It Is Computed
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-The customer segmentation system uses unsupervised machine learning to discover natural customer groups:
+### Otimização of Desempenho
 
-### Primary Algorithm
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-The system employs multiple clustering algorithms to identify customer segments:
+### Considerações of Segurança
 
-- **K-Means Clustering:** Partitions customers into k clusters by minimizing within-cluster variance
-- **Hierarchical Clustering:** Builds dendrogram of nested clusters using agglomerative or divisive methods
-- **DBSCAN:** Density-based clustering that identifies clusters of arbitrary shape and detects outliers
-- **Gaussian Mixture Models:** Probabilistic clustering using EM algorithm for soft cluster assignments
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-### Processing Steps
+## Perguntas Frequentes
 
-1. **Feature Selection:** Choose discriminative features (RFM, demographics, behavior, engagement)
-2. **Preprocessing:** Standardize features using z-score normalization, handle missing values
-3. **Optimal K Selection:** Determine number of clusters using elbow method, silhouette analysis, or BIC
-4. **Clustering:** Apply selected algorithm to assign each customer to segment
-5. **Profiling:** Calculate segment characteristics (size, means, medians) and business interpretations
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-### Performance
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-- **Processing Time:** 300ms-2s for 100,000 customers (depends on features and algorithm)
-- **Data Requirements:** Minimum 500 customers for stable segmentation
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-## Typical Workflow
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-### Step 1: Prepare Data
-Collect customer data including transactional (purchases, amounts), behavioral (website visits, engagement), and demographic features. Clean data and handle missing values.
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-### Step 2: Configure Parameters
-Specify clustering algorithm (kmeans, hierarchical, dbscan), number of clusters (or use auto-detection), and features to include. Set validation method (silhouette, davies-bouldin).
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-### Step 3: Make Request
-Submit customer data with configuration. API performs clustering, validates results using quality metrics, and returns segment assignments with interpretable characteristics.
+## Manuais Comerciais
 
-### Step 4: Analyze Results
-Review segment profiles (size, avg_purchases, avg_frequency, characteristics). Check quality metrics (silhouette_score >0.5 is good, davies_bouldin_score <1.0 is good). Interpret business meaning of each segment.
+### Playbook 1: Segmentation of customers for marketing direcionado
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-### Step 5: Take Action
-- **High-Value Segment:** Premium services, account management, exclusive offers
-- **Growth Segment:** Nurture campaigns, upsell opportunities, education content
-- **Price-Sensitive Segment:** Discount campaigns, value propositions, bundle offers
-- **At-Risk Segment:** Retention programs, feedback collection, reactivation efforts
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-## Related
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-- [Customer RFM](CustomerRFM.md) - RFM-based customer segmentation
-- [Purchasing Segmentation](PurchasingSegmentation.md) - Behavior-based purchase segmentation
-- [Segmentation Report](SegmentationReport.md) - Comprehensive segmentation analysis
-- [Segment Cluster Profiles](SegmentClusterProfiles.md) - Detailed cluster profiling
-- [CLV Forecast](CustomerClvForecast.md) - Predict value by segment
+### Playbook 2: Prevenção of churn and campanhas of retenção
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
+
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
+
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
+
+### Playbook 3: Otimização of the valor of vida of the cliente
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
+
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Experiências of cliente personalizadas
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:130`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:154`

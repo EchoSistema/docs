@@ -1,4 +1,4 @@
-# Artificial Intelligence – Otimização of Estoque
+# Artificial Intelligence – Inventory Optimization
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/inventory/optimization
 ```
 
-Optimizes níveis of estoque using predictive models for minimizar custos and evitar rupturas.
+Optimizes inventory levels using mathematical optimization algorithms to minimize costs while maintaining service levels.
 
 ## Authentication
 
@@ -17,53 +17,65 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-### Parameters of the body
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-| Parameter        | Type   | Required | Description |
-| ---------------- | ------ | ----------- | --------- |
-| products         | array  | Yes         | List of products for otimização. |
-| lead_time        | int    | Yes         | Tempo of reposição (em dias). |
-| holding_cost     | float  | No         | Custo of manutenção of estoque (%). |
-| stockout_cost    | float  | No         | Custo of ruptura of estoque. |
-| service_level    | float  | No         | Level of serviço desejado (0-1). Default: `0.95`. |
+### Corpo of the Requisição
+
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
 ## Examples
 
-### Request Example (curl)
+### Exemplo of Requisição (curl)
 
 ```bash
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "X-Customer-Api-Id: <tenant-uuid>" \
   -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
   -H "Content-Type: application/json" \
   -d '{
-    "products": [
-      {
-        "product_id": "SKU-001",
-        "current_stock": 150,
-        "historical_demand": [45, 52, 48, 55, 50, 58, 53],
-        "unit_cost": 25.00
-      },
-      {
-        "product_id": "SKU-002",
-        "current_stock": 80,
-        "historical_demand": [120, 115, 130, 125, 118, 135, 128],
-        "unit_cost": 15.00
-      }
+    "data": [
+      {"id": "001", "value": 100}
     ],
-    "lead_time": 7,
-    "holding_cost": 0.15,
-    "service_level": 0.95
+    "options": {},
+    "include_metadata": true
   }' \
   "https://echosistema.online/api/v1/ai/echointel/inventory/optimization"
+```
+
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/inventory/optimization"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
 ```
 
 ## Response
@@ -72,319 +84,237 @@ curl -X POST \
 
 ```json
 {
-  "optimization_results": [
+  "results": [
     {
-      "product_id": "SKU-001",
-      "current_stock": 150,
-      "recommended_stock": 175,
-      "reorder_point": 95,
-      "economic_order_quantity": 220,
-      "safety_stock": 35,
-      "action": "increase",
-      "quantity_to_order": 25,
-      "estimated_savings": 450.00,
-      "risk_level": "low",
-      "demand_forecast": {
-        "next_7_days": 378,
-        "std_deviation": 12.5
-      }
-    },
-    {
-      "product_id": "SKU-002",
-      "current_stock": 80,
-      "recommended_stock": 250,
-      "reorder_point": 180,
-      "economic_order_quantity": 350,
-      "safety_stock": 65,
-      "action": "urgent_order",
-      "quantity_to_order": 170,
-      "estimated_savings": 1200.00,
-      "risk_level": "high",
-      "demand_forecast": {
-        "next_7_days": 890,
-        "std_deviation": 28.3
-      }
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
     }
   ],
-  "summary": {
-    "total_potential_savings": 1650.00,
-    "products_at_risk": 1,
-    "urgent_orders_needed": 1,
-    "total_recommended_investment": 6700.00
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
+  }
+}
+```
+
+### Error `400 Bad Request`
+
+```json
+{
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
+}
+```
+
+### Error `422 Unprocessable Entity`
+
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
   }
 }
 ```
 
 ## JSON Structure
 
-| Field                                     | Type    | Description |
-| ----------------------------------------- | ------- | --------- |
-| `optimization_results`                    | array   | Resultados por product. |
-| `optimization_results[].product_id`       | string  | ID of product. |
-| `optimization_results[].current_stock`    | int     | Estoque atual. |
-| `optimization_results[].recommended_stock`| int     | Estoque recomendado. |
-| `optimization_results[].reorder_point`    | int     | Ponto of reposição. |
-| `optimization_results[].economic_order_quantity` | int | EOQ (Lote Econômico). |
-| `optimization_results[].safety_stock`     | int     | Estoque of segurança. |
-| `optimization_results[].action`           | string  | Ação recomendada. |
-| `optimization_results[].quantity_to_order`| int     | Quantidade to pedir. |
-| `optimization_results[].estimated_savings`| float   | Economia estimada. |
-| `optimization_results[].risk_level`       | string  | Level of risco (`low`, `medium`, `high`). |
-| `summary`                                 | object  | Resumo geral. |
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-## HTTP Status
+## Como é Calculado
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns inventory optimization results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+Optimizes inventory levels using mathematical optimization algorithms to minimize costs while maintaining service levels.
 
-## Errors
+### Algoritmo Principal
 
-### Common Error Responses
+The system employs advanced machine learning and statistical techniques tailored for inventory management and optimization:
 
-#### Missing Required Parameters
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
+
+### Passos of Processamento
+
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
+
+### Desempenho
+
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
+
+## Status HTTP
+
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
 ```json
 {
   "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
+  "message": "Required fields missing",
   "details": {
-    "parameter": "data",
-    "location": "body"
+    "data": "The data field is required and must be an array."
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
-
-#### Invalid Authentication
+**Formato of Dados Inválido:**
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
 
 ## Notes
 
-* Ações possíveis: `maintain`, `increase`, `decrease`, `urgent_order`.
-* Risco alto indica probabilidade of ruptura of estoque.
-* EOQ considera custos of pedido and manutenção.
+### Melhores Práticas
 
-## How It Is Computed
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-The Inventory Optimization endpoint applies mathematical optimization algorithms to determine optimal inventory levels that minimize total costs while maintaining desired service levels.
+### Otimização of Desempenho
 
-### 1. Demand Forecasting
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-**Historical Demand Analysis:**
-- Calculate average daily/weekly demand: `μ_demand = Σ(demand_i) / n`
-- Compute demand standard deviation: `σ_demand = √(Σ(demand_i - μ)² / (n-1))`
-- Identify demand distribution (Normal, Poisson, or empirical)
-- Seasonality adjustment using seasonal indices
+### Considerações of Segurança
 
-**Forecast Methods:**
-- Simple Moving Average (SMA): `SMA = (D₁ + D₂ + ... + Dₙ) / n`
-- Exponential Smoothing: `F_t+1 = α × D_t + (1-α) × F_t`
-- Holt-Winters for trend and seasonality
-- Machine learning models (ARIMA, Prophet, LSTM) for complex patterns
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-### 2. Economic Order Quantity (EOQ) Calculation
+## Perguntas Frequentes
 
-**Classic EOQ Formula:**
-```
-EOQ = √((2 × D × S) / H)
-```
-Where:
-- **D** = Annual demand (units/year)
-- **S** = Ordering cost per order ($)
-- **H** = Holding cost per unit per year ($ or % of unit cost)
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-**Total Cost Calculation:**
-```
-TC = (D/Q) × S + (Q/2) × H + D × C
-```
-Where:
-- **Q** = Order quantity
-- **C** = Unit cost
-- **TC** = Total cost (ordering + holding + purchasing)
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-**EOQ Variations:**
-- **EPQ (Economic Production Quantity):** For manufacturing scenarios
-- **Quantity Discounts:** Adjusts EOQ when bulk pricing available
-- **Backorder Model:** Allows planned stockouts with penalty costs
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-### 3. Safety Stock Calculation
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-**Service Level Approach:**
-```
-Safety Stock = Z × σ_demand × √(Lead Time)
-```
-Where:
-- **Z** = Z-score for desired service level (e.g., 1.65 for 95%, 1.96 for 97.5%)
-- **σ_demand** = Standard deviation of demand
-- **Lead Time** = Replenishment time in same units as demand
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-**Fixed Period Approach:**
-```
-Safety Stock = Z × σ_demand × √(Lead Time + Review Period)
-```
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-**Advanced Methods:**
-- **Demand-Supply Variability:** `SS = Z × √((LT × σ_d²) + (μ_d² × σ_LT²))`
-- **MAD (Mean Absolute Deviation):** `SS = MAD × Z × √(Lead Time)`
-- **Simulation-based:** Monte Carlo for complex demand patterns
+## Manuais Comerciais
 
-### 4. Reorder Point (ROP) Determination
+### Playbook 1: Reduce excess inventory carrying costs
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-**Basic ROP Formula:**
-```
-ROP = (Average Daily Demand × Lead Time) + Safety Stock
-```
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-**Dynamic ROP:**
-- Adjusts for seasonal variations
-- Incorporates supply chain reliability factors
-- Updates based on recent demand patterns
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-**Multi-Echelon Considerations:**
-- Downstream demand variability
-- Network inventory positioning
-- Bullwhip effect mitigation
+### Playbook 2: Optimize stock levels and reorder points
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-### 5. Optimization Objective Function
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
 
-**Cost Minimization:**
-```
-Minimize: TC = Ordering Cost + Holding Cost + Stockout Cost + Obsolescence Cost
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
 
-Subject to:
-- Service Level ≥ Target Service Level
-- Inventory ≥ Safety Stock
-- Cash Flow ≤ Budget Constraint
-- Warehouse Capacity ≤ Max Capacity
-```
+### Playbook 3: Identify slow-moving and obsolete items
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
 
-**Multi-Objective Optimization:**
-- Pareto frontier analysis for cost vs. service level tradeoffs
-- Weighted sum method: `Objective = w₁×Cost + w₂×(1-ServiceLevel) + w₃×Cash`
-- Constraint handling using penalty functions or barrier methods
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
 
-**Optimization Algorithms:**
-- **Linear Programming (LP):** For simple linear constraints
-- **Mixed-Integer Programming (MIP):** When quantities must be integers
-- **Genetic Algorithms:** For complex non-linear scenarios
-- **Gradient Descent:** For continuous optimization problems
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
 
-### 6. Risk Assessment
+### Playbook 4: Improve inventory turnover ratios
+**Objetivo:** Alcançar excelência operacional através of IA.
 
-**Risk Level Classification:**
-- **High Risk:** Current stock < Safety Stock OR ROP already triggered
-- **Medium Risk:** Safety Stock ≤ Stock < ROP
-- **Low Risk:** Stock > ROP with adequate buffer
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
 
-**Risk Metrics:**
-- **Stockout Probability:** P(Demand during Lead Time > Current Stock)
-- **Expected Shortfall:** Average units short when stockout occurs
-- **Service Level:** `SL = 1 - (Expected Stockouts / Total Demand)`
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
 
-### 7. Action Recommendations
+## Relacionado
 
-**Decision Rules:**
-- **Urgent Order:** Stock < Safety Stock (immediate replenishment needed)
-- **Regular Order:** Stock < ROP but > Safety Stock (normal reorder)
-- **Increase:** Demand trending up, adjust ROP and EOQ upward
-- **Decrease:** Excess inventory or declining demand, reduce order quantities
-- **Maintain:** Stock levels optimal, no action required
-
-**Order Quantity Calculation:**
-```
-Order Quantity = max(EOQ, ROP + EOQ - Current Stock)
-```
-
-### 8. Performance Characteristics
-
-- **Processing Time:** 400-900ms per product, 2-5s for batch of 50 products
-- **Optimization Accuracy:**
-  - Cost Reduction: 15-25% vs. ad-hoc ordering
-  - Service Level Achievement: 95-99% target hit rate
-  - Forecast MAPE: 12-18% for stable demand, 20-30% for volatile items
-- **Scalability:** Handles 500+ SKUs per request with parallel processing
-- **Update Frequency:** Recommendations updated daily or on-demand
-- **Model Retraining:** Quarterly or when MAE exceeds threshold (>20%)
-
-## Typical Workflow
-
-### 1. Initial Setup
-- Configure inventory parameters (lead times, costs, service levels)
-- Import historical sales and inventory data (minimum 6-12 months)
-- Define product hierarchies and relationships
-
-### 2. Data Preparation
-- System validates and cleanses input data
-- Identifies missing values and outliers
-- Aggregates demand history at appropriate granularity
-
-### 3. Optimization Execution
-- Call endpoint with current inventory levels and product list
-- System computes EOQ, safety stock, and ROP for each product
-- Risk assessment performed based on current stock vs. optimal levels
-
-### 4. Review Recommendations
-- Review optimization results: recommended stock levels, order quantities, actions
-- Analyze risk levels and prioritize urgent orders
-- Evaluate estimated cost savings and investment requirements
-
-### 5. Implementation
-- Generate purchase orders for recommended quantities
-- Update inventory management system with new parameters
-- Schedule orders based on lead times and priorities
-
-### 6. Monitoring and Adjustment
-- Track actual vs. forecasted demand
-- Monitor service levels and stockout occurrences
-- Re-run optimization periodically (weekly/monthly) to adapt to changing conditions
-- Fine-tune parameters (holding costs, service levels) based on business needs
-
-## Related
-
-### Related Endpoints
-
-- **[Inventory History Improved](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/InventoryHistoryImproved.md)** - Historical analysis feeding optimization
-- **[Excess Inventory NLP](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/ExcessInventoryNlp.md)** - Identifies items to reduce
-- **[Demand Forecasting](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Forecasting/)** - Future demand predictions
-
-### Related Domain Concepts
-
-- **Operations Research:** EOQ, safety stock, reorder point optimization
-- **Supply Chain Management:** Lead time management, service levels, inventory policies
-- **Cost Accounting:** Holding costs, ordering costs, stockout costs
-- **Statistical Forecasting:** Demand prediction, uncertainty quantification
-
-### Integration Points
-
-- **ERP Systems:** Import product data, costs, and demand history
-- **Procurement Systems:** Generate automated purchase orders
-- **Warehouse Management Systems:** Update stock levels and reorder points
-- **Financial Systems:** Track inventory carrying costs and cash flow impact
-
-### Key Business Metrics
-
-- **Total Inventory Cost Reduction:** 15-25% typical savings
-- **Service Level Improvement:** Maintain 95-98% fill rates
-- **Cash Flow Optimization:** Reduce capital tied up in excess inventory
-- **Warehouse Utilization:** Optimize storage space usage
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:261`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:273`

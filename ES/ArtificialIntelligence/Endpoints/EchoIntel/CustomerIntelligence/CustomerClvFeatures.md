@@ -17,22 +17,22 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Requerido if not configured on the server. |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. Requerido if not configured on the server. |
-| Accept-Language    | string | No         | Idioma de respuesta (`en`, `es`, `pt`). Por Defecto: `en`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Idioma de resposta (`en`, `es`, `pt`). Predeterminado: `en`. |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud
+### Corpo de la Requisição
 
-| Parámetro | Tipo | Requerido | Descripción | Significado Empresarial | Por Defecto |
+| Parámetro | Tipo | Requerido | Descripción | Significado Empresarial | Padrão |
 | --------- | ---- | -------- | ----------- | ---------------- | ------- |
 | customer_data | array | Sí | array of customer registros with transaction history. | Customer profiles with purchase behavior data. | - |
 | feature_set | string | No | Feature group to generate: `basic`, `advanced`, `all`. | Determines complexity of feature engineering. | `all` |
-| time_window | integer | No | Rolling window in días for temporal features (30-365). | Analysis period for trend calculation. | `90` |
+| time_window | integer | No | Rolling window in dias for temporal features (30-365). | Analysis period for trend calculation. | `90` |
 | include_metadata | boolean | No | Include feature engineering metadata y descriptions. | Adds explanations for each computed feature. | `false` |
 
 ### Customer Data object Fields
@@ -56,7 +56,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -85,7 +85,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/clv-features"
 ```
 
-### Ejemplo de Solicitud (Python)
+### Exemplo de Requisição (Python)
 
 ```python
 import requests
@@ -202,14 +202,14 @@ result = response.json()
 | `features[].transactional_features.total_revenue` | float | Sum of all transaction amounts. | Total customer spending to date. |
 | `features[].transactional_features.average_order_value` | float | Mean transaction amount. | Average basket size per purchase. |
 | `features[].transactional_features.purchase_frequency` | integer | Count of transactions. | How often customer purchases. |
-| `features[].transactional_features.recency_días` | integer | Days since last purchase. | Purchase recency indicator. |
+| `features[].transactional_features.recency_dias` | integer | Days since last purchase. | Purchase recency indicator. |
 | `features[].transactional_features.monetary_value` | float | Total spending (same as total_revenue). | Monetary contribution metric. |
-| `features[].transactional_features.time_between_purchases_avg` | float | Average días between consecutive purchases. | Purchase cadence indicator. |
+| `features[].transactional_features.time_between_purchases_avg` | float | Average dias between consecutive purchases. | Purchase cadence indicator. |
 | `features[].temporal_features` | object | Time-based behavior patterns. | Trends y velocity metrics. |
-| `features[].temporal_features.customer_tenure_días` | integer | Days since customer registration. | Customer relationship age. |
-| `features[].temporal_features.purchase_velocity_30d` | integer | Purchases in last 30 días. | Short-term activity level. |
-| `features[].temporal_features.purchase_velocity_60d` | integer | Purchases in last 60 días. | Medium-term activity level. |
-| `features[].temporal_features.purchase_velocity_90d` | integer | Purchases in last 90 días. | Long-term activity level. |
+| `features[].temporal_features.customer_tenure_dias` | integer | Days since customer registration. | Customer relationship age. |
+| `features[].temporal_features.purchase_velocity_30d` | integer | Purchases in last 30 dias. | Short-term activity level. |
+| `features[].temporal_features.purchase_velocity_60d` | integer | Purchases in last 60 dias. | Medium-term activity level. |
+| `features[].temporal_features.purchase_velocity_90d` | integer | Purchases in last 90 dias. | Long-term activity level. |
 | `features[].temporal_features.trend_coefficient` | float | Linear trend slope of purchase amounts. | Spending growth or decline rate. |
 | `features[].behavioral_features` | object | Customer behavior patterns. | Qualitative behavior indicators. |
 | `features[].behavioral_features.product_diversity` | integer | Count of unique product categories purchased. | Breadth of product interest. |
@@ -230,9 +230,9 @@ result = response.json()
 | `metadata.feature_engineering_version` | string | Version of feature engineering pipeline. | Algorithm version for reproducibility. |
 | `metadata.total_features_generated` | integer | Count of features computed. | Number of derived attributes. |
 | `metadata.feature_groups` | array | Categories of features generated. | Feature taxonomy. |
-| `metadata.computation_time_ms` | integer | Duración del procesamiento en milisegundos. | Métrica de rendimiento. |
+| `metadata.computation_time_ms` | integer | Duração del processamento em milissegundos. | Métrica de desempenho. |
 
-## Cómo se Calcula
+## Como é Calculado
 
 The CLV feature engineering system extracts predictive features from customer data for lifetime value modeling:
 
@@ -241,15 +241,15 @@ The CLV feature engineering system extracts predictive features from customer da
 The system computes statistical y behavioral features that correlate with customer lifetime value:
 
 - **Transactional Features:** Total purchases, average order value, purchase frequency, recency
-- **Temporal Features:** Customer tenure, días since first purchase, purchase velocity trends
+- **Temporal Features:** Customer tenure, dias since first purchase, purchase velocity trends
 - **Behavioral Features:** Product diversity, category preferences, discount sensitivity
 - **Engagement Features:** Website visits, email opens, support interactions, loyalty program activity
 
-### Pasos de Procesamiento
+### Passos de Processamento
 
 1. **Data Aggregation:** Collect customer transactional, behavioral, y demographic data
-2. **Ingeniería de Características:** Calculate derived features (e.g., 30/60/90-day purchase trends)
-3. **Normalization:** Styardize features using z-score or min-max scaling
+2. **Engenharia de Características:** Calculate derived features (e.g., 30/60/90-day purchase trends)
+3. **Normalization:** Steardize features using z-score or min-max scaling
 4. **Feature Selection:** Rank features by correlation with actual CLV using mutual information
 
 ### Feature Categories
@@ -260,8 +260,8 @@ The system computes statistical y behavioral features that correlate with custom
 - Inter-purchase time statistics
 
 **Temporal Features (5 features):**
-- Customer tenure (días since registration)
-- Purchase velocity across multiple windows (30/60/90 días)
+- Customer tenure (dias since registration)
+- Purchase velocity across multiple windows (30/60/90 dias)
 - Trend analysis (spending growth/decline rate)
 
 **Behavioral Features (6 features):**
@@ -282,28 +282,28 @@ The system computes statistical y behavioral features that correlate with custom
 - Estimated future value
 - Churn risk probability
 
-### Rendimiento
+### Desempenho
 
-- **Tiempo de Procesamiento:** 150-400ms for 5,000 customers with full feature extraction
-- **Requisitos de Datos:** Minimum 3 meses of customer transaction history
-- **Tamaño de Lote:** Process up to 50,000 customers per request
+- **Tempo de Processamento:** 150-400ms for 5,000 customers with full feature extraction
+- **Requisitos de Dados:** Minimum 3 meses of customer transaction history
+- **Tamanho del Lote:** Process up to 50,000 customers per request
 - **Memory Footprint:** ~2MB per 1,000 customers
 
-## Estado HTTP
+## Status HTTP
 
 | Código | Descripción |
 |------|-------------|
-| 200  | Éxito - Features generated successfully |
-| 400  | Bad Request - Missing or invalid Parámetros |
-| 401  | Unauthorized - Token de autenticación inválido o faltante |
-| 403  | Forbidden - Permisos insuficientes o tenant inválido |
-| 422  | Unprocessable Entity - Validation Errores in customer data |
-| 429  | Too Many Requests - Límite de tasa excedido |
-| 500  | Internal Server Error - Feature extraction failure |
+| 200  | Sucesso - Features generated successfully |
+| 400  | Bad Request - Missing or invalid Parâmetros |
+| 401  | Unauthorized - Token de autenticação inválido o faltante |
+| 403  | Forbidden - Permissões insuficientes o tenant inválido |
+| 422  | Unprocessable Entity - Validation Erros in customer data |
+| 429  | Too Many Requests - Limite de taxa excedido |
+| 500  | Internal Server Erro - Feature extraction failure |
 
-## Errores
+## Erros
 
-Common Error scenarios:
+Common Erro scenarios:
 
 **Insufficient Transaction History:**
 ```json
@@ -325,7 +325,7 @@ Common Error scenarios:
 }
 ```
 
-**Campos Requeridos Faltantes:**
+**Campos Obrigatórios Faltantes:**
 ```json
 {
   "error": "Validation failed",
@@ -339,11 +339,11 @@ Common Error scenarios:
 
 ## Notas
 
-### Feature Engineering Mejores Prácticas
+### Feature Engineering Melhores Práticas
 
 - **Minimum Data:** At least 2 transactions per customer (3+ recommended for robust features)
-- **Historical Window:** 90-day window captures seasonal patterns; 365 días for annual trends
-- **Calidad de Datos:** Ensure transaction dates are accurate y amounts are positive
+- **Historical Window:** 90-day window captures seasonal patterns; 365 dias for annual trends
+- **Qualidade de Dados:** Ensure transaction dates are accurate y amounts are positive
 - **Demographic Data:** Optional but improves feature quality when available
 
 ### Feature Set Options
@@ -371,32 +371,32 @@ Common Error scenarios:
 2. Target cross-sell campaigns based on `product_diversity`
 3. Optimize discount strategies using `discount_sensitivity`
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
-### Q: What's the minimum transaction history Requerido for reliable features?
-**A:** We recommend at least 2 transactions per customer, but 3+ transactions yield more reliable temporal features (velocity, trend). For robust CLV prediction, aim for 6+ meses of transaction history. Customers with only 1 transaction will have limited features (No frequency, velocity, or trend metrics).
+### Q: What's the minimum transaction history Obrigatório for reliable features?
+**A:** We recommend at least 2 transactions per customer, but 3+ transactions yield more reliable temporal features (velocity, trend). For robust CLV prediction, aim for 6+ meses of transaction history. Customers with only 1 transaction will have limited features (Não frequency, velocity, or trend metrics).
 
-### Q: How are missing or null demographic fields hyled?
-**A:** Demographic fields (age, location) are optional y do not affect core feature extraction. If provided, they're passed through in the Respuesta for downstream model usage. Missing demographics don't impact transactional, temporal, or behavioral feature computation.
+### Q: How are missing or null demographic fields heled?
+**A:** Demographic fields (age, location) are optional y del not affect core feature extraction. If provided, they're passed through in the Resposta for downstream model usage. Missing demographics don't impact transactional, temporal, or behavioral feature computation.
 
 ### Q: Can I use these features directly for CLV prediction?
-**A:** Sí! These features are designed as inputs for CLV forecasting models. Use the `all` feature set for comprehensive modeling. The features are pre-normalized y ready for machine learning algorithms. For automated CLV prediction, use the [CLV Forecast](CustomerClvForecast.md) Endpoint, which internally uses these features.
+**A:** Sim! These features are designed as inputs for CLV forecasting models. Use the `all` feature set for comprehensive modeling. The features are pre-normalized y ready for machine learning algorithms. For automated CLV prediction, use the [CLV Forecast](CustomerClvForecast.md) Endpoint, which internally uses these features.
 
 ### Q: What does the trend_coefficient represent y how is it calculated?
 **A:** The trend coefficient measures the linear growth or decline in customer spending over time. It's calculated using ordinary least squares regression on transaction amounts against transaction dates. Positive values (e.g., 0.15) indicate increasing spending; negative values indicate declining spending. A value of 0 suggests flat spending. This metric helps identify customers with growing engagement vs. those losing interest.
 
 ### Q: How often should I refresh customer features?
-**A:** For real-time applications (e.g., personalization engines), refresh features weekly or when significant customer actions occur (new purchase, large order). For monthly reporting y batch campaigns, refresh mensual. Features are stateless—each API call computes fresh features from provided transaction data without caching.
+**A:** For real-time applications (e.g., personalization engines), refresh features weekly or when significant customer actions occur (new purchase, large order). For monthly reporting y batch campaigns, refresh mensal. Features are stateless—each API call computes fresh features from provided transaction data without caching.
 
 ### Q: Can I process customers with different currencies?
-**A:** Sí, but ensure all amounts for a given customer are in the same currency. The system doesn't perform currency conversion—it treats all amounts as numeric values. For multi-currency customers, pre-convert transactions to a single base currency (e.g., USD) before submission. Currency metadata isn't stored in features.
+**A:** Sim, but ensure all amounts for a given customer are in the same currency. The system doesn't perform currency conversion—it treats all amounts as numeric values. For multi-currency customers, pre-convert transactions to a single base currency (e.g., USD) before submission. Currency metadata isn't stored in features.
 
-## Guías Comerciales
+## Manuais Comerciais
 
 ### Playbook 1: High-Value Customer Identification
 **Objetivo:** Identify top 10% customers by predicted lifetime value for VIP program enrollment.
 
-**Implementación:**
+**Implementação:**
 1. Extract features for entire customer base using `feature_set: "all"`
 2. Rank customers by `clv_indicators.estimated_future_value`
 3. Filter top 10% (e.g., estimated_future_value > $5,000)
@@ -411,14 +411,14 @@ Common Error scenarios:
 ### Playbook 2: Churn Prevention Campaign
 **Objetivo:** Reduce churn by 25% through early intervention on at-risk customers.
 
-**Implementación:**
+**Implementação:**
 1. Generate features for all active customers
-2. Filter customers with `churn_risk_score > 0.6` y `recency_días > 45`
+2. Filter customers with `churn_risk_score > 0.6` e `recency_dias > 45`
 3. Segment by `average_order_value` (high-value vs. low-value)
 4. Deploy personalized retention offers:
    - High-value: 20% discount + free shipping
    - Low-value: 10% discount + loyalty points bonus
-5. Monitor conversion within 14 días
+5. Monitor conversion within 14 dias
 
 **Resultados Esperados:**
 - 25-35% of at-risk customers reactivate
@@ -428,8 +428,8 @@ Common Error scenarios:
 ### Playbook 3: Product Recommendation Optimization
 **Objetivo:** Increase cross-sell conversion by 40% using behavioral features.
 
-**Implementación:**
-1. Extract features focusing on `behavioral_features.product_diversity` y `category_concentration`
+**Implementação:**
+1. Extract features focusing on `behavioral_features.product_diversity` e `category_concentration`
 2. Identify customers with low diversity (<3 categories) y high frequency (5+ purchases)
 3. Recommend complementary products from underrepresented categories
 4. Personalize messaging based on `primary_channel` (email for online, SMS for mobile)
@@ -441,35 +441,35 @@ Common Error scenarios:
 - 25-30% improvement in email/SMS engagement rates
 
 ### Playbook 4: Win-Back Campaign for Dormant Customers
-**Objetivo:** Reactivate 15% of dormant customers (No purchase in 90+ días).
+**Objetivo:** Reactivate 15% of dormant customers (Não purchase in 90+ dias).
 
-**Implementación:**
-1. Filter customers with `recency_días > 90` y `purchase_frequency >= 3`
-2. Segment by historical `average_order_value` y `monetary_value`
+**Implementação:**
+1. Filter customers with `recency_dias > 90` e `purchase_frequency >= 3`
+2. Segment by historical `average_order_value` e `monetary_value`
 3. Create tiered win-back offers:
    - High spenders (AOV > $150): $50 voucher
    - Medium spenders (AOV $50-$150): $20 voucher
    - Low spenders (AOV < $50): 15% discount
 4. Send multi-touch campaign (email → SMS → push notification)
-5. Track reactivation within 30 días
+5. Track reactivation within 30 dias
 
 **Resultados Esperados:**
 - 15-20% of dormant customers make a purchase
-- 60-70% of reactivated customers make 2+ purchases in next 90 días
+- 60-70% of reactivated customers make 2+ purchases in next 90 dias
 - 8-12% increase in quarterly revenue
 
 ### Playbook 5: Discount Strategy Optimization
 **Objetivo:** Reduce unnecessary discounting by 30% while maintaining conversion rates.
 
-**Implementación:**
+**Implementação:**
 1. Generate features with focus on `discount_sensitivity` metric
 2. Segment customers into 3 groups:
    - Low sensitivity (<0.2): Rarely uses discounts
    - Medium sensitivity (0.2-0.6): Occasional discount users
    - High sensitivity (>0.6): Primarily discount-driven
 3. Adjust discount strategy:
-   - Low: No discounts, focus on value messaging
-   - Medium: Occasional 10-15% offers on birthdías/holidías
+   - Low: Não discounts, focus on value messaging
+   - Medium: Occasional 10-15% offers on birthdias/holidias
    - High: Maintain current discount levels
 4. Monitor conversion rates y AOV by segment
 

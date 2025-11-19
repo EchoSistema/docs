@@ -8,7 +8,7 @@ POST /api/v1/ai/echointel/customer-intelligence/segment-hierarchy-chart
 
 Generates hierarchical customer segment visualizations using dendrogram charts that reveal nested relationships between segments, showing how broad customer groups split into increasingly granular subsegments at different similarity levels.
 
-**Business Value:** Enables multi-level segmentation strategy, allowing marketers to target at the optimal granularity level (broad segments for bry campaigns, micro-segments for personalization), improving campaign relevance by 25-40%.
+**Business Value:** Enables multi-level segmentation strategy, allowing marketers to target at the optimal granularity level (broad segments for bre campaigns, micro-segments for personalization), improving campaign relevance by 25-40%.
 
 ## Autenticación
 
@@ -20,17 +20,17 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud Parámetros
+### Corpo de la Requisição Parâmetros
 
-| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+| Parámetro | Tipo | Requerido | Padrão | Descripción | Significado Empresarial |
 |-----------|------|----------|---------|-------------|------------------|
 | customer_data | array | Sí | - | array of customer registros with features for hierarchical clustering. | Customer attributes used to build segment hierarchy. |
 | linkage_method | string | No | `"ward"` | Clustering linkage: `ward`, `complete`, `average`, `single`. | How segments merge. Ward minimizes within-cluster variance (recommended). |
@@ -48,7 +48,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -109,24 +109,24 @@ curl -X POST \
 | `dendrogram` | object | Dendrogram visualization data showing merge sequence. | Use to visualize hierarchy as tree chart. |
 | `segment_profiles` | object | Average feature values per segment. | Segment characteristics for interpretation. |
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns segment hierarchy chart results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -139,9 +139,9 @@ curl -X POST \
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -150,7 +150,7 @@ curl -X POST \
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
 ## Typical Workflow
 
@@ -161,7 +161,7 @@ Extract RFM or behavioral features for all customers.
 Submit to API with appropriate max_levels (3-5 typical) y min_segment_size (50-200).
 
 ### 3. Analyze Hierarchy Levels
-- **Level 1-2:** Broad segments for strategic planning y bry campaigns
+- **Level 1-2:** Broad segments for strategic planning y bre campaigns
 - **Level 3-4:** Tactical segments for channel-specific campaigns
 - **Level 5+:** Micro-segments for 1:1 personalization
 
@@ -171,21 +171,21 @@ Choose hierarchy level based on campaign Tipo y resources.
 ### 5. Visualize Dendrogram
 Use dendrogram data to create tree charts in BI tools for stakeholder presentations.
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: How many hierarchy levels should I use?
 A: Start with 3-4 levels. Level 1 gives 2-4 broad segments, level 3 gives 8-20 tactical segments. More levels = more granularity but harder to action. Most businesses use level 2-3 for campaigns.
 
 ### Q: What's the difference between this y regular segmentation?
-A: Regular segmentation creates flat, independent segments. Hierarchical segmentation shows nested relationships (e.g., "High Value" splits into "Champions" y "Loyalists"). Use hierarchy when you need multi-level targeting strategies.
+A: Regular segmentation creates flat, independent segments. Hierarchical segmentation shows nested relationships (e.g., "High Value" splits into "Champions" e "Loyalists"). Use hierarchy when you need multi-level targeting strategies.
 
 ### Q: Which linkage method should I use?
-A: Ward linkage (Por Defecto) works best for most cases as it creates balanced, compact segments. Use complete linkage if you want tight, well-separated segments. Avoid single linkage (creates chain-like segments).
+A: Ward linkage (Padrão) works best for most cases as it creates balanced, compact segments. Use complete linkage if you want tight, well-separated segments. Avoid single linkage (creates chain-like segments).
 
 ## Notas
 
-### Rendimiento
-- **Tiempo de Procesamiento:** 300ms-2s for 50,000 customers
+### Desempenho
+- **Tempo de Processamento:** 300ms-2s for 50,000 customers
 - **Maximum Customers:** 200,000 per request
 - **Rate Limiting:** 20 requests per minute
 
@@ -194,7 +194,7 @@ A: Ward linkage (Por Defecto) works best for most cases as it creates balanced, 
 - **Account-based marketing:** Nest accounts within industries within regions
 - **Product recommendations:** Group products hierarchically by category → subcategory → specific items
 
-## Cómo se Calcula
+## Como é Calculado
 
 The hierarchy chart system visualizes nested segment relationships using hierarchical clustering:
 
@@ -208,7 +208,7 @@ The system creates dendrogram structures showing segment relationships:
 - **Dendrogram Generation:** Constructs tree structure showing how segments merge at different similarity levels
 - **Cut-off Selection:** Determines optimal hierarchy levels for actionable segmentation
 
-### Pasos de Procesamiento
+### Passos de Processamento
 
 1. **Distance Matrix:** Compute pairwise distances between all customer points or existing segments
 2. **Agglomerative Merging:** Iteratively merge closest clusters using selected linkage method
@@ -216,10 +216,10 @@ The system creates dendrogram structures showing segment relationships:
 4. **Level Selection:** Identify meaningful cut-off points (using dendrogram gaps or business criteria)
 5. **Visualization:** Generate chart with segment hierarchy, sizes, y nesting relationships
 
-### Rendimiento
+### Desempenho
 
-- **Tiempo de Procesamiento:** 300ms-2s for hierarchical clustering of 50,000 customers
-- **Requisitos de Datos:** Customer feature matrix or existing flat segmentation results
+- **Tempo de Processamento:** 300ms-2s for hierarchical clustering of 50,000 customers
+- **Requisitos de Dados:** Customer feature matrix or existing flat segmentation results
 
 ## Relacionado
 

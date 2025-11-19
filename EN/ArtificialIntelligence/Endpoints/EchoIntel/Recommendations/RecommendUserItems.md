@@ -1,4 +1,4 @@
-# Artificial Intelligence – User Item Recommendations
+# Artificial Intelligence – Personalized User Recommendations
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/recommendations/user-items
 ```
 
-Generates personalized product/item recommendations for specific users based on collaborative filtering and content-based filtering.
+Generates personalized product recommendations for individual users based on behavior and preferences.
 
 ## Authentication
 
@@ -17,42 +17,65 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-### Request Body Parameters
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-| Parameter     | Type   | Required | Description |
-| ------------- | ------ | ----------- | --------- |
-| user_id       | string | Yes         | User ID. |
-| n_recommendations | int | No       | Number of recommendations. Default: `10`. |
-| exclude_purchased | boolean | No   | Exclude already purchased items. Default: `true`. |
-| filters       | object | No         | Additional filters (category, price, etc.). |
+### Corpo of the Requisição
+
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
 ## Examples
 
-### Request Example (curl)
+### Exemplo of Requisição (curl)
 
 ```bash
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "X-Customer-Api-Id: <tenant-uuid>" \
   -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
   -H "Content-Type: application/json" \
   -d '{
-    "user_id": "U001",
-    "n_recommendations": 5,
-    "exclude_purchased": true,
-    "filters": {
-      "category": "electronics",
-      "max_price": 1000
-    }
+    "data": [
+      {"id": "001", "value": 100}
+    ],
+    "options": {},
+    "include_metadata": true
   }' \
   "https://echosistema.online/api/v1/ai/echointel/recommendations/user-items"
+```
+
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/recommendations/user-items"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
 ```
 
 ## Response
@@ -61,149 +84,237 @@ curl -X POST \
 
 ```json
 {
-  "user_id": "U001",
-  "recommendations": [
+  "results": [
     {
-      "item_id": "ITEM-789",
-      "score": 0.94,
-      "rank": 1,
-      "reason": "Based on your recent purchases and similar users",
-      "item_details": {
-        "name": "Wireless Headphones Pro",
-        "category": "electronics",
-        "price": 299.99
-      }
-    },
-    {
-      "item_id": "ITEM-456",
-      "score": 0.88,
-      "rank": 2,
-      "reason": "Frequently bought together with your previous items",
-      "item_details": {
-        "name": "Smartphone Case Premium",
-        "category": "accessories",
-        "price": 49.99
-      }
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
     }
   ],
-  "algorithm_used": "hybrid_collaborative_content",
-  "confidence": 0.91
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
+  }
+}
+```
+
+### Error `400 Bad Request`
+
+```json
+{
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
+}
+```
+
+### Error `422 Unprocessable Entity`
+
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
 }
 ```
 
 ## JSON Structure
 
-| Field                              | Type    | Description |
-| ---------------------------------- | ------- | --------- |
-| `user_id`                          | string  | User ID. |
-| `recommendations`                  | array   | List of recommendations. |
-| `recommendations[].item_id`        | string  | Recommended item ID. |
-| `recommendations[].score`          | float   | Relevance score (0-1). |
-| `recommendations[].rank`           | int     | Recommendation ranking. |
-| `recommendations[].reason`         | string  | Recommendation reason. |
-| `recommendations[].item_details`   | object  | Item details. |
-| `algorithm_used`                   | string  | Algorithm used. |
-| `confidence`                       | float   | Overall confidence (0-1). |
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-## HTTP Status
+## Como é Calculado
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns user items recommendation results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+Generates personalized product recommendations for individual users based on behavior and preferences.
 
-## Errors
+### Algoritmo Principal
 
-### Common Error Responses
+The system employs advanced machine learning and statistical techniques tailored for ai-powered recommendation systems:
 
-#### Missing Required Parameters
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
+
+### Passos of Processamento
+
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
+
+### Desempenho
+
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
+
+## Status HTTP
+
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
 ```json
 {
   "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
+  "message": "Required fields missing",
   "details": {
-    "parameter": "data",
-    "location": "body"
+    "data": "The data field is required and must be an array."
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
-
-#### Invalid Authentication
+**Formato of Dados Inválido:**
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
 
 ## Notes
 
-* Recommendations are ordered by descending score.
-* Available algorithms: `collaborative`, `content_based`, `hybrid`.
-* Recommendations are updated in real-time as new interactions occur.
+### Melhores Práticas
 
-## How It Is Computed
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-The Recommend User Items endpoint uses hybrid filtering (collaborative + content-based) combining user behavior patterns with item attributes for personalized recommendations via matrix factorization and similarity algorithms.
+### Otimização of Desempenho
 
-### 1. Collaborative Filtering: Matrix factorization (ALS/SVD) decomposes user-item matrix into latent factors. User/item-based similarity using cosine similarity. Handles sparsity via dimensionality reduction.
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-### 2. Content-Based Filtering: User profile from liked items' features. TF-IDF for text, CNN embeddings for images. Matches items to user preferences.
+### Considerações of Segurança
 
-### 3. Hybrid Strategy: Weighted combination (α×Collab + (1-α)×Content). Switches based on data availability. Deep learning: Neural Collaborative Filtering.
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-### 4. Ranking: Contextual factors (time, location). Diversity/novelty balance. Business rules (margin, inventory, exclusions).
+## Perguntas Frequentes
 
-### 5. Performance: 200-600ms, 72-85% CTR, 15-30% conversion uplift, daily retraining.
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-## Typical Workflow
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-### 1. Integration: Connect user interactions (purchases, views, ratings) and product catalog.
-### 2. Training: Offline model training, precompute embeddings/profiles.
-### 3. Request: Submit user_id, n_recommendations, filters.
-### 4. Scoring: Real-time candidate generation, ranking, filtering.
-### 5. Delivery: Top-N items with scores/explanations, track for feedback.
-### 6. Optimization: Monitor CTR/conversion, A/B test, retrain weekly.
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-## Related
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-### Related Endpoints
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-- **[Recommend Similar Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendSimilarItems.md)** - Item-to-item recommendations
-- **[Cross-Sell Matrix](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/CrossSellMatrix.md)** - Complementary products
-- **[Upsell Suggestions](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/UpsellSuggestions.md)** - Premium alternatives
-- **[Propensity Buy Product](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityBuyProduct.md)** - Purchase likelihood
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-### Related Domain Concepts
+## Manuais Comerciais
 
-- **Collaborative Filtering:** User/item-based, matrix factorization (ALS, SVD, NCF)
-- **Content-Based Filtering:** Feature matching, TF-IDF, neural embeddings
-- **Hybrid Systems:** Weighted, switching, feature-augmented approaches
-- **Cold Start:** New user/item handling strategies
+### Playbook 1: Increase average order value through upselling
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-### Integration Points
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-- **E-commerce:** Homepage personalization, product pages, cart recommendations
-- **Email Marketing:** Personalized product selections
-- **Mobile Apps:** "For You" sections, push notifications
-- **CRM:** Sales insights on customer preferences
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-### Use Cases
+### Playbook 2: Improve cross-sell conversion rates
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-- Homepage personalization, email campaigns, mobile app recommendations, post-purchase suggestions, cart abandonment recovery
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
+
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
+
+### Playbook 3: Enhance customer discovery and engagement
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
+
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Personalize product recommendations
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:192`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:328`

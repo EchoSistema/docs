@@ -16,69 +16,69 @@ The ForecastRevenue.md documentation has been **fully completed** with comprehen
 
 ## Sections Added/Enhanced
 
-### 1. Enhanced Endpoint Description
+### 1. Enhanced Endpoint Descrição
 **Status:** ADDED
-- Expanded description to include model zoo approach
+- Expeed Descrição to include model zoo approach
 - Clarified use of multiple machine learning algorithms
 - Mentioned champion model selection
 
-### 2. Enhanced Parameters Section
+### 2. Enhanced Parâmetros Section
 **Status:** ENHANCED (40% → 100%)
 
 **Before:**
 - Basic 5-column table with minimal descriptions
 - Mixed Portuguese/English text
-- No constraints or validation details
+- Não constraints or validation details
 
 **After:**
 - Complete 6-column table with detailed descriptions
 - All English text
-- Added Default and Constraints columns
-- Detailed validation rules for each parameter
+- Added Padrão and Constraints columns
+- Detailed validation rules for each Parâmetro
 - Minimum data requirement (60 points)
 - Range constraints for forecast_periods (1-365)
 - Confidence level range (0.80-0.99)
 
-### 3. Response Structure - Dual-View Forecasts
+### 3. Resposta Structure - Dual-View Forecasts
 **Status:** COMPLETELY REWRITTEN
 
 **Critical Addition: Two Forecast Arrays**
 
 Added `forecast_calendar[]` array:
-- All calendar days (weekends, holidays, working days)
+- All calendar dias (weekends, holidias, working dias)
 - Complete temporal coverage
 - Financial planning focus
 
-Added `forecast_business_days[]` array:
-- Working days only
-- Excludes weekends and holidays
+Added `forecast_business_dias[]` array:
+- Working dias only
+- Excludes weekends and holidias
 - Operational planning focus
 - Includes `is_business_day` boolean flag
 
 ### 4. Model Zoo Details
 **Status:** ADDED
 
-**New Fields in Response:**
+**New Fields in Resposta:**
 - `champion_model` - Selected algorithm name
-- `models_tested[]` - Array of all 6 tested models
+- `models_tested[]` - array of all 6 tested models
 - Model rankings and weighted RMSE scores
 
 **6 Algorithms Documented:**
 1. ARIMA (Auto-Regressive Integrated Moving Average)
 2. Prophet (Facebook's time series forecasting)
 3. ETS (Exponential Smoothing)
-4. TBATS (Complex seasonality handling)
-5. Croston (Intermittent demand)
+4. TBATS (Complex seasonality heling)
+5. Croston (Intermittent deme)
 6. Ensemble (Weighted average of top performers)
 
 ### 5. Cross-Validation Details
 **Status:** ADDED
 
-**New Response Fields:**
+**New Resposta Fields:**
 - `cross_validation_scores` object
 - `folds`: 4
 - `method`: rolling_origin
-- `avg_rmse` and `avg_mae` metrics
+- `avg_rmse` e `avg_mae` metrics
 
 **Documentation includes:**
 - Walk-forward validation methodology
@@ -95,13 +95,13 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
 
 **Rationale:**
 - Calendar view: 60% weight (complete picture)
-- Business days view: 40% weight (operational focus)
+- Business dias view: 40% weight (operational focus)
 - Lowest weighted RMSE wins
 
 ### 7. Pre-processing Pipeline
 **Status:** ADDED
 
-**New Response Field:**
+**New Resposta Campo:**
 - `preprocessing_applied` object with 4 sub-fields
 
 **4 Pre-processing Steps:**
@@ -123,49 +123,49 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
    - STL decomposition method
    - Additive vs. multiplicative selection
 
-### 8. Performance Metrics
+### 8. Desempenho Metrics
 **Status:** ADDED
 
-**New Response Fields:**
+**New Resposta Fields:**
 - `performance.processing_time_ms` (typical: 300-400ms)
 - `performance.data_points_used`
 - `model_metrics.calendar_rmse`
-- `model_metrics.business_days_rmse`
+- `model_metrics.business_dias_rmse`
 - `model_metrics.weighted_rmse`
 
 **Documented Benchmarks:**
-- Typical latency: ~300-400ms for 90 days
-- Minimum data: 60 points (~2 months)
-- Maximum horizon: 365 days
+- Typical latency: ~300-400ms for 90 dias
+- Minimum data: 60 points (~2 meses)
+- Maximum horizon: 365 dias
 
-### 9. Explained JSON Structure
+### 9. Explained Estrutura JSON
 **Status:** ADDED (0% → 100%)
 
-**New Section:** Complete field-by-field breakdown
-- 25 response fields fully documented
-- Type specifications for all fields
+**New Section:** Complete Campo-by-Campo breakdown
+- 25 Resposta fields fully documented
+- Tipo specifications for all fields
 - Detailed descriptions
 - Dual-view arrays explained
 - Model zoo fields documented
 - Preprocessing and validation fields included
 
-### 10. HTTP Status Section
+### 10. Status HTTP Section
 **Status:** ADDED (0% → 100%)
 
 **8 Status Codes Documented:**
-- `200 OK` - Success with dual-view forecasts
-- `400 Bad Request` - Invalid parameters
+- `200 OK` - Sucesso with dual-view forecasts
+- `400 Bad Request` - Parâmetros inválidos
 - `401 Unauthorized` - Missing/invalid token
 - `403 Forbidden` - Insufficient permissions
 - `422 Unprocessable Entity` - Validation failures
 - `429 Too Many Requests` - Rate limit
-- `500 Internal Server Error` - Server errors
+- `500 Internal Server Erro` - Server Erros
 - `503 Service Unavailable` - Service down
 
-### 11. Errors Section
+### 11. Erros Section
 **Status:** ADDED (0% → 100%)
 
-**9 Error Conditions Documented:**
+**9 Erro Conditions Documented:**
 1. Insufficient data points (< 60 rows)
 2. All values are zeros
 3. Excessive missing values (> 80%)
@@ -176,16 +176,16 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
 8. Forecast periods out of range
 9. Service timeout
 
-**2 Detailed Error Examples:**
+**2 Detailed Erro Exemplos:**
 - Insufficient data with remediation
 - Invalid date format with format guidance
 
-**Error Response Format:**
-- Standard error object structure
-- Error codes for programmatic handling
+**Erro Resposta Format:**
+- Steard Erro object structure
+- Erro codes for programmatic heling
 - Detailed `details` object with recommendations
 
-### 12. How It Is Computed Section
+### 12. Como é Calculado Section
 **Status:** ADDED (0% → 100%)
 
 **7 Subsections Created:**
@@ -194,7 +194,7 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
 - Detailed explanation of all 6 algorithms
 - Use cases for each model
 - Strengths and weaknesses
-- Parameter selection methodology
+- Parâmetro selection methodology
 
 #### 12.2 Champion Selection Logic
 - Weighted RMSE formula
@@ -213,25 +213,25 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
 - Temporal order preservation
 
 #### 12.5 Dual-View Forecasting
-- Calendar vs. business days explanation
+- Calendar vs. business dias explanation
 - Use cases for each view
 - Why both are provided
 
-#### 12.6 Performance Optimization
+#### 12.6 Otimização of Desempenho
 - Latency benchmarks
 - Caching strategy
 - Parallel processing
 - Early stopping for poor models
 
-### 13. Notes Section
+### 13. Notas Section
 **Status:** ENHANCED
 
 **Before:**
-- 3 basic notes
+- 3 basic Notas
 - Mixed languages
 
 **After:**
-- 7 comprehensive notes
+- 7 comprehensive Notas
 - All English
 - MAPE interpretation scale
 - R² interpretation guidelines
@@ -250,33 +250,33 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
 - Data structure example
 - Minimum requirements
 
-**Step 2:** Define Forecast Parameters
-- Parameter configuration example
+**Step 2:** Define Forecast Parâmetros
+- Parâmetro configuration example
 
 **Step 3:** Make API Request
-- Full curl command
-- Authentication headers
+- Full curl comme
+- Autenticação Cabeçalhos
 
 **Step 4:** Analyze Dual-View Forecasts
 - When to use calendar view
-- When to use business days view
+- When to use business dias view
 
-**Step 5:** Evaluate Model Performance
+**Step 5:** Evaluate Model Desempenho
 - Champion model interpretation
 - Metrics evaluation
 
-**Step 6:** Understand Preprocessing
+**Step 6:** Underste Preprocessing
 - Review preprocessing steps
 - Impact on results
 
-**Step 7:** Incorporate into Planning
+**Step 7:** Inbodyrate into Planning
 - 4 practical use cases
 - Business applications
 
-### 15. Related Section
+### 15. Relacionado Section
 **Status:** ADDED (0% → 100%)
 
-**5 Related Endpoints Linked:**
+**5 Relacionado Endpoints Linked:**
 1. Forecast Units
 2. Forecast Units Asyncio
 3. Forecast Cost
@@ -285,7 +285,7 @@ weighted_rmse = (calendar_rmse × 0.6) + (business_days_rmse × 0.4)
 
 All with brief descriptions and relative paths.
 
-### 16. References Section
+### 16. Referências Section
 **Status:** ENHANCED
 
 **Before:**
@@ -300,23 +300,23 @@ All with brief descriptions and relative paths.
 
 ## Technical Completeness Checklist
 
-All STYLEGUIDE.md required sections:
+All STYLEGUIDE.md Obrigatório sections:
 
 - [x] 1. Title (H1) - ✓ Present
-- [x] 2. Endpoint - ✓ Enhanced with model zoo description
-- [x] 3. Authentication - ✓ Present
-- [x] 4. Headers - ✓ Present
-- [x] 5. Parameters - ✓ Enhanced with 6 columns
-- [x] 6. Examples - ✓ Present and enhanced
-- [x] 7. Response - ✓ Completely rewritten with dual views
-- [x] 8. Explained JSON Structure - ✓ ADDED (25 fields)
-- [x] 9. HTTP Status - ✓ ADDED (8 codes)
-- [x] 10. Errors - ✓ ADDED (9 conditions + 2 examples)
-- [x] 11. Notes - ✓ Enhanced (7 comprehensive notes)
-- [x] 12. How It Is Computed - ✓ ADDED (6 subsections)
+- [x] 2. Endpoint - ✓ Enhanced with model zoo Descrição
+- [x] 3. Autenticação - ✓ Present
+- [x] 4. Cabeçalhos - ✓ Present
+- [x] 5. Parâmetros - ✓ Enhanced with 6 columns
+- [x] 6. Exemplos - ✓ Present and enhanced
+- [x] 7. Resposta - ✓ Completely rewritten with dual views
+- [x] 8. Explained Estrutura JSON - ✓ ADDED (25 fields)
+- [x] 9. Status HTTP - ✓ ADDED (8 codes)
+- [x] 10. Erros - ✓ ADDED (9 conditions + 2 Exemplos)
+- [x] 11. Notas - ✓ Enhanced (7 comprehensive Notas)
+- [x] 12. Como é Calculado - ✓ ADDED (6 subsections)
 - [x] 13. Typical Workflow - ✓ ADDED (7 steps)
-- [x] 14. Related - ✓ ADDED (5 links)
-- [x] 15. References - ✓ Enhanced
+- [x] 14. Relacionado - ✓ ADDED (5 links)
+- [x] 15. Referências - ✓ Enhanced
 
 **STYLEGUIDE Compliance: 100%**
 
@@ -328,7 +328,7 @@ All 10 critical missing features from the verification report:
 
 ### ✓ 1. Dual-View Forecasts
 - `forecast_calendar[]` array documented
-- `forecast_business_days[]` array documented
+- `forecast_business_dias[]` array documented
 - Differences explained
 - Use cases provided
 
@@ -336,7 +336,7 @@ All 10 critical missing features from the verification report:
 - All 6 algorithms documented
 - Use cases for each
 - Strengths and weaknesses
-- `models_tested[]` array in response
+- `models_tested[]` array in Resposta
 
 ### ✓ 3. Cross-Validation Details
 - 4-fold rolling origin
@@ -356,39 +356,39 @@ All 10 critical missing features from the verification report:
 - Decomposition method
 - `preprocessing_applied` object documented
 
-### ✓ 6. Performance Metrics
+### ✓ 6. Desempenho Metrics
 - Typical latency: ~300-400ms
 - Minimum data: 60 points
-- Maximum horizon: 365 days
+- Maximum horizon: 365 dias
 - `performance` object documented
 
-### ✓ 7. Response Structure Enhancements
+### ✓ 7. Resposta Structure Enhancements
 - `forecast_calendar[]` array
-- `forecast_business_days[]` array
-- `champion_model` field
+- `forecast_business_dias[]` array
+- `champion_model` Campo
 - `preprocessing_applied` object
 - `cross_validation_scores` object
 - `models_tested[]` array
 - `performance` object
 
-### ✓ 8. Error Conditions
-- All 9 error conditions documented
-- HTTP status codes mapped
-- 2 detailed error examples
-- Solutions for each error
+### ✓ 8. Erro Conditions
+- All 9 Erro conditions documented
+- Status HTTP codes mapped
+- 2 detailed Erro Exemplos
+- Solutions for each Erro
 
 ### ✓ 9. Typical Workflow Section
 - 7-step workflow added
-- Practical examples
+- Practical Exemplos
 - Business use cases
 
-### ✓ 10. How It Is Computed Section
+### ✓ 10. Como é Calculado Section
 - Model zoo explained
 - Champion selection logic
 - Pre-processing pipeline
 - Cross-validation strategy
 - Dual-view forecasting
-- Performance optimization
+- Desempenho optimization
 
 **Critical Features: 10/10 Completed (100%)**
 
@@ -417,12 +417,12 @@ All 10 critical missing features from the verification report:
 
 - [x] Single H1 title
 - [x] All sections are H2 (##)
-- [x] Code blocks properly formatted
+- [x] Código blocks properly formatted
 - [x] Tables properly structured
 - [x] Backticks for all technical terms
-- [x] JSON examples properly indented
-- [x] Relative links used for Related section
-- [x] No emojis (as per user instructions)
+- [x] JSON Exemplos properly indented
+- [x] Relative links used for Relacionado section
+- [x] Não emojis (as per user instructions)
 
 **Formatting Compliance: 100%**
 
@@ -436,12 +436,12 @@ All 10 critical missing features from the verification report:
 | **Total Sections** | 9 | 17 | +8 (+89%) |
 | **Completeness** | 40% | 100% | +60% |
 | **Missing Sections** | 8 | 0 | -8 |
-| **Response Fields Documented** | 15 | 25 | +10 (+67%) |
-| **Error Conditions** | 0 | 9 | +9 |
-| **HTTP Status Codes** | 1 | 8 | +7 |
+| **Resposta Fields Documented** | 15 | 25 | +10 (+67%) |
+| **Erro Conditions** | 0 | 9 | +9 |
+| **Status HTTP Codes** | 1 | 8 | +7 |
 | **Model Algorithms** | 1 | 6 | +5 |
 | **Workflow Steps** | 0 | 7 | +7 |
-| **Related Endpoints** | 0 | 5 | +5 |
+| **Relacionado Endpoints** | 0 | 5 | +5 |
 
 ---
 
@@ -451,14 +451,14 @@ All 10 critical missing features from the verification report:
 
 - [x] All sections follow STYLEGUIDE order
 - [x] All technical terms in backticks
-- [x] All code examples valid JSON
+- [x] All Código Exemplos valid JSON
 - [x] All tables properly formatted
 - [x] All links use relative paths
 - [x] All descriptions in English
-- [x] No Portuguese text remaining
-- [x] No typos or grammatical errors
+- [x] Não Portuguese text remaining
+- [x] Não typos or grammatical Erros
 - [x] Consistent terminology throughout
-- [x] Examples are realistic and complete
+- [x] Exemplos are realistic and complete
 
 ### Technical Accuracy
 
@@ -467,9 +467,9 @@ All 10 critical missing features from the verification report:
 - [x] Champion selection formula correct
 - [x] Pre-processing steps technically sound
 - [x] Cross-validation methodology accurate
-- [x] Performance metrics realistic
-- [x] Error conditions comprehensive
-- [x] HTTP status codes standard-compliant
+- [x] Desempenho metrics realistic
+- [x] Erro conditions comprehensive
+- [x] Status HTTP codes steard-compliant
 - [x] Workflow steps practical and complete
 
 ### Business Value
@@ -477,9 +477,9 @@ All 10 critical missing features from the verification report:
 - [x] Clear use cases provided
 - [x] Decision-making guidance included
 - [x] Practical workflow documented
-- [x] Error solutions actionable
-- [x] Related endpoints linked
-- [x] Performance expectations set
+- [x] Erro solutions actionable
+- [x] Relacionado endpoints linked
+- [x] Desempenho expectations set
 - [x] Data requirements clear
 - [x] Limitations documented
 
@@ -513,8 +513,8 @@ Based on this completion, the following forecast endpoints should be updated:
 The completed ForecastRevenue.md can serve as a **template** for:
 - All forecast endpoints
 - All AI/ML endpoints
-- Any endpoint using model zoo approach
-- Any endpoint with cross-validation
+- Any Endpoint using model zoo approach
+- Any Endpoint with cross-validation
 
 ---
 
@@ -528,7 +528,7 @@ The completed ForecastRevenue.md can serve as a **template** for:
 ### Short-term (Week 2-3)
 1. Apply same structure to ForecastCost family
 2. Apply same structure to ForecastUnits family
-3. Cross-reference from related endpoints
+3. Cross-reference from Relacionado endpoints
 
 ### Medium-term (Week 4-6)
 1. Create Postman collection example
@@ -542,7 +542,7 @@ The completed ForecastRevenue.md can serve as a **template** for:
 **Completed File:**
 `/home/ewerton/Jetbrains/PhpStormProjects/Pessoal/backoffice/echosistema-app/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Forecast/ForecastRevenue.md`
 
-**Related Files to Update:**
+**Relacionado Files to Update:**
 - `/docs/ES/ArtificialIntelligence/Endpoints/EchoIntel/Forecast/ForecastRevenue.md` (Spanish)
 - `/docs/PT/ArtificialIntelligence/Endpoints/EchoIntel/Forecast/ForecastRevenue.md` (Portuguese)
 
@@ -559,7 +559,7 @@ The ForecastRevenue.md documentation is now **100% complete** with:
 - ✓ Champion selection logic detailed
 - ✓ Pre-processing pipeline documented
 - ✓ Cross-validation methodology explained
-- ✓ 9 error conditions with solutions
+- ✓ 9 Erro conditions with solutions
 - ✓ 7-step practical workflow
 - ✓ 100% English language
 - ✓ 498 lines of comprehensive documentation

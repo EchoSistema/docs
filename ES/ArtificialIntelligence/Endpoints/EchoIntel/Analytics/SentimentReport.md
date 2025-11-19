@@ -20,17 +20,17 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud Parámetros
+### Corpo de la Requisição Parâmetros
 
-| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+| Parámetro | Tipo | Requerido | Padrão | Descripción | Significado Empresarial |
 |-----------|------|----------|---------|-------------|------------------|
 | sentiment_data | array | Sí | - | array of sentiment registros from various sources with timestamps y scores. | Historical customer feedback sentiment to analyze for trends y patterns. |
 | time_period | string | No | `30d` | Analysis time window: `7d`, `30d`, `90d`, `6m`, `1y`, or custom date range. | How far back to analyze sentiment trends. Longer periods reveal strategic patterns. |
@@ -55,7 +55,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -95,7 +95,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/analytics/sentiment-report"
 ```
 
-### Ejemplo de Solicitud (JavaScript)
+### Exemplo de Requisição (JavaScript)
 
 ```javascript
 const response = await fetch('https://echosistema.online/api/v1/ai/echointel/analytics/sentiment-report', {
@@ -140,7 +140,7 @@ const response = await fetch('https://echosistema.online/api/v1/ai/echointel/ana
 const result = await response.json();
 ```
 
-### Ejemplo de Solicitud (PHP)
+### Exemplo de Requisição (PHP)
 
 ```php
 <?php
@@ -344,31 +344,31 @@ $result = $response->json();
 | `anomalies` | array | Unusual sentiment patterns detected (spikes, drops, outliers). | Unexpected changes requiring investigation or immediate action. |
 | `anomalies[].date` | string | ISO 8601 date when anomaly occurred. | When the unusual sentiment pattern was detected. |
 | `anomalies[].Tipo` | string | Anomaly category: `sentiment_spike`, `sentiment_drop`, `volume_spike`. | Nature of the unusual pattern. |
-| `anomalies[].severity` | string | Severity level: `low`, `medium`, `high`. | Urgency for Respuesta: high = immediate, medium = 48h, low = monitor. |
+| `anomalies[].severity` | string | Severity level: `low`, `medium`, `high`. | Urgency for Resposta: high = immediate, medium = 48h, low = monitor. |
 | `anomalies[].avg_score` | float | Actual sentiment score during anomaly. | Observed sentiment level during the event. |
 | `anomalies[].expected_score` | float | Predicted sentiment score based on baseline. | What sentiment should have been without the anomaly. |
 | `anomalies[].deviation` | float | Difference between actual y expected score. | Magnitude of the anomaly. |
-| `anomalies[].z_score` | float | Statistical z-score of the deviation. | Styardized measure: |z| > 3 = extreme anomaly. |
+| `anomalies[].z_score` | float | Statistical z-score of the deviation. | Steardized measure: |z| > 3 = extreme anomaly. |
 | `anomalies[].likely_causes` | array | Probable topics or issues driving the anomaly. | Root causes identified through topic analysis. |
 | `anomalies[].affected_volume` | integer | Number of feedback items affected. | Scale of the anomaly impact. |
 | `recommendations` | array | Actionable insights y suggested interventions based on analysis. | Prioritized actions to improve customer sentiment. |
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns sentiment report with comprehensive insights. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
 #### Insufficient Data
 ```json
@@ -384,7 +384,7 @@ $result = $response->json();
 }
 ```
 
-**Solution:** Collect more sentiment data or expy the time period to reach minimum threshold.
+**Solution:** Collect more sentiment data or expe the time period to reach minimum threshold.
 
 #### Invalid Time Period
 ```json
@@ -401,7 +401,7 @@ $result = $response->json();
 
 **Solution:** Use supported time period formats: `7d`, `30d`, `90d`, `6m`, `1y`.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -410,9 +410,9 @@ $result = $response->json();
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
-## Cómo se Calcula
+## Como é Calculado
 
 ### 1. Data Aggregation
 
@@ -425,7 +425,7 @@ The system consolidates sentiment scores from various data sources:
 ### 2. Statistical Analysis
 
 **Descriptive Statistics:**
-- Calculate mean, median, styard deviation for sentiment scores
+- Calculate mean, median, steard deviation for sentiment scores
 - Compute sentiment distribution (positive %, neutral %, negative %) across time periods
 
 **Trend Detection:**
@@ -434,7 +434,7 @@ The system consolidates sentiment scores from various data sources:
 - Computes p-value to determine statistical significance (p < 0.05 = significant)
 
 **Anomaly Detection:**
-- Z-score method: identifies values > 3 styard deviations from mean
+- Z-score method: identifies values > 3 steard deviations from mean
 - IQR method: flags values outside Q1 - 1.5×IQR y Q3 + 1.5×IQR
 - Time series decomposition: isolates unusual residuals after removing trend/seasonality
 
@@ -465,13 +465,13 @@ The system consolidates sentiment scores from various data sources:
 - Suggests actions based on topic analysis y segment performance
 - Ranks opportunities by potential sentiment improvement
 
-### 6. Rendimiento Characteristics
+### 6. Desempenho Characteristics
 
-- **Tiempo de Procesamiento:** 500ms-2s for aggregating 100,000 sentiment registros
-- **Requisitos de Datos:** Minimum 100 sentiment data points for reliable statistical analysis
-- **Caching:** Temporal aggregations cached for 1 hour to improve Respuesta times
-- **Scalability:** Hyles millions of sentiment registros using time-based partitioning
-- **Precisión:** Trend detection 85-92% accurate for identifying significant shifts
+- **Tempo de Processamento:** 500ms-2s for aggregating 100,000 sentiment registros
+- **Requisitos de Dados:** Minimum 100 sentiment data points for reliable statistical analysis
+- **Caching:** Temporal aggregations cached for 1 hour to improve Resposta times
+- **Scalability:** Heles millions of sentiment registros using time-based partitioning
+- **Precisão:** Trend detection 85-92% accurate for identifying significant shifts
 
 ## Typical Workflow
 
@@ -519,7 +519,7 @@ FROM (
 ) AS combined_feedback;
 ```
 
-### 2. Define Analysis Parámetros
+### 2. Define Analysis Parâmetros
 
 Configure report settings based on business needs:
 - **Time Period:** `30d` for monthly reviews, `90d` for quarterly, `1y` for annual
@@ -578,7 +578,7 @@ Submit consolidated sentiment data to generate the report.
 
 ### 6. Monitor y Iterate
 
-**Weekly Monitoreo:**
+**Weekly Monitoramento:**
 - Re-run reports weekly to track sentiment trajectory
 - Alert on new anomalies or continued declines
 - Measure impact of interventions on sentiment scores
@@ -610,27 +610,27 @@ Submit consolidated sentiment data to generate the report.
 - Segment customers for targeted campaigns
 - Personalize outreach based on sentiment history
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
-### Q: What's the minimum amount of sentiment data Requerido for a meaningful report?
+### Q: What's the minimum amount of sentiment data Obrigatório for a meaningful report?
 
-**A:** We recommend at least 100 sentiment registros for basic statistical analysis. For robust trend detection y anomaly identification, 500+ registros are ideal. Segment-level analysis requires 50+ registros per segment. If you have fewer than 100 registros, the report will still generate but with limited statistical confidence y No trend/anomaly detection. Increase your time_period to gather more data points.
+**A:** We recommend at least 100 sentiment registros for basic statistical analysis. For robust trend detection y anomaly identification, 500+ registros are ideal. Segment-level analysis requires 50+ registros per segment. If you have fewer than 100 registros, the report will still generate but with limited statistical confidence y Não trend/anomaly detection. Increase your time_period to gather more data points.
 
 ### Q: How does the system determine if a sentiment trend is "improving" vs. "stable"?
 
-**A:** The Mann-Kendall trend test calculates statistical significance (p-value). If p < 0.05 y the slope is positive, the trend is "improving". If p < 0.05 y slope is negative, it's "declining". If p >= 0.05, the trend is "stable" (No statistically significant change). This prevents false alarms from ryom fluctuations. Check the `statistical_significance` Campo (>0.90 = high confidence trend).
+**A:** The Mann-Kendall trend test calculates statistical significance (p-value). If p < 0.05 y the slope is positive, the trend is "improving". If p < 0.05 y slope is negative, it's "declining". If p >= 0.05, the trend is "stable" (Não statistically significant change). This prevents false alarms from reom fluctuations. Check the `statistical_significance` Campo (>0.90 = high confidence trend).
 
 ### Q: Can I compare sentiment across different time periods or products?
 
-**A:** Sí! Use the `group_by` Parámetro with dimensions like `product`, `region`, `source`, or `segment`. The Respuesta includes a `segments` array showing comparative metrics for each group. You can also run multiple reports with different time_periods y compare results client-side. For formal A/B comparisons, ensure segment sample sizes are >50 registros for statistical validity.
+**A:** Sim! Use the `group_by` Parâmetro with dimensions like `product`, `region`, `source`, or `segment`. The Resposta includes a `segments` array showing comparative metrics for each group. You can also run multiple reports with different time_periods y compare results client-side. For formal A/B comparisons, ensure segment sample sizes are >50 registros for statistical validity.
 
 ### Q: How are topics extracted y what if they don't make sense?
 
-**A:** Topics are extracted using Latent Dirichlet Allocation (LDA) from the `text` Campo in sentiment_data. The system automatically labels topics based on top keywords (e.g., "shipping_delays", "product_quality"). For best results, include the original feedback text. If topics seem generic or unclear, it may indicate: (1) Insufficient text data (need 200+ text samples), (2) Very diverse feedback (No common themes), or (3) Low-quality text (too short, boilerplate responses). Pre-process text to remove boilerplate before submission.
+**A:** Topics are extracted using Latent Dirichlet Allocation (LDA) from the `text` Campo in sentiment_data. The system automatically labels topics based on top keywords (e.g., "shipping_delays", "product_quality"). For best results, include the original feedback text. If topics seem generic or unclear, it may indicate: (1) Insufficient text data (need 200+ text samples), (2) Very diverse feedback (Não common themes), or (3) Low-quality text (too short, boilerplate responses). Pre-process text to remove boilerplate before submission.
 
 ### Q: What's the difference between z_score y statistical_significance in anomalies?
 
-**A:** `z_score` measures how many styard deviations an anomaly is from the mean (e.g., z_score=-3.2 means 3.2 SD below average). |z| > 3 indicates an extreme anomaly. `statistical_significance` in trends (not anomalies) is a confidence level (0-1) from the Mann-Kendall test, showing how confident we are that a trend is real vs. ryom noise. For anomalies, focus on `severity` (high/medium/low) for prioritization y `z_score` for magnitude.
+**A:** `z_score` measures how many steard deviations an anomaly is from the mean (e.g., z_score=-3.2 means 3.2 SD below average). |z| > 3 indicates an extreme anomaly. `statistical_significance` in trends (not anomalies) is a confidence level (0-1) from the Mann-Kendall test, showing how confident we are that a trend is real vs. reom noise. For anomalies, focus on `severity` (high/medium/low) for prioritization e `z_score` for magnitude.
 
 ### Q: How often should I generate sentiment reports?
 
@@ -638,33 +638,33 @@ Submit consolidated sentiment data to generate the report.
 
 ### Q: Can the report detect seasonal sentiment patterns?
 
-**A:** Sí, if you provide sufficient historical data (>90 días). The time_series data will reveal recurring patterns (e.g., holiday sentiment spikes, quarterly dips). Use time_period="1y" with granularity="monthly" to visualize annual seasonality. The trend analysis accounts for seasonality when determining if sentiment is improving/declining. For formal seasonal decomposition, export time_series data y use statistical tools like R or Python's statsmodels.
+**A:** Sim, if you provide sufficient historical data (>90 dias). The time_series data will reveal recurring patterns (e.g., holiday sentiment spikes, quarterly dips). Use time_period="1y" with granularity="monthly" to visualize annual seasonality. The trend analysis accounts for seasonality when determining if sentiment is improving/declining. For formal seasonal decomposition, export time_series data y use statistical tools like R or Python's statsmodels.
 
-### Q: What should I do when there's a high-severity anomaly?
+### Q: What should I del when there's a high-severity anomaly?
 
-**A:** Follow this protocol: (1) Investigate within 24 hours - check `likely_causes` for root issues. (2) Correlate with business events - did something change that day (product launch, outage, marketing campaign)? (3) Review affected_volume to gauge impact. (4) Read raw feedback for the anomaly date to understy customer issues. (5) Implement immediate fix or mitigation. (6) Monitor sentiment recovery with daily reports. (7) Document findings y update processes to prevent recurrence.
+**A:** Follow this protocol: (1) Investigate within 24 hours - check `likely_causes` for root issues. (2) Correlate with business events - did something change that day (product launch, outage, marketing campaign)? (3) Review affected_volume to gauge impact. (4) Read raw feedback for the anomaly date to underste customer issues. (5) Implement immediate fix or mitigation. (6) Monitor sentiment recovery with daily reports. (7) Document findings y update processes to prevent recurrence.
 
-### Q: How do recommendations get generated?
+### Q: How del recommendations get generated?
 
 **A:** The recommendation engine uses a rule-based system that analyzes: (1) Negative topics with high frequency y low sentiment scores, (2) Segments with declining trends or poor performance, (3) Detected anomalies requiring investigation, (4) Positive topics to amplify. Recommendations are ranked by potential impact (negative sentiment volume × severity). They're intended as starting points - combine with domain expertise for final action plans.
 
-## Guías Comerciales
+## Manuais Comerciais
 
 | Use Case | Action | Expected Impact |
 |----------|--------|-----------------|
-| **Product Quality Crisis Detection** | If anomaly detection flags a high-severity sentiment_drop for a specific product (via metadata.product_id), immediately halt shipments, investigate production batch, notify QA team, y launch customer outreach program for affected buyers. | Prevent 60-80% of potential negative reviews, reduce churn by 35-50% through proactive Respuesta, contain reputation damage within 24-48 hours vs. 7-10 días reactive approach. |
-| **Customer Support Improvement** | If segments analysis shows "support_ticket" source has negative_pct > 40% y declining trend, prioritize support process improvements: reduce resolution time, improve agent training, implement proactive follow-ups for negative sentiment tickets. | Increase support CSAT by 20-30%, reduce ticket volume by 15% through proactive issue resolution, improve first-contact resolution rate by 25%, shift support sentiment from negative to neutral/positive within 60-90 días. |
-| **Feature Prioritization** | Analyze negative topics to identify top 3-5 product features with lowest sentiment scores y highest frequency. Prioritize development resources to address these pain points in next sprint/release. | Increase feature satisfaction by 30-40%, reduce negative reviews mentioning those features by 50-70%, improve overall product sentiment score by 0.10-0.15 points within 90 días post-fix. |
+| **Product Quality Crisis Detection** | If anomaly detection flags a high-severity sentiment_drop for a specific product (via metadata.product_id), immediately halt shipments, investigate production batch, notify QA team, y launch customer outreach program for affected buyers. | Prevent 60-80% of potential negative reviews, reduce churn by 35-50% through proactive Resposta, contain reputation damage within 24-48 hours vs. 7-10 dias reactive approach. |
+| **Customer Support Improvement** | If segments analysis shows "support_ticket" source has negative_pct > 40% y declining trend, prioritize support process improvements: reduce resolution time, improve agent training, implement proactive follow-ups for negative sentiment tickets. | Increase support CSAT by 20-30%, reduce ticket volume by 15% through proactive issue resolution, improve first-contact resolution rate by 25%, shift support sentiment from negative to neutral/positive within 60-90 dias. |
+| **Feature Prioritization** | Analyze negative topics to identify top 3-5 product features with lowest sentiment scores y highest frequency. Prioritize development resources to address these pain points in next sprint/release. | Increase feature satisfaction by 30-40%, reduce negative reviews mentioning those features by 50-70%, improve overall product sentiment score by 0.10-0.15 points within 90 dias post-fix. |
 | **Marketing Message Optimization** | Use positive topics (high avg_score, high frequency) to inform marketing messaging. Highlight strengths customers already appreciate. Use topic sentiment to A/B test messaging variations. | Increase ad click-through rates by 15-25% through customer-validated messaging, improve conversion rates by 10-20% by emphasizing proven value propositions, reduce cost-per-acquisition by focusing on resonant themes. |
-| **Regional Rendimiento Management** | If group_by="region" shows certain geographies with significantly lower sentiment, investigate regional operations: shipping partners, local customer service, product availability, cultural factors. | Identify operational inefficiencies in 1-2 weeks vs. 6-8 weeks of manual analysis, equalize regional sentiment scores within 3-6 meses, reduce regional churn disparities by 40-60%. |
+| **Regional Desempenho Management** | If group_by="region" shows certain geographies with significantly lower sentiment, investigate regional operations: shipping partners, local customer service, product availability, cultural factors. | Identify operational inefficiencies in 1-2 weeks vs. 6-8 weeks of manual analysis, equalize regional sentiment scores within 3-6 meses, reduce regional churn disparities by 40-60%. |
 | **Competitor Benchmarking** | Include competitor sentiment data (from review scraping or social listening) with benchmark_comparison="competitor_avg". Identify where your sentiment outperforms or underperforms competitors. | Prioritize investments in areas where competitors excel (close gaps), amplify marketing in areas where you excel (differentiation), improve competitive win rate by 15-25% through data-driven positioning. |
-| **Executive Reporting Automation** | Replace manual sentiment analysis (40+ hours/month) with automated weekly/monthly reports. Generate executive summaries with summary metrics, trend direction, y top recommendations. | Reduce reporting time from 40 hours to <2 hours per month, increase reporting frequency from quarterly to monthly/weekly, enable data-driven decisions 30-60 días faster, improve strategic alignment through consistent metrics. |
+| **Executive Reporting Automation** | Replace manual sentiment analysis (40+ hours/month) with automated weekly/monthly reports. Generate executive summaries with summary metrics, trend direction, y top recommendations. | Reduce reporting time from 40 hours to <2 hours per month, increase reporting frequency from quarterly to monthly/weekly, enable data-driven decisions 30-60 dias faster, improve strategic alignment through consistent metrics. |
 
 ## Notas
 
-### Implementation Mejores Prácticas
+### Implementation Melhores Práticas
 
-**Calidad de Datos:**
+**Qualidade de Dados:**
 - Ensure timestamps are accurate y in ISO 8601 format (UTC timezone recommended)
 - Validate sentiment scores are in -1 to +1 range
 - Include text Campo for topic extraction (min 200 samples for meaningful topics)
@@ -688,17 +688,17 @@ Submit consolidated sentiment data to generate the report.
 - Monthly reports: Low-volume businesses (<100/day) or executive strategic planning
 - Quarterly reports: Annual planning, competitive benchmarking, long-term trend analysis
 
-### Rendimiento y Scalability
+### Desempenho y Scalability
 
 - **Maximum Payload:** 10MB per request (~100,000 sentiment registros at 100 bytes each)
 - **Timeout:** 300 seconds (5 minutes) for very large datasets
-- **Rate Limiting:** 50 solicitudes por minuto por tenant
-- **Rendimiento:** Can process 100,000 registros in 1-2 seconds
+- **Rate Limiting:** 50 requisições por minuto por tenant
+- **Taxa de Transferência:** Can process 100,000 registros in 1-2 seconds
 - **Caching:** Temporal aggregations cached for 1 hour (use cache busting for real-time updates)
 
 ### Topic Extraction Optimization
 
-**Mejores Prácticas:**
+**Melhores Práticas:**
 - Include original feedback text in `text` Campo (minimum 10 characters per record)
 - Aim for 200+ text samples for meaningful topic extraction
 - Pre-process text to remove boilerplate, signatures, disclaimers
@@ -713,7 +713,7 @@ Submit consolidated sentiment data to generate the report.
 ### Anomaly Detection Tuning
 
 **Sensitivity:**
-- Por Defecto threshold: |z| > 2.5 (flags top 1% of outliers)
+- Padrão threshold: |z| > 2.5 (flags top 1% of outliers)
 - High sensitivity: |z| > 2.0 (more anomalies, higher false positive rate)
 - Low sensitivity: |z| > 3.0 (fewer anomalies, may miss issues)
 
@@ -724,10 +724,10 @@ Submit consolidated sentiment data to generate the report.
 
 ### Security y Privacy
 
-- All sentiment data encrypted in transit (TLS 1.3) y en reposo
+- All sentiment data encrypted in transit (TLS 1.3) y em repouso
 - Sentiment registros not stored after report generation (ephemeral processing)
 - Customer IDs y metadata hashed for privacy
-- GDPR compliant - data retention: 0 días (immediate deletion after Respuesta)
+- GDPR compliant - data retention: 0 dias (immediate deletion after Resposta)
 - Aggregate metrics only - individual feedback text not exposed in reports
 
 ### Integration Patterns
@@ -739,7 +739,7 @@ Submit consolidated sentiment data to generate the report.
 
 **Alerting Integration:**
 - Monitor anomalies array for high-severity events
-- Trigger Slack/email/PagerDuty notifications for immediate Respuesta
+- Trigger Slack/email/PagerDuty notifications for immediate Resposta
 - Set up automated workflows for declining trends
 
 **Data Pipeline:**

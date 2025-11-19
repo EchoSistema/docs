@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/inventory/nlp-analysis
 ```
 
-Inventory NLP Analysis using NLP.
+Applies NLP techniques to inventory text data for sentiment analysis, entity extraction, and classification.
 
 ## Authentication
 
@@ -17,236 +17,304 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-> **Note:** Parameters accept both `snake_case` and `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
+### Corpo of the Requisição
 
-## HTTP Status
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns inventory NLP analysis results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+## Examples
 
-## Errors
+### Exemplo of Requisição (curl)
 
-### Common Error Responses
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-Customer-Api-Id: <tenant-uuid>" \
+  -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"id": "001", "value": 100}
+    ],
+    "options": {},
+    "include_metadata": true
+  }' \
+  "https://echosistema.online/api/v1/ai/echointel/inventory/nlp-analysis"
+```
 
-#### Missing Required Parameters
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/inventory/nlp-analysis"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+```
+
+## Response
+
+### Success `200 OK`
+
 ```json
 {
-  "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
-  "details": {
-    "parameter": "data",
-    "location": "body"
+  "results": [
+    {
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
+    }
+  ],
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
+### Error `400 Bad Request`
 
-#### Invalid Authentication
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+### Error `422 Unprocessable Entity`
 
-## How It Is Computed
-
-The NLP Analysis endpoint processes inventory-related text data (descriptions, notes, feedback) using natural language processing techniques to extract structured insights and sentiment.
-
-### 1. Text Preprocessing
-
-**Input Cleaning:**
-- HTML tag removal and entity decoding
-- Unicode normalization (NFC, NFKC)
-- Whitespace normalization and trimming
-- Special character handling (preserve domain-specific symbols)
-
-**Tokenization:**
-- Word-level tokenization using language-specific rules
-- Sentence segmentation with boundary detection
-- Subword tokenization (BPE, WordPiece) for out-of-vocabulary terms
-- Handling of contractions and compound words
-
-**Normalization:**
-- Lowercasing for case-insensitive operations
-- Stemming using Porter/Snowball/Lancaster algorithms
-- Lemmatization with POS tagging for contextual base forms
-- Stopword filtering (customizable lists for en, es, pt)
-
-### 2. Feature Extraction
-
-**Statistical Features:**
-- **TF-IDF (Term Frequency-Inverse Document Frequency):**
-  ```
-  TF-IDF(t,d) = TF(t,d) × log(N / DF(t))
-  ```
-  - TF(t,d) = Frequency of term t in document d
-  - DF(t) = Number of documents containing term t
-  - N = Total number of documents
-
-- **N-gram Analysis:**
-  - Unigrams (single words): "inventory", "stock", "shortage"
-  - Bigrams (word pairs): "excess inventory", "stock level"
-  - Trigrams (three words): "out of stock", "low inventory warning"
-
-**Linguistic Features:**
-- Part-of-Speech (POS) tags: nouns, verbs, adjectives, adverbs
-- Dependency parsing for grammatical relationships
-- Named entity counts and types
-- Sentence length and complexity metrics
-
-**Semantic Features:**
-- Word embeddings: Word2Vec, GloVe, FastText (300-dimensional vectors)
-- Contextualized embeddings: BERT, RoBERTa (768-dimensional)
-- Semantic similarity using cosine distance
-- Topic modeling (LDA, NMF) for theme extraction
-
-### 3. Sentiment Analysis
-
-**Polarity Detection:**
-- **Lexicon-Based Approach:**
-  - VADER (Valence Aware Dictionary and sEntiment Reasoner) for social text
-  - Custom inventory domain lexicon with weighted terms
-  - Polarity scores: positive, negative, neutral, compound
-
-- **Machine Learning Approach:**
-  - Fine-tuned BERT/RoBERTa for sentiment classification
-  - Multi-class classification: very negative, negative, neutral, positive, very positive
-  - Confidence scores for each class
-
-**Sentiment Scoring:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
+}
 ```
-CompoundScore = (positive - negative) / √((positive + negative)² + α)
+
+## JSON Structure
+
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
+
+## Como é Calculado
+
+Applies NLP techniques to inventory text data for sentiment analysis, entity extraction, and classification.
+
+### Algoritmo Principal
+
+The system employs advanced machine learning and statistical techniques tailored for inventory management and optimization:
+
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
+
+### Passos of Processamento
+
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
+
+### Desempenho
+
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
+
+## Status HTTP
+
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Required fields missing",
+  "details": {
+    "data": "The data field is required and must be an array."
+  }
+}
 ```
-- Normalized to [-1, 1] range
-- Threshold classification: negative (<-0.05), neutral (±0.05), positive (>0.05)
 
-**Aspect-Based Sentiment:**
-- Identifies aspects: quality, quantity, delivery, price
-- Associates sentiment with specific aspects
-- Enables granular feedback analysis
+**Formato of Dados Inválido:**
+```json
+{
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
+}
+```
 
-### 4. Entity Recognition and Classification
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
 
-**Named Entity Recognition (NER):**
-- **Product Entities:** SKU codes, product names, brands
-- **Quantity Entities:** Numbers with units (kg, units, boxes)
-- **Time Entities:** Dates, durations, temporal references
-- **Location Entities:** Warehouses, stores, regions
-- **Organization Entities:** Suppliers, manufacturers
+## Notes
 
-**Entity Linking:**
-- Maps recognized entities to knowledge base entries
-- Resolves aliases and abbreviations
-- Confidence scoring for entity matches
+### Melhores Práticas
 
-**Relationship Extraction:**
-- Subject-predicate-object triples
-- Example: "Product X" - "has" - "low stock"
-- Temporal relationships: "Product Y" - "out of stock since" - "March 15"
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-### 5. Topic Modeling and Clustering
+### Otimização of Desempenho
 
-**Latent Dirichlet Allocation (LDA):**
-- Discovers hidden topics in document collection
-- Probabilistic model: each document is a mixture of topics
-- Topic representation as probability distribution over words
-- Typical topics: stock issues, quality problems, delivery delays
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-**Text Clustering:**
-- K-means clustering on TF-IDF or embedding vectors
-- Hierarchical clustering for topic hierarchies
-- DBSCAN for density-based grouping
-- Silhouette score for cluster quality assessment
+### Considerações of Segurança
 
-### 6. Keyword Extraction
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-**Statistical Methods:**
-- TF-IDF ranking for term importance
-- TextRank algorithm (graph-based ranking)
-- RAKE (Rapid Automatic Keyword Extraction)
+## Perguntas Frequentes
 
-**Supervised Methods:**
-- Trained classifiers for domain-specific keywords
-- Attention weights from transformer models
-- Feature importance from tree-based models
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-### 7. Text Classification
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-**Category Prediction:**
-- Multi-label classification for inventory issues:
-  - Excess inventory, shortage, quality issue, demand spike, obsolescence
-- Binary relevance, classifier chains, or label powerset methods
-- Threshold tuning for precision-recall tradeoff
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-**Urgency Detection:**
-- Identifies urgent language: "critical", "immediate", "emergency"
-- Priority scoring: low (0-3), medium (4-6), high (7-10)
-- Combines keyword matching with semantic similarity
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-### 8. Performance Characteristics
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-- **Processing Time:** 200-600ms per document (100-500 words)
-- **Batch Processing:** 80-120 documents per minute
-- **Accuracy Metrics:**
-  - Sentiment Classification F1: 0.85-0.91
-  - Entity Recognition F1: 0.88-0.94
-  - Topic Coherence: 0.65-0.75
-  - Keyword Extraction Precision@5: 0.82-0.89
-- **Language Support:** English, Spanish, Portuguese (separate models)
-- **Scalability:** Horizontally scalable with load balancing
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-## Related
+## Manuais Comerciais
 
-### Related Endpoints
+### Playbook 1: Reduce excess inventory carrying costs
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-- **[Excess Inventory NLP](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/ExcessInventoryNlp.md)** - Specialized excess inventory detection
-- **[NLP Analysis EN](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpAnalysisEn.md)** - English-optimized version
-- **[Excess Inventory Report](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpOpenaiExcessInventoryReport.md)** - AI-generated reports
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-### Related Domain Concepts
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-- **Natural Language Processing:** Tokenization, POS tagging, NER, sentiment analysis
-- **Text Mining:** Feature extraction, topic modeling, clustering
-- **Information Extraction:** Entity recognition, relationship extraction
-- **Machine Learning:** Classification, embeddings, transformers (BERT, RoBERTa)
+### Playbook 2: Optimize stock levels and reorder points
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-### Integration Points
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
 
-- **Feedback Systems:** Analyze customer and employee feedback about inventory
-- **Support Tickets:** Extract inventory issues from support requests
-- **Inventory Notes:** Process warehouse and supply chain notes
-- **Product Reviews:** Mine reviews for inventory-related mentions
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
 
-### Use Cases
+### Playbook 3: Identify slow-moving and obsolete items
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
 
-- Identify common inventory problems from textual feedback
-- Extract actionable insights from unstructured data
-- Monitor sentiment trends around inventory management
-- Automatically categorize and route inventory-related communications
-- Generate alerts for urgent inventory issues mentioned in text
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Improve inventory turnover ratios
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:276`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:274`

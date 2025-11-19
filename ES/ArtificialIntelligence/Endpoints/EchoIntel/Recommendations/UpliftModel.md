@@ -20,23 +20,23 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud Parámetros
+### Corpo de la Requisição Parâmetros
 
-| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+| Parámetro | Tipo | Requerido | Padrão | Descripción | Significado Empresarial |
 |-----------|------|----------|---------|-------------|------------------|
-| customer_data | array | Sí | - | array of customer registros with features y historical treatment/Respuesta data. | Customer attributes y past campaign performance for uplift modeling. |
+| customer_data | array | Sí | - | array of customer registros with features y historical treatment/Resposta data. | Customer attributes y past campaign performance for uplift modeling. |
 | treatment_field | string | No | `"treatment"` | Campo name indicating whether customer received treatment (1) or control (0). | Which Campo contains the A/B test group assignment. |
-| response_field | string | No | `"Respuesta"` | Campo name indicating customer Respuesta outcome (1=converted, 0=No conversion). | Which Campo contains the conversion or desired outcome. |
-| meta_learner | string | No | `"s_learner"` | Meta-learner algorithm: `t_learner`, `s_learner`, `x_learner`, `r_learner`. | Causal ML methodology for uplift estimation. S-learner is styard, X-learner for imbalanced data. |
-| base_model | string | No | `"xgboost"` | Base model for meta-learner: `xgboost`, `ryom_forest`, `logistic_regression`. | Underlying ML algorithm. XGBoost recommended for accuracy. |
+| response_field | string | No | `"Resposta"` | Campo name indicating customer Resposta outcome (1=converted, 0=Não conversion). | Which Campo contains the conversion or desired outcome. |
+| meta_learner | string | No | `"s_learner"` | Meta-learner algorithm: `t_learner`, `s_learner`, `x_learner`, `r_learner`. | Causal ML methodology for uplift estimation. S-learner is steard, X-learner for imbalanced data. |
+| base_model | string | No | `"xgboost"` | Base model for meta-learner: `xgboost`, `reom_forest`, `logistic_regression`. | Underlying ML algorithm. XGBoost recommended for accuracy. |
 | return_segments | boolean | No | `true` | Return customer segmentation (persuadables, sure things, lost causes, sleeping dogs). | Actionable customer groups for targeting strategy. |
 | segment_thresholds | object | No | `{"high_uplift": 0.1, "low_uplift": -0.05}` | Thresholds for segment classification (uplift score boundaries). | Define what constitutes high positive/negative uplift. |
 
@@ -45,11 +45,11 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | Campo | Tipo | Requerido | Descripción | Example |
 |-------|------|----------|-------------|---------|
 | customer_id | string | Sí | Unique customer identifier. | `"C12345"` |
-| treatment | integer | Condicional | Treatment group indicator: 1=treated, 0=control (Requerido for training). | `1` |
-| Respuesta | integer | Condicional | Respuesta outcome: 1=converted, 0=No conversion (Requerido for training). | `0` |
+| treatment | integer | Condicional | Treatment group indicator: 1=treated, 0=control (Obrigatório for training). | `1` |
+| Resposta | integer | Condicional | Resposta outcome: 1=converted, 0=Não conversion (Obrigatório for training). | `0` |
 | features | object | Sí | Customer attributes for uplift prediction (demographics, behavior, history). | `{"age": 35, "tenure_meses": 24, "previous_purchases": 8}` |
 
-### Feature Fields (Ejemplos)
+### Feature Fields (Exemplos)
 
 | Campo | Tipo | Descripción | Example |
 |-------|------|-------------|---------|
@@ -57,13 +57,13 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | tenure_meses | integer | Months as customer. | `24` |
 | previous_purchases | integer | Historical purchase count. | `8` |
 | avg_order_value | float | Average order value. | `125.50` |
-| recency_días | integer | Days since last purchase (RFM). | `45` |
+| recency_dias | integer | Days since last purchase (RFM). | `45` |
 | email_engagement_rate | float | Email open/click rate (0-1). | `0.32` |
 | customer_segment | string | Pre-defined customer segment. | `"high_value"` |
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -108,7 +108,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/recommendations/uplift-model"
 ```
 
-### Ejemplo de Solicitud (JavaScript)
+### Exemplo de Requisição (JavaScript)
 
 ```javascript
 const response = await fetch('https://echosistema.online/api/v1/ai/echointel/recommendations/uplift-model', {
@@ -228,19 +228,19 @@ const result = await response.json();
 | `uplift_predictions` | array | Individual customer uplift scores y segments. | Personalized treatment recommendations for each customer. |
 | `uplift_predictions[].uplift_score` | float | Incremental treatment effect (-1 to 1). Positive = treatment helps, negative = treatment hurts. | Key decision metric. Target customers with uplift > 0.1, avoid customers with uplift < -0.05. |
 | `uplift_predictions[].segment` | string | Customer segment: `persuadable`, `sure_thing`, `lost_cause`, `sleeping_dog`. | Actionable group for targeting strategy. |
-| `uplift_predictions[].treatment_effect.prob_response_if_treated` | float | Predicted Respuesta probability if customer receives treatment (0-1). | Expected conversion rate if contacted. |
-| `uplift_predictions[].treatment_effect.prob_response_if_control` | float | Predicted Respuesta probability if customer does NOT receive treatment (0-1). | Baseline conversion rate without intervention. |
+| `uplift_predictions[].treatment_effect.prob_response_if_treated` | float | Predicted Resposta probability if customer receives treatment (0-1). | Expected conversion rate if contacted. |
+| `uplift_predictions[].treatment_effect.prob_response_if_control` | float | Predicted Resposta probability if customer does NOT receive treatment (0-1). | Baseline conversion rate without intervention. |
 | `uplift_predictions[].treatment_effect.incremental_lift` | float | Difference between treated y control probabilities (uplift score). | Net impact of treatment. Positive = treatment drives conversions, negative = treatment reduces conversions. |
 | `uplift_predictions[].confidence` | float | Model confidence in uplift prediction (0-1). | Prediction reliability. Higher = more trustworthy. |
 | `uplift_predictions[].recommendation` | string | Human-readable action recommendation. | Clear guidance on whether to include/exclude customer from campaign. |
 | `segment_distribution` | object | Count y percentage of customers in each uplift segment. | Portfolio view of campaign targeting opportunity. |
 | `segment_distribution.persuadable` | object | High positive uplift customers who should be targeted. | Primary campaign audience. Will convert only if treated. |
 | `segment_distribution.sure_thing` | object | Customers who will convert regardless of treatment. | Deprioritize to save campaign costs. |
-| `segment_distribution.lost_cause` | object | Low Respuesta probability customers regardless of treatment. | Exclude to improve campaign efficiency. |
+| `segment_distribution.lost_cause` | object | Low Resposta probability customers regardless of treatment. | Exclude to improve campaign efficiency. |
 | `segment_distribution.sleeping_dog` | object | Customers with negative uplift (treatment reduces conversion). | Must exclude to avoid harming performance. |
 | `campaign_optimization` | object | Campaign planning metrics based on uplift model. | Expected campaign performance y ROI forecasting. |
 | `campaign_optimization.optimal_target_size` | integer | Recommended number of customers to target (persuadables). | Optimal campaign size for maximum ROI. |
-| `campaign_optimization.expected_incremental_conversions` | integer | Additional conversions expected from uplift targeting vs. ryom targeting. | Campaign lift from using uplift model. |
+| `campaign_optimization.expected_incremental_conversions` | integer | Additional conversions expected from uplift targeting vs. reom targeting. | Campaign lift from using uplift model. |
 | `campaign_optimization.expected_campaign_roi` | float | Forecasted return on investment for uplift-optimized campaign. | Expected ROI multiplier. 2.85 = $2.85 return per $1 spent. |
 | `campaign_optimization.avoided_negative_effects` | integer | Number of sleeping dogs excluded to avoid negative impact. | Harm prevention from uplift model. |
 | `model_performance` | object | Uplift model quality metrics. | Model accuracy y reliability indicators. |
@@ -250,8 +250,8 @@ const result = await response.json();
 ## Typical Workflow
 
 ### 1. Run A/B Test Campaign
-Conduct ryomized controlled trial to collect treatment/control data:
-- Ryomly split customers 50/50 into treatment y control groups
+Conduct reomized controlled trial to collect treatment/control data:
+- Reomly split customers 50/50 into treatment y control groups
 - Apply intervention to treatment group (email, discount, call, etc.)
 - Track responses for both groups
 - Minimum sample size: 5,000 customers (2,500 per group) for reliable uplift estimates
@@ -285,7 +285,7 @@ Submit A/B test data to build causal model:
 
 ### 4. Score New Customers
 Apply trained model to score customers for next campaign:
-- Remove treatment/Respuesta fields (not available for new customers)
+- Remove treatment/Resposta fields (not available for new customers)
 - Keep same feature schema
 - Model predicts uplift without needing actual A/B test
 
@@ -307,61 +307,61 @@ Compare uplift predictions to actual results:
 - Retrain model with updated A/B test data quarterly
 - Adjust segment thresholds based on business costs/benefits
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: What's the difference between uplift modeling y propensity modeling?
-A: Propensity models predict P(Respuesta), treating all high-probability customers equally. Uplift models predict P(Respuesta|treatment) - P(Respuesta|control), distinguishing customers who need treatment from those who don't. Uplift avoids wasting resources on sure things y prevents harming sleeping dogs.
+A: Propensity models predict P(Resposta), treating all high-probability customers equally. Uplift models predict P(Resposta|treatment) - P(Resposta|control), distinguishing customers who need treatment from those who don't. Uplift avoids wasting resources on sure things y prevents harming sleeping dogs.
 
 ### Q: What is a "sleeping dog" y why should I avoid them?
-A: Sleeping dogs are customers with negative uplift - they're less likely to convert when contacted. Ejemplos: privacy-sensitive customers annoyed by marketing, price-sensitive customers deterred by discount offers (signals desperation), or loyal customers offended by win-back campaigns. Contacting them actively reduces conversions.
+A: Sleeping dogs are customers with negative uplift - they're less likely to convert when contacted. Exemplos: privacy-sensitive customers annoyed by marketing, price-sensitive customers deterred by discount offers (signals desperation), or loyal customers offended by win-back campaigns. Contacting them actively reduces conversions.
 
-### Q: How much A/B test data do I need to train an uplift model?
-A: Minimum 5,000 customers (2,500 treatment, 2,500 control) for basic uplift models. For robust models: 10,000-20,000 customers. More data Requerido if: conversion rate < 5%, many customer features, or complex treatment effects. Use ryomized 50/50 splits for unbiased estimates.
+### Q: How much A/B test data del I need to train an uplift model?
+A: Minimum 5,000 customers (2,500 treatment, 2,500 control) for basic uplift models. For robust models: 10,000-20,000 customers. More data Obrigatório if: conversion rate < 5%, many customer features, or complex treatment effects. Use reomized 50/50 splits for unbiased estimates.
 
 ### Q: Which meta-learner should I use?
-A: Start with S-learner (simplest, works well for balanced data). Use X-learner if treatment/control groups are imbalanced or if you have very different Respuesta rates between groups. T-learner is faster but less accurate. R-learner is advanced, use for continuous treatments (e.g., discount amounts).
+A: Start with S-learner (simplest, works well for balanced data). Use X-learner if treatment/control groups are imbalanced or if you have very different Resposta rates between groups. T-learner is faster but less accurate. R-learner is advanced, use for continuous treatments (e.g., discount amounts).
 
 ### Q: Can I use this for personalized pricing or discounts?
-A: Sí, with modifications. Traditional uplift models hyle binary treatments (contact vs. No contact). For continuous treatments (discount %, price points), use R-learner or CATE (Condicional Average Treatment Effect) models. Predict optimal discount level per customer.
+A: Sim, with modifications. Traditional uplift models hele binary treatments (contact vs. Não contact). For continuous treatments (discount %, price points), use R-learner or CATE (Condicional Average Treatment Effect) models. Predict optimal discount level per customer.
 
-### Q: How do I set segment thresholds?
-A: Balance business costs y benefits. Por Defecto: persuadable if uplift > 0.1 (10 percentage points), sleeping dog if uplift < -0.05 (-5 points). Adjust based on campaign costs: higher cost per contact = higher threshold for targeting. Lower threshold = larger but less efficient campaigns.
+### Q: How del I set segment thresholds?
+A: Balance business costs y benefits. Predeterminado: persuadable if uplift > 0.1 (10 percentage points), sleeping dog if uplift < -0.05 (-5 points). Adjust based on campaign costs: higher cost per contact = higher threshold for targeting. Lower threshold = larger but less efficient campaigns.
 
 ### Q: What if I don't have A/B test data yet?
-A: You must run at least one ryomized A/B test to train an uplift model. Observational data introduces confounding bias. Start with 50/50 ryom split, measure for 2-4 weeks, then train uplift model for future campaigns. The initial A/B test is an investment in future campaign optimization.
+A: You must run at least one reomized A/B test to train an uplift model. Observational data introduces confounding bias. Start with 50/50 reom split, measure for 2-4 weeks, then train uplift model for future campaigns. The initial A/B test is an investment in future campaign optimization.
 
 ### Q: How often should I retrain the uplift model?
 A: Retrain quarterly or after major business changes (new products, pricing changes, customer behavior shifts). Uplift models degrade faster than propensity models because treatment effects change with market conditions. Validate model performance monthly; retrain if uplift AUC drops below 0.60.
 
-## Guías Comerciales
+## Manuais Comerciais
 
 | Use Case | Action | Expected Impact |
 |----------|--------|-----------------|
 | **Email Campaign Optimization** | Target only persuadables (uplift > 0.15), exclude sleeping dogs. For 100K customer base, typical split: 30K persuadables, 20K sure things, 45K lost causes, 5K sleeping dogs. Contact only 30K. | Reduce email volume by 70% while maintaining 90%+ of incremental conversions. Improve email reputation by avoiding over-mailing. |
-| **Discount Campaign Targeting** | Persuadables get discount offers, sure things get No discount (will buy anyway), sleeping dogs excluded (discount signals desperation, reduces purchase intent). | Increase profit margin by 15-25% vs. blanket discounting. Reduce discount abuse. |
+| **Discount Campaign Targeting** | Persuadables get discount offers, sure things get Não discount (will buy anyway), sleeping dogs excluded (discount signals desperation, reduces purchase intent). | Increase profit margin by 15-25% vs. blanket discounting. Reduce discount abuse. |
 | **Retention Campaign** | Target persuadables at risk of churn who will respond to retention offers. Exclude sleeping dogs who churn faster when contacted. Sure things will renew regardless. | Improve retention rate by 20-30% while reducing retention campaign costs by 50-60%. |
-| **Win-Back Campaign** | Identify lapsed customers with high win-back uplift. Exclude sleeping dogs who churned due to over-communication. | Reactivate 25-40% more customers vs. ryom win-back campaigns. |
+| **Win-Back Campaign** | Identify lapsed customers with high win-back uplift. Exclude sleeping dogs who churned due to over-communication. | Reactivate 25-40% more customers vs. reom win-back campaigns. |
 | **Upsell/Cross-Sell** | Target persuadables for product recommendations. Sure things will discover products organically. Sleeping dogs may perceive upsells as pushy. | Increase upsell revenue by 30-50% with 40% fewer contacts. |
 | **High-Touch Sales Outreach** | For expensive sales calls/demos, target only high-uplift persuadables with high baseline conversion probability. Maximize sales efficiency. | Increase sales conversion rate by 25-35%, reduce wasted sales effort by 60%. |
 
-## Cómo se Calcula
+## Como é Calculado
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns uplift model results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -374,9 +374,9 @@ A: Retrain quarterly or after major business changes (new products, pricing chan
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -385,11 +385,11 @@ A: Retrain quarterly or after major business changes (new products, pricing chan
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
-## Cómo se Calcula
+## Como é Calculado
 
-Uplift modeling estimates treatment effect heterogeneity using causal inference (CATE estimation, meta-learners: T/S/X/R-Learner) to identify individuals most responsive to interventions, measuring `Uplift = P(Respuesta|Treatment) - P(Respuesta|Control)`.
+Uplift modeling estimates treatment effect heterogeneity using causal inference (CATE estimation, meta-learners: T/S/X/R-Learner) to identify individuals most responsive to interventions, measuring `Uplift = P(Resposta|Treatment) - P(Resposta|Control)`.
 
 ### 1. Causal Framework: Two-model approach (treatment/control groups) or causal forests for heterogeneous effects. Propensity score matching y inverse weighting for bias correction.
 
@@ -397,15 +397,15 @@ Uplift modeling estimates treatment effect heterogeneity using causal inference 
 
 ### 3. Segmentation: Persuadables (high uplift, target), Sure Things (deprioritize), Lost Causes (exclude), Sleeping Dogs (negative uplift, avoid).
 
-### 4. Evaluation: Qini coefficient, uplift curves, AUUC. Campaign ROI: 20-50% improvement vs. ryom targeting.
+### 4. Evaluation: Qini coefficient, uplift curves, AUUC. Campaign ROI: 20-50% improvement vs. reom targeting.
 
-### 5. Rendimiento: 300-900ms, Uplift AUC 0.62-0.78, retraining after campaigns with A/B results.
+### 5. Desempenho: 300-900ms, Uplift AUC 0.62-0.78, retraining after campaigns with A/B results.
 
 ## Relacionado
 
 ### Relacionado Endpoints
 
-- **[Propensity Respond Campaign](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityRespondCampaign.md)** - Campaign Respuesta uplift
+- **[Propensity Respond Campaign](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityRespondCampaign.md)** - Campaign Resposta uplift
 - **[Propensity Buy Product](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityBuyProduct.md)** - Purchase propensity
 - **[Recommend User Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendUserItems.md)** - Personalized recommendations
 
@@ -413,7 +413,7 @@ Uplift modeling estimates treatment effect heterogeneity using causal inference 
 
 - **Uplift Modeling:** Causal inference, treatment effects, heterogeneous effects
 - **Causal ML:** CATE, meta-learners, propensity scores, doubly robust
-- **A/B Testing:** Ryomization, incrementality, statistical significance
+- **A/B Testing:** Reomization, incrementality, statistical significance
 - **Intervention Optimization:** Campaign targeting, resource allocation
 
 ### Integration Points

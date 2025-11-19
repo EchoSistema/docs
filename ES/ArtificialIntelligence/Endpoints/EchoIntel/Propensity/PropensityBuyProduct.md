@@ -18,7 +18,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
@@ -31,11 +31,11 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | customers       | array  | Sí         | List of customers for analysis. |
 | product_id      | string | Sí         | ID of product target. |
 | historical_data | array  | No         | Historical data for improve precision. |
-| top_n           | int    | No         | Number of customers with higher propensity to return. Por Defecto: `100`. |
+| top_n           | int    | No         | Number of customers with higher propensity to return. Predeterminado: `100`. |
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -118,24 +118,24 @@ curl -X POST \
 | `product_info.avg_propensity`               | float   | Average propensity. |
 | `product_info.total_high_propensity`        | int     | Total of customers with alta propensity. |
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns product purchase propensity results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -148,9 +148,9 @@ curl -X POST \
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -159,7 +159,7 @@ curl -X POST \
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
 ## Notas
 
@@ -167,7 +167,7 @@ curl -X POST \
 * Results ordered by `propensity_score` descending.
 * Recomendações são personalizadas por nível of propensity.
 
-## Cómo se Calcula
+## Como é Calculado
 
 The Product Purchase Propensity Endpoint predicts the likelihood that specific customers will purchase a target product using supervised machine learning classification algorithms.
 
@@ -184,7 +184,7 @@ The Product Purchase Propensity Endpoint predicts the likelihood that specific c
   - Total purchases (count, frequency, recency)
   - Average order value (AOV)
   - Product category preferences
-  - Bry affinity scores
+  - Bre affinity scores
 
 - **Engagement Metrics:**
   - Website/app visits y session duration
@@ -213,10 +213,10 @@ The Product Purchase Propensity Endpoint predicts the likelihood that specific c
 - Promotion exposure timing
 
 **Feature Scaling:**
-- StyardScaler for numerical features: `z = (x - μ) / σ`
+- SteardScaler for numerical features: `z = (x - μ) / σ`
 - MinMaxScaler for bounded features: `x_scaled = (x - min) / (max - min)`
-- One-hot codificación for categorical variables
-- Target codificación for high-cardinality categories
+- One-hot codificação for categorical variables
+- Target codificação for high-cardinality categories
 
 ### 2. Model Architecture
 
@@ -228,11 +228,11 @@ P(purchase = 1 | X) = 1 / (1 + e^(-(β₀ + β₁x₁ + β₂x₂ + ... + βₙx
 - Fast inference
 - Probabilistic output with calibration
 
-**Ryom Forest Classifier:**
+**Reom Forest Classifier:**
 - Ensemble of decision trees (100-500 trees)
 - Bootstrap aggregation (bagging) for variance reduction
 - Feature importance via Gini impurity or permutation
-- Hyles non-linear relationships y interactions
+- Heles non-linear relationships y interactions
 
 **Gradient Boosting (XGBoost/LightGBM):**
 ```
@@ -240,7 +240,7 @@ F(x) = Σ(i=1 to M) γᵢ × hᵢ(x)
 ```
 - Sequential tree building with gradient descent
 - Regularization (L1/L2) to prevent overfitting
-- Hyles missing values internally
+- Heles missing values internally
 - Feature interaction detection
 
 **Model Selection Criteria:**
@@ -264,7 +264,7 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
 - Better for complex calibration curves
 
 **Calibration Validation:**
-- Expected Calibration Error (ECE)
+- Expected Calibration Erro (ECE)
 - Reliability diagrams (predicted vs. observed probabilities)
 
 ### 4. Propensity Scoring
@@ -316,7 +316,7 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
   - Customer testimonials y reviews
 
 - **Low Propensity:**
-  - Bry awareness campaigns
+  - Bre awareness campaigns
   - Retargeting ads
   - Newsletter inclusion
   - Wait for purchase trigger events
@@ -326,15 +326,15 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
 - Timing optimization (send time prediction)
 - Channel preference (email, SMS, push notification)
 
-### 7. Rendimiento Characteristics
+### 7. Desempenho Characteristics
 
-- **Tiempo de Procesamiento:** 250-700ms per customer (batch: 100 customers)
-- **Batch Rendimiento:** 500-1000 customers per minute
-- **Model Precisión:**
+- **Tempo de Processamento:** 250-700ms per customer (batch: 100 customers)
+- **Batch Taxa de Transferência:** 500-1000 customers per minute
+- **Model Precisão:**
   - AUC-ROC: 0.78-0.86
   - Precision@Top-10%: 0.65-0.82
   - Recall@Top-20%: 0.55-0.75
-  - Calibration Error (ECE): < 0.08
+  - Calibration Erro (ECE): < 0.08
 - **Scalability:** Horizontally scalable with model serving infrastructure
 - **Model Update Frequency:** Retrained weekly or monthly based on data drift
 - **Feature Store:** Cached features updated daily
@@ -352,9 +352,9 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
 - Identify similar products for affinity analysis
 
 ### 3. API Request
-- Prepare customer list with Requerido attributes
+- Prepare customer list with Obrigatório attributes
 - Include product_id y optional historical_data for improved accuracy
-- Set top_n Parámetro to focus on highest propensity customers
+- Set top_n Parâmetro to focus on highest propensity customers
 
 ### 4. Analyze Results
 - Review propensity scores y confidence levels
@@ -373,7 +373,7 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
   - Monitor engagement y escalate if interest increases
 
 - **Low Propensity Customers:** Awareness building
-  - Include in bry campaigns
+  - Include in bre campaigns
   - Monitor for trigger events (life changes, seasonal needs)
 
 ### 6. Monitor y Optimize
@@ -384,32 +384,32 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
 
 ### 7. Feedback Loop
 - Collect conversion outcomes (purchased or not)
-- Update training dataset with new labeled Ejemplos
+- Update training dataset with new labeled Exemplos
 - Retrain model periodically to improve accuracy
 - Adjust thresholds based on business results
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: How many historical purchases are needed per customer for accurate scoring?
-**A:** We recommend a minimum of 6-12 meses of purchase history per customer, with at least 3-5 prior purchases. Customers with more purchase history (24+ meses) produce more accurate propensity scores. For completely new customers with No purchase history, the model can still generate predictions using demographic features, but confidence scores will be lower (0.60-0.70 vs. typical 0.80-0.90). We automatically weight demographic vs. behavioral features based on data availability.
+**A:** We recommend a minimum of 6-12 meses of purchase history per customer, with at least 3-5 prior purchases. Customers with more purchase history (24+ meses) produce more accurate propensity scores. For completely new customers with Não purchase history, the model can still generate predictions using demographic features, but confidence scores will be lower (0.60-0.70 vs. typical 0.80-0.90). We automatically weight demographic vs. behavioral features based on data availability.
 
 ### Q: Can I score multiple products simultaneously in a single request?
-**A:** Currently, the API accepts one `product_id` per request. To score multiple products, make separate API calls for each product. However, the Respuesta includes product-level aggregates (avg_propensity, total_high_propensity, etc.) for all customers y the single product. For bulk multi-product scoring, contact support for a specialized Endpoint that processes product matrices in parallel.
+**A:** Currently, the API accepts one `product_id` per request. To score multiple products, make separate API calls for each product. However, the Resposta includes product-level aggregates (avg_propensity, total_high_propensity, etc.) for all customers y the single product. For bulk multi-product scoring, contact support for a specialized Endpoint that processes product matrices in parallel.
 
-### Q: How do I hyle new products with No purchase history in the market?
-**A:** For newly launched products, use the `similar_product_ids` Parámetro in optional historical_data to indicate comparable products. The model will infer propensity based on customers who purchased similar items. Propensity scores for new products may be slightly less reliable until 100+ customers have purchased it. Always pair new product propensity scores with domain expertise y A/B testing before large-scale campaigns.
+### Q: How del I hele new products with Não purchase history in the market?
+**A:** For newly launched products, use the `similar_product_ids` Parâmetro in optional historical_data to indicate comparable products. The model will infer propensity based on customers who purchased similar items. Propensity scores for new products may be slightly less reliable until 100+ customers have purchased it. Always pair new product propensity scores with domain expertise y A/B testing before large-scale campaigns.
 
 ### Q: What's the difference between propensity_score y confidence?
 **A:** The `propensity_score` (0-1) is the model's predicted likelihood that a customer will purchase the product. The `confidence` (0-1) indicates how certain the model is about that prediction. Example: propensity_score=0.75 with confidence=0.85 means "75% likely to buy, y I'm 85% confident in that estimate." High propensity + high confidence = most reliable targets. High propensity + low confidence = worth further investigation before investing in campaigns.
 
 ### Q: How often should propensity scores be refreshed for ongoing campaigns?
-**A:** Refresh propensity scores weekly or bi-weekly for active campaigns. Propensity decays over time as customer behavior changes. If a customer hasn't engaged in 30 días, their propensity to a specific product may shift. For seasonal products, refresh before peak seasons (monthly for retail, quarterly for non-seasonal). The system automatically learns from conversion feedback—provide actual purchase outcomes to improve future scores.
+**A:** Refresh propensity scores weekly or bi-weekly for active campaigns. Propensity decays over time as customer behavior changes. If a customer hasn't engaged in 30 dias, their propensity to a specific product may shift. For seasonal products, refresh before peak seasons (monthly for retail, quarterly for non-seasonal). The system automatically learns from conversion feedback—provide actual purchase outcomes to improve future scores.
 
 ### Q: Can I use this Endpoint for B2B products y account-based marketing?
-**A:** Sí, the Endpoint supports B2B use cases. Map account-level features (annual spend, industry, company size, contract value) instead of individual customer demographics. For account-based marketing, use the `top_n` Parámetro to identify the highest-propensity accounts for personalized outreach. B2B propensity tends to benefit from longer sales cycles—consider a 90-day engagement window rather than immediate conversion targets.
+**A:** Sim, the Endpoint supports B2B use cases. Map account-level features (annual spend, industry, company size, contract value) instead of individual customer demographics. For account-based marketing, use the `top_n` Parâmetro to identify the highest-propensity accounts for personalized outreach. B2B propensity tends to benefit from longer sales cycles—consider a 90-day engagement window rather than immediate conversion targets.
 
 ### Q: What actions should I take for different propensity levels?
-**A:** High propensity (> 0.7): Immediate action within 24-48 hours—personalized email with limited-time offer (10-15% discount), direct sales outreach, product demo. Medium propensity (0.3-0.7): Nurture campaigns over 2-4 weeks—educational content, customer testimonials, free trial or sample, soft retargeting ads. Low propensity (< 0.3): Long-term awareness building—bry campaigns, newsletter inclusion, monitor for trigger events (career changes, company news, seasonal needs).
+**A:** High propensity (> 0.7): Immediate action within 24-48 hours—personalized email with limited-time offer (10-15% discount), direct sales outreach, product demo. Medium propensity (0.3-0.7): Nurture campaigns over 2-4 weeks—educational content, customer testimonials, free trial or sample, soft retargeting ads. Low propensity (< 0.3): Long-term awareness building—bre campaigns, newsletter inclusion, monitor for trigger events (career changes, company news, seasonal needs).
 
 ### Q: What's included in the "key_factors" y how are they weighted?
 **A:** Key factors are the top 3-5 features that drove the propensity prediction for each customer, ranked by importance. Weights sum to 1.0 y indicate relative contribution to the score. Example: "high previous purchases" (0.35) + "similar product history" (0.28) + "demographic match" (0.24) = 0.87 cumulative. Use these factors to personalize messaging—if "demographic match" is the primary driver, emphasize lifestyle benefits; if "purchase history" dominates, highlight loyalty rewards.
@@ -418,7 +418,7 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
 
 ### Relacionado Endpoints
 
-- **[Propensity Respond Campaign](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityRespondCampaign.md)** - Campaign Respuesta likelihood
+- **[Propensity Respond Campaign](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityRespondCampaign.md)** - Campaign Resposta likelihood
 - **[Propensity Upgrade Plan](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityUpgradePlan.md)** - Plan upgrade propensity
 - **[Recommend User Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendUserItems.md)** - Product recommendations
 - **[Cross-Sell Matrix](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/CrossSellMatrix.md)** - Product affinities for cross-selling
@@ -427,7 +427,7 @@ P_calibrated = 1 / (1 + exp(A × f(x) + B))
 
 - **Propensity Modeling:** Predictive analytics, customer scoring, conversion prediction
 - **Customer Segmentation:** RFM analysis, behavioral clustering, value-based segmentation
-- **Ingeniería de Características:** Aggregation, temporal features, interaction terms
+- **Engenharia de Características:** Aggregation, temporal features, interaction terms
 - **Model Evaluation:** AUC-ROC, precision-recall, calibration, lift analysis
 
 ### Integration Points

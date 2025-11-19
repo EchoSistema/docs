@@ -17,22 +17,22 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Requerido if not configured on the server. |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. Requerido if not configured on the server. |
-| Accept-Language    | string | No         | Idioma de respuesta (`en`, `es`, `pt`). Por Defecto: `en`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Idioma de resposta (`en`, `es`, `pt`). Predeterminado: `en`. |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud
+### Corpo de la Requisição
 
-| Parámetro | Tipo | Requerido | Descripción | Significado Empresarial | Por Defecto |
+| Parámetro | Tipo | Requerido | Descripción | Significado Empresarial | Padrão |
 | --------- | ---- | -------- | ----------- | ---------------- | ------- |
 | customer_data | array | Sí | array of customer registros with behavioral features. | Customer profiles for CLV prediction. | - |
 | forecast_horizon | integer | No | Prediction window in meses (6-60). | How far ahead to predict value. | `12` |
-| model_type | string | No | Model to use: `linear_regression`, `ryom_forest`, `xgboost`, `auto`. | Algorithm selection for prediction. | `auto` |
+| model_type | string | No | Model to use: `linear_regression`, `reom_forest`, `xgboost`, `auto`. | Algorithm selection for prediction. | `auto` |
 | include_confidence | boolean | No | Include confidence intervals in predictions. | Add uncertainty bounds to estimates. | `true` |
 
 ### Customer Data object Fields
@@ -40,15 +40,15 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | Campo | Tipo | Requerido | Descripción | Significado Empresarial | Example |
 | ----- | ---- | -------- | ----------- | ---------------- | ------- |
 | customer_id | string | Sí | Unique customer identifier. | Customer account reference. | `"CUST-10234"` |
-| tenure_días | integer | Sí | Days as customer. | Relationship duration. | `365` |
+| tenure_dias | integer | Sí | Days as customer. | Relationship duration. | `365` |
 | total_revenue | float | Sí | Historical total spending. | Cumulative customer value. | `1250.00` |
 | purchase_frequency | integer | Sí | Total number of purchases. | Transaction count. | `8` |
 | avg_order_value | float | Sí | Average transaction amount. | Typical basket size. | `156.25` |
-| recency_días | integer | Sí | Days since last purchase. | Purchase freshness. | `15` |
+| recency_dias | integer | Sí | Days since last purchase. | Purchase freshness. | `15` |
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -75,7 +75,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/clv-forecast"
 ```
 
-### Ejemplo de Solicitud (Python)
+### Exemplo de Requisição (Python)
 
 ```python
 import requests
@@ -164,24 +164,24 @@ result = response.json()
 | `model_info.selected_model` | string | Chosen algorithm name. | Best-performing model. |
 | `model_info.model_performance.r2_score` | float | R-squared goodness of fit (0-1). | Variance explained by model. |
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns CLV forecast results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -194,9 +194,9 @@ result = response.json()
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -205,9 +205,9 @@ result = response.json()
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
-## Cómo se Calcula
+## Como é Calculado
 
 The CLV forecasting system uses probabilistic y regression models to predict future customer lifetime value:
 
@@ -220,28 +220,28 @@ The system employs multiple modeling approaches for accurate CLV prediction:
 - **Cohort Analysis:** Segments customers by acquisition cohort y applies cohort-specific models
 - **Ensemble Prediction:** Combines multiple model outputs using weighted averaging for robust forecasts
 
-### Pasos de Procesamiento
+### Passos de Processamento
 
 1. **Feature Preparation:** Extract CLV-predictive features (RFM, tenure, engagement metrics)
-2. **Selección del Modelo:** Choose appropriate model based on data characteristics y business context
+2. **Seleção del Modelo:** Choose appropriate model based on data characteristics y business context
 3. **Prediction Generation:** Apply trained model to generate CLV forecasts with confidence intervals
 4. **Value Segmentation:** Categorize customers by predicted CLV (high/medium/low value)
 
-### Rendimiento
+### Desempenho
 
-- **Tiempo de Procesamiento:** 200-600ms for 10,000 customer CLV predictions
-- **Requisitos de Datos:** Minimum 6 meses of transaction history per customer
+- **Tempo de Processamento:** 200-600ms for 10,000 customer CLV predictions
+- **Requisitos de Dados:** Minimum 6 meses of transaction history per customer
 
 ## Typical Workflow
 
 ### Step 1: Prepare Data
-Collect historical customer transaction data including purchase dates, amounts, customer IDs, y any available demographic or behavioral features. Ensure data quality by hyling missing values y outliers.
+Collect historical customer transaction data including purchase dates, amounts, customer IDs, y any available demographic or behavioral features. Ensure data quality by heling missing values y outliers.
 
-### Step 2: Configure Parámetros
-Specify the prediction horizon (e.g., 12 meses), model Tipo (probabilistic vs ML), y any cohort segmentation criteria. Set confidence level for prediction intervals (Por Defecto: 95%).
+### Step 2: Configure Parâmetros
+Specify the prediction horizon (e.g., 12 meses), model Tipo (probabilistic vs ML), y any cohort segmentation criteria. Set confidence level for prediction intervals (Predeterminado: 95%).
 
 ### Step 3: Make Request
-Send POST request with customer transaction data y configuration Parámetros. The API will automatically select optimal models y generate CLV forecasts for each customer.
+Send POST request with customer transaction data y configuration Parâmetros. The API will automatically select optimal models y generate CLV forecasts for each customer.
 
 ### Step 4: Analyze Results
 Review predicted CLV values, confidence intervals, y customer value segments. Identify high-value customers for retention efforts y low-value customers for cost optimization.
@@ -251,19 +251,19 @@ Review predicted CLV values, confidence intervals, y customer value segments. Id
 - **Medium CLV Customers:** Implement upsell/cross-sell campaigns, loyalty programs
 - **Low CLV Customers:** Automate service delivery, optimize acquisition costs, consider churn risk
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: How accurate are CLV predictions?
-**A:** Model accuracy varies by data quality y business Tipo. Typical R² scores range from 0.82-0.92, meaning the model explains 82-92% of CLV variance. Mean absolute Error (MAE) is typically 8-12% of average CLV. Predictions are most accurate for customers with 6+ meses of history y stable purchase patterns.
+**A:** Model accuracy varies by data quality y business Tipo. Typical R² scores range from 0.82-0.92, meaning the model explains 82-92% of CLV variance. Mean absolute Erro (MAE) is typically 8-12% of average CLV. Predictions are most accurate for customers with 6+ meses of history y stable purchase patterns.
 
 ### Q: What's the difference between predicted_clv y historical_value?
 **A:** `historical_value` is the actual revenue generated by the customer to date. `predicted_clv` is the total forecasted lifetime value including both historical y future revenue. `predicted_future_value` is the difference between these two, representing expected future revenue over the forecast horizon.
 
-### Q: How do I choose the right forecast_horizon?
+### Q: How del I choose the right forecast_horizon?
 **A:** Align forecast horizon with your business planning cycle. For monthly campaigns, use 6-12 meses. For annual budgeting, use 12-24 meses. For strategic planning, use 24-60 meses. Note that accuracy decreases with longer horizons—predictions beyond 24 meses should be treated as directional estimates.
 
 ### Q: Which model_type should I use?
-**A:** Use `auto` for production (recommended)—it tests all algorithms y selects the best performer. For specific needs: `linear_regression` for interpretability, `ryom_forest` for robustness, `xgboost` for maximum accuracy. The `selected_model` Campo in the Respuesta shows which was chosen.
+**A:** Use `auto` for production (recommended)—it tests all algorithms y selects the best performer. For specific needs: `linear_regression` for interpretability, `reom_forest` for robustness, `xgboost` for maximum accuracy. The `selected_model` Campo in the Resposta shows which was chosen.
 
 ### Q: Why are confidence intervals important?
 **A:** Confidence intervals show prediction uncertainty. A wide interval (e.g., $800-$2,200) indicates high uncertainty—use conservative lower bound for planning. A narrow interval (e.g., $1,400-$1,600) indicates high confidence—safe to use point estimate. Intervals help with risk assessment y scenario planning.
@@ -271,12 +271,12 @@ Review predicted CLV values, confidence intervals, y customer value segments. Id
 ### Q: Can I retrain the model with my own historical CLV data?
 **A:** The model is pre-trained on cross-industry data. For custom model training on your specific customer base, contact EchoIntel support. Custom models typically improve accuracy by 10-15% but require minimum 1,000 customers with known lifetime values spanning 12+ meses.
 
-## Guías Comerciales
+## Manuais Comerciais
 
 ### Playbook 1: VIP Customer Prioritization
 **Objetivo:** Allocate 80% of retention budget to top 20% of customers by predicted CLV.
 
-**Implementación:**
+**Implementação:**
 1. Run CLV forecast for entire customer base
 2. Rank by `predicted_clv` descending
 3. Identify top 20% (e.g., predicted_clv > $3,500)
@@ -291,7 +291,7 @@ Review predicted CLV values, confidence intervals, y customer value segments. Id
 ### Playbook 2: Customer Acquisition Cost (CAC) Optimization
 **Objetivo:** Set maximum CAC based on predicted CLV to improve acquisition ROI.
 
-**Implementación:**
+**Implementação:**
 1. Analyze CLV distribution by acquisition channel
 2. Set CAC ceiling at 30% of average CLV per channel
 3. Example: If email acquisition yields avg CLV of $2,000, max CAC = $600
@@ -306,10 +306,10 @@ Review predicted CLV values, confidence intervals, y customer value segments. Id
 ### Playbook 3: Upsell Campaign Targeting
 **Objetivo:** Increase revenue by 20% through CLV-driven upsell targeting.
 
-**Implementación:**
-1. Identify customers with `predicted_future_value > $500` y `purchase_frequency >= 3`
+**Implementação:**
+1. Identify customers with `predicted_future_value > $500` e `purchase_frequency >= 3`
 2. Analyze `value_breakdown.short_term_3m` to time campaigns
-3. Target upsell 7-10 días before predicted next purchase
+3. Target upsell 7-10 dias before predicted next purchase
 4. Personalize offer value: 10-15% of `avg_order_value`
 5. Measure incremental lift vs. control group
 
@@ -321,7 +321,7 @@ Review predicted CLV values, confidence intervals, y customer value segments. Id
 ### Playbook 4: Annual Budget Forecasting
 **Objetivo:** Create accurate revenue forecasts using aggregate CLV predictions.
 
-**Implementación:**
+**Implementação:**
 1. Run CLV forecast on active customer base (12-month horizon)
 2. Sum `predicted_future_value` across all customers
 3. Apply 15% conservative discount for uncertainty
@@ -336,7 +336,7 @@ Review predicted CLV values, confidence intervals, y customer value segments. Id
 ### Playbook 5: Churn Prevention ROI Optimization
 **Objetivo:** Maximize retention ROI by targeting high-CLV at-risk customers.
 
-**Implementación:**
+**Implementação:**
 1. Combine CLV forecast with churn risk scores
 2. Filter customers with `predicted_clv > $1,500` y high churn risk
 3. Calculate maximum acceptable retention cost: `0.3 * predicted_future_value`

@@ -1,4 +1,4 @@
-# Artificial Intelligence – Cross-Sell Matrix
+# Artificial Intelligence – Cross-Sell Product Matrix
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/recommendations/cross-sell-matrix
 ```
 
-Cross-Sell Matrix using recommendation systems based on collaborative and content-based filtering.
+Generates product affinity matrix showing which products are frequently purchased together for cross-sell opportunities.
 
 ## Authentication
 
@@ -17,211 +17,304 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-> **Note:** Parameters accept both `snake_case` and `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
+### Corpo of the Requisição
 
-## HTTP Status
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns cross-sell matrix results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+## Examples
 
-## Errors
+### Exemplo of Requisição (curl)
 
-### Common Error Responses
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-Customer-Api-Id: <tenant-uuid>" \
+  -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"id": "001", "value": 100}
+    ],
+    "options": {},
+    "include_metadata": true
+  }' \
+  "https://echosistema.online/api/v1/ai/echointel/recommendations/cross-sell-matrix"
+```
 
-#### Missing Required Parameters
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/recommendations/cross-sell-matrix"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+```
+
+## Response
+
+### Success `200 OK`
+
 ```json
 {
-  "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
-  "details": {
-    "parameter": "data",
-    "location": "body"
+  "results": [
+    {
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
+    }
+  ],
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
+### Error `400 Bad Request`
 
-#### Invalid Authentication
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+### Error `422 Unprocessable Entity`
 
-## How It Is Computed
-
-The Cross-Sell Matrix uses association rule mining (Apriori algorithm) and market basket analysis to discover product affinities and generate cross-sell recommendations based on co-purchase patterns.
-
-### 1. Transaction Data Preparation
-
-**Data Collection:**
-- Historical transaction/order data with product combinations
-- Basket structure: Transaction ID + list of products purchased together
-- Time window: typically 6-12 months of purchase history
-- Minimum transactions: 1,000+ baskets for statistical significance
-
-**Data Cleaning:**
-- Remove returns and canceled orders
-- Filter out one-time bulk purchases (outliers)
-- Normalize product identifiers and group variants
-- Handle product hierarchies (SKU, category, brand levels)
-
-### 2. Apriori Algorithm for Association Rules
-
-**Frequent Itemset Mining:**
-```
-Support(X) = Count(Transactions containing X) / Total Transactions
-```
-- Generate candidate itemsets: {A}, {B}, {A,B}, {A,B,C}, etc.
-- Prune itemsets below minimum support threshold (e.g., 0.01 = 1%)
-- Use Apriori property: if itemset is infrequent, all supersets are infrequent
-
-**Association Rule Generation:**
-```
-Rule: {A} → {B}
-Support = P(A ∩ B)
-Confidence = P(B | A) = P(A ∩ B) / P(A)
-Lift = P(A ∩ B) / (P(A) × P(B))
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
+}
 ```
 
-**Key Metrics:**
-- **Support:** How often products appear together (popularity)
-- **Confidence:** Purchase probability of B given A was purchased (reliability)
-- **Lift:** How much more likely B is purchased with A vs. independently (strength)
-  - Lift > 1: Positive association (cross-sell opportunity)
-  - Lift = 1: Independent (no relationship)
-  - Lift < 1: Negative association (substitutes or avoid pairing)
+## JSON Structure
 
-### 3. Cross-Sell Matrix Construction
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-**Matrix Structure:**
+## Como é Calculado
+
+Generates product affinity matrix showing which products are frequently purchased together for cross-sell opportunities.
+
+### Algoritmo Principal
+
+The system employs advanced machine learning and statistical techniques tailored for ai-powered recommendation systems:
+
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
+
+### Passos of Processamento
+
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
+
+### Desempenho
+
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
+
+## Status HTTP
+
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Required fields missing",
+  "details": {
+    "data": "The data field is required and must be an array."
+  }
+}
 ```
-        Product_1  Product_2  Product_3  ...
-Product_1    -      0.85       0.42
-Product_2   0.85      -        0.78
-Product_3   0.42     0.78       -
+
+**Formato of Dados Inválido:**
+```json
+{
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
+}
 ```
-- Rows: Anchor products (currently owned/viewed)
-- Columns: Candidate cross-sell products
-- Values: Affinity scores (combining lift, confidence, support)
 
-**Affinity Score Calculation:**
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
 ```
-Affinity = w1 × Lift + w2 × Confidence + w3 × Support
-```
-- Weighted combination normalized to [0, 1] range
-- Typical weights: w1=0.5, w2=0.3, w3=0.2
 
-### 4. Filtering and Ranking
+## Notes
 
-**Rule Filtering Criteria:**
-- Minimum support: 0.01 (appears in 1% of transactions)
-- Minimum confidence: 0.15 (15% conversion rate)
-- Minimum lift: 1.2 (20% stronger than random)
+### Melhores Práticas
 
-**Ranking Strategy:**
-- Sort by affinity score descending
-- Apply business rules (margin, inventory availability, strategic products)
-- Personalization layer (customer segment, purchase history)
-- Recency boost for trending products
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-### 5. Performance Characteristics
+### Otimização of Desempenho
 
-- **Processing Time:** 1-3 seconds for matrix computation (offline), <200ms for lookup
-- **Matrix Size:** Typically 1,000-10,000 products, sparse matrix representation
-- **Update Frequency:** Daily or weekly recomputation
-- **Accuracy:** Lift >1.5 for top recommendations, 20-40% conversion improvement
-- **Scalability:** Handles 100,000+ products with distributed computing
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-## Typical Workflow
+### Considerações of Segurança
 
-### 1. Data Integration
-- Connect to e-commerce platform or order management system
-- Extract transaction history with product combinations
-- Ensure data quality: valid product IDs, complete transactions
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-### 2. Matrix Generation (Offline)
-- Run Apriori algorithm on transaction data (batch process)
-- Generate association rules and compute metrics
-- Build cross-sell matrix with affinity scores
-- Store matrix in fast lookup database (Redis, in-memory cache)
+## Perguntas Frequentes
 
-### 3. API Request
-- Provide anchor product(s) currently in customer's cart or viewed
-- Optionally include customer segment or purchase history
-- Specify number of recommendations needed (top_n)
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-### 4. Recommendation Retrieval
-- Lookup anchor product(s) in cross-sell matrix
-- Retrieve top-N products by affinity score
-- Apply filters: exclude already purchased, out-of-stock, incompatible
-- Personalize based on customer preferences if available
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-### 5. Display and Track
-- Present recommendations: "Frequently bought together", "Customers also bought"
-- Track impressions, clicks, and conversions
-- Measure lift in average order value (AOV) and units per transaction
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-### 6. Continuous Improvement
-- Update matrix weekly with latest transaction data
-- A/B test different affinity score weightings
-- Monitor for seasonal changes and trending combinations
-- Retrain when new products launch or catalog changes significantly
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-## Related
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-### Related Endpoints
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-- **[Recommend User Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendUserItems.md)** - Personalized recommendations
-- **[Recommend Similar Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendSimilarItems.md)** - Similar product recommendations
-- **[Upsell Suggestions](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/UpsellSuggestions.md)** - Upsell opportunities
-- **[Propensity Buy Product](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityBuyProduct.md)** - Purchase propensity
+## Manuais Comerciais
 
-### Related Domain Concepts
+### Playbook 1: Increase average order value through upselling
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-- **Association Rule Mining:** Apriori, FP-Growth, frequent itemsets
-- **Market Basket Analysis:** Support, confidence, lift, conviction
-- **Recommendation Systems:** Collaborative filtering, content-based filtering
-- **E-commerce Analytics:** Cross-sell, bundle optimization, AOV improvement
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-### Integration Points
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-- **E-commerce Platforms:** Shopify, WooCommerce, Magento
-- **Point of Sale Systems:** In-store transaction data
-- **Product Catalogs:** SKU information, pricing, inventory
-- **Marketing Automation:** Triggered cross-sell campaigns
-- **Shopping Cart Systems:** Real-time recommendation widgets
+### Playbook 2: Improve cross-sell conversion rates
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-### Use Cases
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
 
-- **"Frequently Bought Together" Widgets:** Amazon-style product bundles
-- **Cart Optimization:** Suggest complementary items during checkout
-- **Email Marketing:** Cross-sell campaigns to existing customers
-- **Product Bundling:** Create pre-packaged bundles based on affinities
-- **Inventory Planning:** Stock complementary products together
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
+
+### Playbook 3: Enhance customer discovery and engagement
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
+
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Personalize product recommendations
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:202`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:325`

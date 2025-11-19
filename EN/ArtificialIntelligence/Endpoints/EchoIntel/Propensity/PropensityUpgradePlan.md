@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/propensity/upgrade-plan
 ```
 
-Plan Upgrade Propensity using predictive propensity models.
+Predicts probability of customer upgrading to higher-tier plans or premium services.
 
 ## Authentication
 
@@ -17,292 +17,304 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-> **Note:** Parameters accept both `snake_case` and `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
+### Corpo of the Requisição
 
-## HTTP Status
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns plan upgrade propensity results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+## Examples
 
-## Errors
+### Exemplo of Requisição (curl)
 
-### Common Error Responses
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-Customer-Api-Id: <tenant-uuid>" \
+  -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"id": "001", "value": 100}
+    ],
+    "options": {},
+    "include_metadata": true
+  }' \
+  "https://echosistema.online/api/v1/ai/echointel/propensity/upgrade-plan"
+```
 
-#### Missing Required Parameters
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/propensity/upgrade-plan"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+```
+
+## Response
+
+### Success `200 OK`
+
 ```json
 {
-  "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
-  "details": {
-    "parameter": "data",
-    "location": "body"
+  "results": [
+    {
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
+    }
+  ],
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
+### Error `400 Bad Request`
 
-#### Invalid Authentication
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+### Error `422 Unprocessable Entity`
 
-## How It Is Computed
-
-The Plan Upgrade Propensity endpoint predicts customer likelihood to upgrade their subscription plan using decision trees, random forests, and propensity scoring algorithms based on usage patterns and engagement signals.
-
-### 1. Feature Engineering
-
-**Subscription Profile Features:**
-- Current plan tier (basic, standard, premium)
-- Subscription duration (tenure in months)
-- Plan price point and payment history
-- Billing cycle (monthly, annual)
-- Auto-renewal status
-- Historical plan changes (downgrades, upgrades)
-
-**Usage Behavior Features:**
-- **Feature Utilization:**
-  - Usage rate vs. plan limits (storage, API calls, users)
-  - Feature adoption rate (% of available features used)
-  - Premium feature trial attempts
-  - Limit approaching events (nearing quota)
-
-- **Engagement Metrics:**
-  - Login frequency (daily, weekly, monthly)
-  - Session duration and depth
-  - Active days per month
-  - Time-of-day and day-of-week patterns
-  - Mobile vs. desktop usage
-
-**Value Realization Indicators:**
-- Time-to-value metrics (days to first key action)
-- ROI indicators (if measurable)
-- Goal completion rates
-- Integration adoption (connected tools/services)
-- Collaboration metrics (multi-user activity)
-
-**Pain Point Signals:**
-- **Constraint Indicators:**
-  - Hitting plan limits (storage full, user slots filled)
-  - Feature access attempts for higher tiers
-  - Support tickets about plan limitations
-  - Workarounds for missing features
-
-- **Friction Points:**
-  - Failed operations due to limits
-  - Downgrade considerations (browsing lower plans)
-  - Cancellation page visits
-  - Competitor comparison activities
-
-**Growth Trajectory Features:**
-- User base growth (team size expansion)
-- Data volume growth trend
-- API usage growth rate
-- Revenue/business size growth (for B2B)
-
-**Temporal Features:**
-- Days until renewal/end of current period
-- Season ality effects (Q4 budgets, January planning)
-- Time since last upgrade evaluation
-- Days since account creation
-
-### 2. Decision Tree and Random Forest Models
-
-**Decision Tree Structure:**
-```
-Root: Usage vs. Plan Limits
-├─ Branch 1: High Usage (>80% of limits)
-│  ├─ Leaf: High Propensity (0.75-0.90)
-│  └─ ...
-├─ Branch 2: Medium Usage (40-80%)
-│  ├─ Sub-branch: High Engagement
-│  │  └─ Leaf: Medium-High Propensity (0.55-0.75)
-│  └─ ...
-└─ Branch 3: Low Usage (<40%)
-   └─ Leaf: Low Propensity (0.10-0.30)
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
+}
 ```
 
-**Random Forest Ensemble:**
-- 200-500 decision trees with bootstrapped samples
-- Max depth: 8-15 levels to prevent overfitting
-- Min samples per leaf: 20-50 for stability
-- Feature subset per split: √(num_features)
+## JSON Structure
 
-**Splitting Criteria:**
-- Gini impurity for classification: `Gini = 1 - Σ(pᵢ²)`
-- Information gain for maximum separability
-- Weighted split based on class balance
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-**Tree Pruning:**
-- Cost-complexity pruning (α parameter)
-- Validation set pruning to reduce variance
-- Minimum impurity decrease threshold
+## Como é Calculado
 
-### 3. Propensity Score Calculation
+Predicts probability of customer upgrading to higher-tier plans or premium services.
 
-**Base Propensity from Random Forest:**
+### Algoritmo Principal
+
+The system employs advanced machine learning and statistical techniques tailored for predictive customer propensity modeling:
+
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
+
+### Passos of Processamento
+
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
+
+### Desempenho
+
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
+
+## Status HTTP
+
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
+
+## Erros
+
+**Campos Obrigatórios Faltantes:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Required fields missing",
+  "details": {
+    "data": "The data field is required and must be an array."
+  }
+}
 ```
-P(Upgrade) = (Σ Tree_i Predicts Upgrade) / Total Trees
+
+**Formato of Dados Inválido:**
+```json
+{
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
+}
 ```
 
-**Adjusted Propensity with Contextual Factors:**
-```
-Adjusted_P = Base_P × Context_Multiplier
-```
-Where Context_Multiplier considers:
-- Renewal proximity: Higher weight near renewal date
-- Recent support interactions: Boost if positive, reduce if negative
-- Competitor activity: Increase during competitive threats
-- Economic conditions: Adjust for budget cycles
-
-**Confidence Score:**
-- Variance across ensemble predictions
-- Prediction margin (distance from decision boundary)
-- Feature importance weight concentration
-
-### 4. Segmentation and Scoring
-
-**Propensity Tiers:**
-- **Very High (0.80-1.00):** Immediate upgrade candidates
-  - Hitting limits, high engagement, budget available
-- **High (0.65-0.80):** Strong upgrade signals
-  - Growing usage, positive sentiment, near limits
-- **Medium (0.40-0.65):** Nurture candidates
-  - Moderate usage, some feature interest
-- **Low (0.20-0.40):** Long-term prospects
-  - Early in journey, limited feature adoption
-- **Very Low (0.00-0.20):** Not ready
-  - Low engagement, recent downgrade, churn risk
-
-**Upgrade Readiness Score:**
-```
-Readiness = w1 × Propensity + w2 × Engagement + w3 × Financial_Capacity + w4 × Timing
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
 ```
 
-### 5. Feature Importance and Drivers
+## Notes
 
-**SHAP Value Analysis:**
-- Identifies which features contribute most to upgrade propensity
-- Positive drivers: usage near limits, feature trial attempts, growth
-- Negative drivers: recent downgrade, low engagement, support issues
+### Melhores Práticas
 
-**Top Upgrade Drivers (Typical):**
-1. Usage approaching plan limits (weight: 0.28)
-2. Premium feature access attempts (weight: 0.22)
-3. Team size growth (weight: 0.18)
-4. High session frequency (weight: 0.15)
-5. Approaching renewal date (weight: 0.12)
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-### 6. Recommendation Engine
+### Otimização of Desempenho
 
-**Personalized Upgrade Path:**
-- Recommend specific next-tier plan based on usage patterns
-- Highlight features that customer is most likely to value
-- Calculate estimated value increase from upgrade
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-**Incentive Strategy:**
-- **High Propensity:** Minimal incentive needed, focus on value
-- **Medium Propensity:** Small discount (5-10%) or trial extension
-- **Low Propensity:** Extended trial of premium features to demonstrate value
+### Considerações of Segurança
 
-**Timing Optimization:**
-- Best time to approach: High engagement days, near renewal
-- Avoid: After support issues, during known busy periods
-- Channel preference: In-app message, email, sales call
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-### 7. Model Evaluation and Validation
+## Perguntas Frequentes
 
-**Performance Metrics:**
-- **AUC-ROC:** 0.75-0.88 (discrimination ability)
-- **Precision@Top-15%:** 0.60-0.78 (accuracy in high propensity segment)
-- **Recall@Top-30%:** 0.65-0.82 (coverage of actual upgraders)
-- **Lift:** 3.5-6.0x vs. random targeting
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-**Business Metrics:**
-- **Upgrade Conversion Rate:** 15-35% improvement vs. untargeted approach
-- **Time to Upgrade:** 25-40% reduction in sales cycle
-- **Customer Lifetime Value (CLV) Impact:** 20-45% increase
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-**Calibration:**
-- Predicted propensity aligns with actual upgrade rates
-- Reliability diagrams show good calibration across bins
-- Brier score < 0.15
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-### 8. Performance Characteristics
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-- **Processing Time:** 200-600ms per customer
-- **Batch Processing:** 600-1200 customers per minute
-- **Model Retraining:** Monthly or when significant product changes occur
-- **Feature Freshness:** Daily feature updates from usage database
-- **Scalability:** Handles 100,000+ active subscriptions
-- **Latency (95th percentile):** < 800ms for real-time scoring
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-## Related
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-### Related Endpoints
+## Manuais Comerciais
 
-- **[Propensity Buy Product](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityBuyProduct.md)** - Product purchase propensity
-- **[Propensity Respond Campaign](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Propensity/PropensityRespondCampaign.md)** - Campaign response likelihood
-- **[Recommend User Items](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/RecommendUserItems.md)** - Personalized recommendations
-- **[Upsell Suggestions](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Recommendations/UpsellSuggestions.md)** - Upsell opportunities
+### Playbook 1: Target high-propensity customers for campaigns
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-### Related Domain Concepts
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-- **Subscription Analytics:** Churn prediction, expansion revenue, cohort analysis
-- **Product-Led Growth:** Usage-based selling, value realization, feature adoption
-- **Customer Success:** Health scoring, engagement tracking, lifecycle management
-- **Decision Trees:** Classification, ensemble methods, feature importance
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-### Integration Points
+### Playbook 2: Optimize marketing spend and ROI
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-- **Subscription Management Systems:** Billing platforms (Stripe, Chargebee)
-- **Product Analytics:** Usage tracking (Mixpanel, Amplitude, Segment)
-- **CRM Systems:** Salesforce, HubSpot for sales workflow integration
-- **Customer Success Platforms:** Gainsight, ChurnZero for proactive outreach
-- **Marketing Automation:** Personalized upgrade campaigns
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
 
-### Use Cases
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
 
-- **Proactive Upgrade Offers:** Target customers approaching plan limits
-- **Renewal Optimization:** Upgrade at renewal for maximum retention
-- **Sales Prioritization:** Focus sales team on highest propensity accounts
-- **Product Development:** Identify features driving upgrades
-- **Pricing Optimization:** Understand willingness to pay for higher tiers
-- **Churn Prevention:** Upgrade customers before they hit frustration points
+### Playbook 3: Increase conversion rates
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
 
-### Best Practices
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
 
-- **Monitor Feature Usage:** Track which features drive upgrades
-- **Timing Matters:** Approach near renewal or during high engagement
-- **Personalize Messaging:** Highlight relevant features for each customer
-- **Test Incentives:** A/B test discount levels and messaging
-- **Track Conversion Funnel:** Monitor upgrade page visits and completion
-- **Retrain Regularly:** Update models as product and pricing evolve
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Personalize offers based on likelihood to convert
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:187`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:306`

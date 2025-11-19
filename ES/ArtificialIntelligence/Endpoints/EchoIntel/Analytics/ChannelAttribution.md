@@ -20,21 +20,21 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud Parámetros
+### Corpo de la Requisição Parâmetros
 
-| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+| Parámetro | Tipo | Requerido | Padrão | Descripción | Significado Empresarial |
 |-----------|------|----------|---------|-------------|------------------|
 | journey_data | array | Sí | - | array of customer journey objects containing touchpoint sequences y conversion outcomes. | Complete customer interaction history across all marketing channels. |
 | attribution_models | array | No | `["last_touch", "first_touch", "linear", "time_decay", "shapley"]` | Attribution models to apply. Available: `first_touch`, `last_touch`, `linear`, `time_decay`, `position_based`, `shapley`. | Different methodologies for crediting channels. Use multiple models to compare y validate insights. |
-| time_decay_half_life | integer | No | `7` | Half-life in días for time-decay model (how quickly touchpoint credit decreases). | Controls how much recent touchpoints are favored. 7 días = styard, 1 day = aggressive recency bias. |
+| time_decay_half_life | integer | No | `7` | Half-life in dias for time-decay model (how quickly touchpoint credit decreases). | Controls how much recent touchpoints are favored. 7 dias = steard, 1 day = aggressive recency bias. |
 | position_based_weights | object | No | `{"first": 0.4, "last": 0.4, "middle": 0.2}` | Weight distribution for position-based attribution (first, last, middle touchpoints). | Customize credit allocation: 40% first touch, 40% last touch, 20% distributed to middle. |
 | conversion_value_field | string | No | `"revenue"` | Campo name containing conversion value (for revenue-weighted attribution). | Which metric to use for attribution: revenue, profit, lifetime_value, etc. |
 | include_comparison | boolean | No | `true` | Include side-by-side comparison of all attribution models. | Enables model comparison table to see how different models credit each channel. |
@@ -47,7 +47,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | journey_id | string | Sí | Unique identifier for the customer journey. | `"J12345"` |
 | touchpoints | array | Sí | Ordered array of marketing touchpoint interactions. | `[{"channel": "paid_search", "timestamp": "2025-11-01T10:00:00Z"}, ...]` |
 | converted | boolean | Sí | Whether the journey resulted in conversion. | `true` |
-| conversion_value | float | Condicional | Value of the conversion (Requerido if using value-weighted attribution). | `299.99` |
+| conversion_value | float | Condicional | Value of the conversion (Obrigatório if using value-weighted attribution). | `299.99` |
 | conversion_timestamp | string | No | ISO 8601 timestamp of conversion event. | `"2025-11-05T14:30:00Z"` |
 
 ### Touchpoint object Fields
@@ -61,7 +61,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -92,7 +92,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/analytics/channel-attribution"
 ```
 
-### Ejemplo de Solicitud (JavaScript)
+### Exemplo de Requisição (JavaScript)
 
 ```javascript
 const response = await fetch('https://echosistema.online/api/v1/ai/echointel/analytics/channel-attribution', {
@@ -126,7 +126,7 @@ const response = await fetch('https://echosistema.online/api/v1/ai/echointel/ana
 const result = await response.json();
 ```
 
-### Ejemplo de Solicitud (PHP)
+### Exemplo de Requisição (PHP)
 
 ```php
 <?php
@@ -280,32 +280,32 @@ $result = $response->json();
 | `roi_analysis.{channel}.roi` | float | Return on Investment = (Revenue - Cost) / Cost. | Profitability multiplier. ROI of 2.76 = 276% return ($2.76 earned per $1 spent). |
 | `roi_analysis.{channel}.roas` | integer | Return on Ad Spend = Revenue / Cost × 100. | Revenue efficiency. ROAS of 376 = $3.76 revenue per $1 ad spend. |
 | `summary` | object | Aggregate statistics across all journeys y models. | Overall campaign performance y data quality indicators. |
-| `summary.total_conversions` | integer | Total number of conversions in the dataset. | Campaign Éxito volume. |
+| `summary.total_conversions` | integer | Total number of conversions in the dataset. | Campaign Sucesso volume. |
 | `summary.total_conversion_value` | float | Total value of all conversions. | Total revenue or value generated. |
 | `summary.total_journeys_analyzed` | integer | Number of customer journeys analyzed (converted y non-converted). | Sample size for statistical confidence. |
 | `summary.avg_touchpoints_per_journey` | float | Average number of touchpoints per journey. | Journey complexity. Higher = more multi-touch attribution needed. |
 | `summary.conversion_rate` | float | Percentage of journeys that converted (0-1). | Overall campaign effectiveness. |
 | `summary.recommended_model` | string | Recommended attribution model based on data characteristics. | Best model for this dataset. Shapley is recommended for multi-touch journeys. |
-| `summary.model_agreement_score` | float | Correlation between different models (0-1). 1 = all models agree, 0 = No agreement. | Attribution stability. Low scores indicate high model sensitivity. |
+| `summary.model_agreement_score` | float | Correlation between different models (0-1). 1 = all models agree, 0 = Não agreement. | Attribution stability. Low scores indicate high model sensitivity. |
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns channel attribution results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -318,9 +318,9 @@ $result = $response->json();
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -329,7 +329,7 @@ $result = $response->json();
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
 ## Typical Workflow
 
@@ -363,9 +363,9 @@ Select models based on business needs:
 - **Advanced Attribution:** Use shapley for statistically rigorous results
 - **Recency Bias:** Use time_decay when recent touchpoints matter most
 
-### 3. Configure Model Parámetros
-Adjust Parámetros to match business logic:
-- Set `time_decay_half_life` based on sales cycle (1-30 días)
+### 3. Configure Model Parâmetros
+Adjust Parâmetros to match business logic:
+- Set `time_decay_half_life` based on sales cycle (1-30 dias)
 - Customize `position_based_weights` if first/last touches are more valuable
 - Enable `include_comparison` to validate model choice
 
@@ -394,24 +394,24 @@ Track attribution over time:
 - Compare attribution before y after marketing changes
 - Use `group_by_period` to analyze seasonal trends
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: Which attribution model should I use?
-A: Start with Shapley value for multi-touch journeys as it provides the most statistically rigorous attribution based on game theory. Use first-touch to understy awareness drivers, last-touch for immediate conversion drivers, y time-decay for recency-weighted attribution. Running multiple models simultaneously helps validate insights.
+A: Start with Shapley value for multi-touch journeys as it provides the most statistically rigorous attribution based on game theory. Use first-touch to underste awareness drivers, last-touch for immediate conversion drivers, y time-decay for recency-weighted attribution. Running multiple models simultaneously helps validate insights.
 
 ### Q: What does it mean if different models show very different results for a channel?
 A: High variance across models indicates that the channel's role varies significantly depending on its position in the journey. For example, a channel showing 40% attribution in first-touch but only 10% in last-touch is primarily an awareness driver, not a converter. Use this to align channel strategy with its actual role.
 
-### Q: How do I interpret Shapley values?
+### Q: How del I interpret Shapley values?
 A: Shapley value calculates each channel's marginal contribution by considering all possible combinations of channels. It answers: "How much does adding this channel to the journey increase conversion probability?" Higher Shapley values mean the channel is genuinely contributing to conversions, not just correlating with them.
 
 ### Q: What is a good ROAS (Return on Ad Spend)?
-A: Industry benchmarks vary widely. E-commerce typically aims for 400-600% ROAS (4-6x return), B2B SaaS for 300-500%, y bry awareness for 200-300%. Use your own historical data as a baseline y optimize from there. ROAS below 100% means you're spending more than you're earning.
+A: Industry benchmarks vary widely. E-commerce typically aims for 400-600% ROAS (4-6x return), B2B SaaS for 300-500%, y bre awareness for 200-300%. Use your own historical data as a baseline y optimize from there. ROAS below 100% means you're spending more than you're earning.
 
 ### Q: Should I only look at last-touch attribution?
-A: No. Last-touch significantly undervalues awareness y nurturing channels. A customer might discover your bry through paid social, research via organic search, y convert via email. Last-touch gives 100% credit to email, ignoring the critical role of paid social y organic. Multi-touch attribution reveals the full customer journey.
+A: Não. Last-touch significantly undervalues awareness y nurturing channels. A customer might discover your bre through paid social, research via organic search, y convert via email. Last-touch gives 100% credit to email, ignoring the critical role of paid social y organic. Multi-touch attribution reveals the full customer journey.
 
-### Q: How many journeys do I need for reliable attribution?
+### Q: How many journeys del I need for reliable attribution?
 A: Minimum 500 converted journeys for basic attribution, 2,000+ for stable Shapley value calculations. More complex journeys (5+ touchpoints) require more data for statistical significance. Low sample sizes may show unstable attribution week-to-week.
 
 ### Q: What if most of my journeys are single-touch?
@@ -420,7 +420,7 @@ A: If >70% of journeys have only one touchpoint, multi-touch attribution provide
 ### Q: How often should I recalculate attribution?
 A: Recalculate monthly for stable businesses, weekly for fast-changing campaigns. After major marketing changes (new channels, budget shifts, creative updates), wait 2-4 weeks for data to stabilize before recalculating attribution to avoid over-reacting to noise.
 
-## Guías Comerciales
+## Manuais Comerciais
 
 | Use Case | Action | Expected Impact |
 |----------|--------|-----------------|
@@ -428,16 +428,16 @@ A: Recalculate monthly for stable businesses, weekly for fast-changing campaigns
 | **Email Undervalued** | If email shows <10% last-touch attribution but 25%+ in linear or Shapley, it's a critical nurturing channel. Increase email cadence y personalization. | Improve conversion rates by 20-30% through better email nurturing. |
 | **Paid Social Low ROI** | If paid social ROAS <200% y Shapley attribution <15%, reduce spend or shift to retargeting only. Test creative y audience targeting before cutting entirely. | Reduce wasted ad spend by 30-40%, reallocate to higher-ROI channels. |
 | **Organic Search High Attribution** | If organic search shows 30%+ Shapley attribution with zero direct cost, invest in SEO to amplify this high-ROI channel. Create more content targeting high-intent keywords. | Increase organic traffic by 40-60%, reducing dependency on paid channels. |
-| **First-Touch Dominance** | If first-touch y last-touch agree on top channels, your funnel is efficient. Optimize conversion rates on these proven channels rather than expying channel mix. | Increase conversion rate by 15-25% through channel-specific optimization. |
+| **First-Touch Dominance** | If first-touch y last-touch agree on top channels, your funnel is efficient. Optimize conversion rates on these proven channels rather than expeing channel mix. | Increase conversion rate by 15-25% through channel-specific optimization. |
 | **Attribution Volatility** | If model_agreement_score <0.50, your journeys are highly variable. Segment customers by journey Tipo y create channel strategies for each segment. | Improve marketing efficiency by 20-30% through segment-specific tactics. |
 
-## Cómo se Calcula
+## Como é Calculado
 
 The channel attribution system uses multiple attribution models to assign credit for conversions across marketing touchpoints:
 
 ### 1. Attribution Models
 
-The system supports five styard attribution models:
+The system supports five steard attribution models:
 
 - **First-Touch Attribution:** Assigns 100% credit to the first touchpoint in the customer journey
 - **Last-Touch Attribution:** Assigns 100% credit to the final touchpoint before conversion
@@ -452,11 +452,11 @@ The system supports five styard attribution models:
 - **Step 3:** Apply weights to conversion values to determine channel contribution
 - **Step 4:** Normalize results to ensure total attribution equals 100% for each conversion path
 
-### 3. Rendimiento y Optimization
+### 3. Desempenho y Optimization
 
-- **Tiempo de Procesamiento:** 150-300ms for 10,000 journey paths
-- **Requisitos de Datos:** Minimum 100 complete customer journeys for reliable attribution
-- **Scalability:** Hyles up to 1 million touchpoints per request using distributed computation
+- **Tempo de Processamento:** 150-300ms for 10,000 journey paths
+- **Requisitos de Dados:** Minimum 100 complete customer journeys for reliable attribution
+- **Scalability:** Heles up to 1 million touchpoints per request using distributed computation
 
 ### 4. Model Selection
 
@@ -469,13 +469,13 @@ The system supports five styard attribution models:
 ### Attribution Model Selection Guide
 
 **First-Touch Attribution:**
-- **Use when:** Understying awareness y discovery channels
-- **Best for:** Top-of-funnel optimization, bry awareness campaigns
+- **Use when:** Understeing awareness y discovery channels
+- **Best for:** Top-of-funnel optimization, bre awareness campaigns
 - **Limitation:** Ignores nurturing y closing channels
 
 **Last-Touch Attribution:**
-- **Use when:** Understying immediate conversion drivers
-- **Best for:** Rendimiento marketing, direct Respuesta campaigns
+- **Use when:** Understeing immediate conversion drivers
+- **Best for:** Desempenho marketing, direct Resposta campaigns
 - **Limitation:** Ignores awareness y nurturing channels
 
 **Linear Attribution:**
@@ -500,14 +500,14 @@ The system supports five styard attribution models:
 
 ### Data Quality Requirements
 
-**Minimum Requisitos de Datos:**
+**Minimum Requisitos de Dados:**
 - At least 500 converted journeys for basic attribution
 - At least 100 journeys per channel for reliable channel-level metrics
 - Minimum 2,000 journeys for stable Shapley value calculations
 
-**Touchpoint Calidad de Datos:**
+**Touchpoint Qualidade de Dados:**
 - Ensure accurate timestamps (timezone consistency)
-- Use styardized channel names across all touchpoints
+- Use steardized channel names across all touchpoints
 - Include cost data for all paid channels for ROI analysis
 - Remove bot traffic y invalid interactions
 
@@ -517,25 +517,25 @@ The system supports five styard attribution models:
 - Capture both online y offline touchpoints when possible
 - Ensure conversion timestamp is after last touchpoint
 
-### Rendimiento y Scalability
+### Desempenho y Scalability
 
 - **Maximum Payload:** 50MB per request (~300,000 journeys)
-- **Tiempo de Procesamiento:** 150-300ms for 10,000 journeys, 1-3 seconds for Shapley with 100,000 journeys
+- **Tempo de Processamento:** 150-300ms for 10,000 journeys, 1-3 seconds for Shapley with 100,000 journeys
 - **Timeout:** 300 seconds (5 minutes) for very large datasets
-- **Rate Limiting:** 50 solicitudes por minuto por tenant
+- **Rate Limiting:** 50 requisições por minuto por tenant
 - **Batch Processing:** For >500,000 journeys, split into multiple requests
 
 ### Common Pitfalls
 
 **Attribution Window:**
-- Por Defecto: 30-day attribution window (touchpoints within 30 días of conversion)
+- Predeterminado: 30-day attribution window (touchpoints within 30 dias of conversion)
 - Longer sales cycles (B2B, high-value products) may need 60-90 day windows
 - Shorter cycles (impulse purchases) may only need 7-14 day windows
 
 **Channel Naming Consistency:**
 - Use consistent channel names: "paid_search" not "ppc", "adwords", "google_ads"
 - Normalize campaign names for aggregation
-- Separate bry vs. non-bry search for better insights
+- Separate bre vs. non-bre search for better insights
 
 **Non-Converting Journeys:**
 - Include non-converting journeys (converted=false) for more accurate baseline
@@ -544,10 +544,10 @@ The system supports five styard attribution models:
 
 ### Security y Compliance
 
-- All journey data is encrypted in transit (TLS 1.3) y en reposo
+- All journey data is encrypted in transit (TLS 1.3) y em repouso
 - Journey IDs are hashed internally for privacy
 - Cost data is aggregated y anonymized in reports
-- Data retention: 90 días for model training, then purged
+- Data retention: 90 dias for model training, then purged
 
 ## Relacionado
 

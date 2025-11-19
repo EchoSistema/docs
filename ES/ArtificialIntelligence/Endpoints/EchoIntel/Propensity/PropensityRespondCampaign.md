@@ -1,4 +1,4 @@
-# Artificial Intelligence – Campaign Respuesta Propensity
+# Artificial Intelligence – Campaign Resposta Propensity
 
 ## Endpoint
 
@@ -17,26 +17,26 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Requerido if not configured on the server. |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. Requerido if not configured on the server. |
-| Accept-Language    | string | No         | Idioma de respuesta (`en`, `es`, `pt`). Por Defecto: `en`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Idioma de resposta (`en`, `es`, `pt`). Predeterminado: `en`. |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud
+### Corpo de la Requisição
 
-| Parámetro | Tipo | Requerido | Descripción | Significado Empresarial | Por Defecto |
+| Parámetro | Tipo | Requerido | Descripción | Significado Empresarial | Padrão |
 | --------- | ---- | -------- | ----------- | ---------------- | ------- |
-| data | array | Sí | Datos de entrada para el análisis. | Datos empresariales a procesar. | - |
-| options | object | No | Opciones de configuración del algoritmo. | Parámetros de personalización para el modelo de ML. | `{}` |
-| include_metadata | boolean | No | Incluir metadatos de procesamiento en la respuesta. | Agregar información de diagnóstico. | `false` |
+| data | array | Sí | Dados de entrada para análisis. | Dados empresariais a serem processados. | - |
+| options | object | No | Opções de configuração del algoritmo. | Parámetros de personalização para o modelo de ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados de processamento en la resposta. | Adicionar informações de diagnóstico. | `false` |
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -55,7 +55,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/propensity/respond-campaign"
 ```
 
-### Ejemplo de Solicitud (Python)
+### Exemplo de Requisição (Python)
 
 ```python
 import requests
@@ -123,14 +123,14 @@ result = response.json()
 
 | Campo | Tipo | Descripción | Significado Empresarial |
 | ----- | ---- | ----------- | ---------------- |
-| `results` | array | Arreglo de resultados del análisis. | Salida procesada para cada registro de entrada. |
-| `results[].id` | string | Identificador del registro. | Vincula la salida con el registro de entrada. |
-| `results[].prediction` | float | Puntuación de predicción (0-1). | Puntuación de confianza de la salida del modelo. |
-| `metadata` | object | Metadatos de procesamiento. | Información de diagnóstico y versionado. |
-| `metadata.model_version` | string | Versión del modelo de IA utilizada. | Para reproducibilidad y seguimiento. |
-| `metadata.processing_time_ms` | integer | Duración del procesamiento en milisegundos. | Métrica de rendimiento. |
+| `results` | array | array de resultados de la análisis. | Saída processada para cada registro de entrada. |
+| `results[].id` | string | Identificador del registro. | Vincula a saída ao registro de entrada. |
+| `results[].prediction` | float | Pontuação de previsão (0-1). | Pontuação de confiança de la saída del modelo. |
+| `metadata` | object | Metadados de processamento. | Informações de diagnóstico y versionamento. |
+| `metadata.model_version` | string | Versão del modelo de IA utilizada. | Para reprodutibilidade y rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração del processamento em milissegundos. | Métrica de desempenho. |
 
-## Cómo se Calcula
+## Como é Calculado
 
 Predicts likelihood of customer responding to marketing campaigns using classification models.
 
@@ -138,42 +138,42 @@ Predicts likelihood of customer responding to marketing campaigns using classifi
 
 The system employs advanced machine learning y statistical techniques tailored for predictive customer propensity modeling:
 
-- **Preprocesamiento de Datos:** Limpieza, normalización y extracción de características
-- **Selección del Modelo:** Selección automática del algoritmo óptimo basado en las características de los datos
-- **Predicción/Análisis:** Aplicación del modelo entrenado para generar conocimientos
-- **Post-Procesamiento:** Formateo de resultados y aplicación de reglas de negocio
+- **Pré-processamento de Dados:** Limpeza, normalização y extração de características
+- **Seleção del Modelo:** Seleção automática del algoritmo ótimo baseado en las características de los dados
+- **Previsão/Análise:** Aplicação del modelo treinado para gerar insights
+- **Pós-Processamento:** Formatação de resultados y aplicação de regras de negócio
 
-### Pasos de Procesamiento
+### Passos de Processamento
 
-1. **Validación de Entrada:** Verificar formato de datos, tipos y restricciones empresariales
-2. **Ingeniería de Características:** Extraer y transformar características relevantes
-3. **Inferencia del Modelo:** Aplicar modelos de ML para generar predicciones/clasificaciones
-4. **Agregación de Resultados:** Compilar y formatear resultados con metadatos
-5. **Aseguramiento de Calidad:** Validar salida contra rangos y restricciones esperados
+1. **Validação de Entrada:** Verificar formato de dados, tipos y restrições empresariais
+2. **Engenharia de Características:** Extrair y transformar características relevantes
+3. **Inferência del Modelo:** Aplicar modelos de ML para gerar previsões/classificações
+4. **Agregação de Resultados:** Compilar y formatar resultados con metadados
+5. **Garantia de Qualidade:** Validar saída contra faixas y restrições esperadas
 
-### Rendimiento
+### Desempenho
 
-- **Tiempo de Procesamiento:** 100-500ms para cargas útiles típicas (1,000-10,000 registros)
-- **Rendimiento:** 50-100 solicitudes por minuto por tenant
-- **Precisión:** Dependiente del modelo, típicamente 85-95% en conjuntos de validación
-- **Requisitos de Datos:** Varía por Endpoint, mínimo 100-1,000 registros históricos para entrenamiento
+- **Tempo de Processamento:** 100-500ms para cargas úteis típicas (1,000-10,000 registros)
+- **Taxa de Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente del modelo, tipicamente 85-95% em conjuntos de validação
+- **Requisitos de Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos para treinamento
 
-## Estado HTTP
+## Status HTTP
 
 | Código | Descripción |
 |------|-------------|
-| 200  | Éxito - Análisis completado exitosamente |
-| 400  | Bad Request - Parámetros inválidos o campos requeridos faltantes |
-| 401  | Unauthorized - Token de autenticación inválido o faltante |
-| 403  | Forbidden - Permisos insuficientes o tenant inválido |
-| 422  | Unprocessable Entity - Errores de validación en datos de entrada |
-| 429  | Too Many Requests - Límite de tasa excedido |
-| 500  | Internal Server Error - Error del servicio de IA o tiempo de espera agotado |
-| 503  | Service Unavailable - Servicio de IA temporalmente No disponible |
+| 200  | Sucesso - Análise concluída con sucesso |
+| 400  | Bad Request - Parâmetros inválidos o campos obrigatórios faltantes |
+| 401  | Unauthorized - Token de autenticação inválido o faltante |
+| 403  | Forbidden - Permissões insuficientes o tenant inválido |
+| 422  | Unprocessable Entity - Erros de validação en los dados de entrada |
+| 429  | Too Many Requests - Limite de taxa excedido |
+| 500  | Internal Server Erro - Erro del serviço de IA o tempo esgotado |
+| 503  | Service Unavailable - Serviço de IA temporariamente indisponível |
 
-## Errores
+## Erros
 
-**Campos Requeridos Faltantes:**
+**Campos Obrigatórios Faltantes:**
 ```json
 {
   "error": "Validation failed",
@@ -184,7 +184,7 @@ The system employs advanced machine learning y statistical techniques tailored f
 }
 ```
 
-**Formato de Datos Inválido:**
+**Formato de Dados Inválido:**
 ```json
 {
   "error": "Invalid format",
@@ -193,7 +193,7 @@ The system employs advanced machine learning y statistical techniques tailored f
 }
 ```
 
-**Error del Servicio de IA:**
+**Erro del Serviço de IA:**
 ```json
 {
   "error": "Service error",
@@ -204,116 +204,116 @@ The system employs advanced machine learning y statistical techniques tailored f
 
 ## Notas
 
-### Mejores Prácticas
+### Melhores Práticas
 
-- **Calidad de Datos:** Asegurar que los datos de entrada sean limpios, completos y representativos
-- **Tamaño de Lote:** Optimizar tamaños de lote (1,000-10,000 registros) para el mejor rendimiento
-- **Manejo de Errores:** Implementar lógica de reintento con retroceso exponencial para errores transitorios
-- **Monitoreo:** Rastrear tiempos de procesamiento y métricas de precisión en producción
+- **Qualidade de Dados:** Garantir que os dados de entrada sejam limpos, completos y representativos
+- **Tamanho del Lote:** Otimizar tamanhos de lote (1,000-10,000 registros) para o melhor desempenho
+- **Tratamento de Erros:** Implementar lógica de retry con backoff exponencial para erros transitórios
+- **Monitoramento:** Rastrear tempos de processamento y métricas de precisión em produção
 
-### Optimización de Rendimiento
+### Otimização de Desempenho
 
-- Usar procesamiento por lotes para conjuntos de datos gryes
-- Cachear análisis solicitados frecuentemente cuyo sea apropiado
-- Minimizar tamaño de carga útil excluyendo campos innecesarios
-- Aprovechar compresión para solicitudes gryes (gzip codificación)
+- Usar processamento em lote para conjuntos de dados grees
+- Cachear análisiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho de la carga útil excluindo campos desnecessários
+- Aproveitar compressão para requisições grees (gzip codificação)
 
-### Consideraciones de Seguridad
+### Considerações de Segurança
 
-- Todos los datos están encriptados en tránsito (TLS 1.3) y en reposo
-- Las claves API y secretos deben rotarse cada 90 días
-- Los registros de auditoría se mantienen por 12 meses
-- Las políticas de retención de datos cumplen con GDPR y regulaciones regionales
+- Todos os dados são criptografados em trânsito (TLS 1.3) y em repouso
+- As chaves de API y segredos devem ser rotacionados a cada 90 dias
+- Os logs de auditoria são mantidos por 12 meses
+- As políticas de retenção de dados estão em conformidade con GDPR y regulamentações regionais
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
-### Q: ¿Qué tan precisas son las predicciones/análisis?
-**A:** La precisión varía según el Endpoint y la calidad de los datos. La mayoría de los modelos alcanzan 85-95% de precisión en conjuntos de datos de validación. La precisión mejora con datos de entrada de mayor calidad y conjuntos de datos de entrenamiento más gryes. Monitorear la puntuación de `confidence` en las respuestas para confiabilidad por predicción.
+### Q: Quão precisas são as previsões/análisiss?
+**A:** A precisión varia por Endpoint y qualidade de los dados. A mayoria de los modelos alcança 85-95% de precisión em conjuntos de dados de validação. A precisión melhora con dados de entrada de mayor qualidade y conjuntos de dados de treinamento mayores. Monitore a pontuação de `confidence` en las respostas para confiabilidade por previsão.
 
-### Q: ¿Cuál es el tamaño máximo de carga útil?
-**A:** El tamaño máximo de solicitud es 20MB (~250,000 registros dependiendo del conteo de campos). Para conjuntos de datos más gryes, use procesamiento por lotes o contacte a soporte para opciones de procesamiento masivo.
+### Q: Qual é o tamanho máximo de la carga útil?
+**A:** O tamanho máximo de la requisição é 20MB (~250,000 registros dependendo de la contagem de campos). Para conjuntos de dados mayores, use processamento em lote o contate o suporte para opções de processamento em massa.
 
-### Q: ¿Con qué frecuencia se reentrenan los modelos?
-**A:** Los modelos se reentrenan mensualmente con datos frescos o cuyo se detecta degradación significativa de precisión. El reentrenamiento personalizado de modelos puede solicitarse a través de soporte.
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente con dados frescos o queo degradação significativa de precisión é detectada. O retreinamento personalizado de modelos pode ser solicitado através del suporte.
 
-### Q: ¿Puedo usar este Endpoint en aplicaciones en tiempo real?
-**A:** Sí, los tiempos de respuesta típicos son 100-500ms. Para casos de uso en tiempo real de alto rendimiento (>1,000 req/min), contacte a soporte para planificación de capacidad dedicada.
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos de resposta típicos são 100-500ms. Para casos de uso em tempo real de alto rendimento (>1,000 req/min), contate o suporte para planejamento de capacidade dedicado.
 
-### Q: ¿Cómo se maneja la privacidad de los datos?
-**A:** Todos los datos de clientes están estrictamente aislados por tenant. Los datos nunca se comparten entre tenants ni se usan para entrenamiento de modelos entre tenants. Cumplimos con GDPR, CCPA y regulaciones específicas de la industria. Los datos se retienen por 90 días a menos que se especifique lo contrario.
+### Q: Como a privacidade de los dados é tratada?
+**A:** Todos os dados de clientes são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants o usados para treinamento de modelos entre tenants. Estamos em conformidade con GDPR, CCPA y regulamentações específicas del setor. Os dados são retidos por 90 dias a menos que especificado de outra forma.
 
-### Q: ¿Qué sucede si el servicio de IA No está disponible?
-**A:** El sistema devuelve un 503 estado con encabezado `retry_after` indicyo cuándo reintentar. Implemente lógica de reintento con retroceso exponencial (retraso inicial: 1s, máx: 60s). El SLA de disponibilidad del servicio es 99.9% mensual.
+### Q: O que acontece se o serviço de IA estiver indisponível?
+**A:** O sistema retorna um status 503 con cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica de retry con backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA de disponibilidade del serviço é 99.9% mensal.
 
-## Guías Comerciales
+## Manuais Comerciais
 
 ### Playbook 1: Target high-propensity customers for campaigns
-**Objetivo:** Aprovechar conocimientos de IA para lograr resultados empresariales medibles.
+**Objetivo:** Aproveitar insights de IA para alcançar resultados empresariais mensuráveis.
 
-**Implementación:**
-1. Recopilar y preparar datos históricos para análisis
-2. Enviar datos al Endpoint con configuración apropiada
-3. Analizar resultados e identificar objetivos de alta prioridad
-4. Implementar acciones empresariales basadas en conocimientos
-5. Monitorear rendimiento e iterar en estrategia
+**Implementação:**
+1. Coletar y preparar dados históricos para análisis
+2. Enviar dados ao Endpoint con configuração apropriada
+3. Analisar resultados y identificar objetivos de alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho y iterar en la estratégia
 
 **Resultados Esperados:**
-- 20-40% mejora en métricas empresariales clave
-- Costos operacionales reducidos y eficiencia mejorada
-- Toma de decisiones basada en datos
-- ROI medible dentro de 3-6 meses
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos y eficiência melhorada
+- Tomada de decisão baseada em dados
+- ROI mensurável dentro de 3-6 meses
 
 ### Playbook 2: Optimize marketing spend y ROI
-**Objetivo:** Optimizar procesos empresariales usyo conocimientos predictivos.
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-**Implementación:**
-1. Identificar métricas clave y criterios de éxito
-2. Integrar Endpoint en flujos de trabajo existentes
-3. Usar predicciones para priorizar acciones
-4. A/B test enfoques impulsados por IA vs tradicionales
-5. Escalar estrategias exitosas en toda la organización
+**Implementação:**
+1. Identificar métricas chave y critérios de sucesso
+2. Integrar Endpoint em fluxos de trabalho existentes
+3. Usar previsões para priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda a organização
 
 **Resultados Esperados:**
-- 15-30% aumento en eficiencia
-- Asignación de recursos mejorada
-- Ciclos de decisión más rápidos
-- Ventaja competitiva mediante adopción de IA
+- 15-30% aumento em eficiência
+- Alocação de recursos melhorada
+- Ciclos de decisão mais rápidos
+- Vantagem competitiva através de la adoção de IA
 
 ### Playbook 3: Increase conversion rates
-**Objetivo:** Impulsar crecimiento de ingresos mediante optimización potenciada por IA.
+**Objetivo:** Impulsionar crescimento de receita através de otimização potencializada por IA.
 
-**Implementación:**
-1. Definir métricas de impacto en ingresos
-2. Implementar conocimientos de IA en canales de cara al cliente
-3. Personalizar experiencias basadas en predicciones
-4. Rastrear conversión y aumento de ingresos
-5. Refinar continuamente basado en retroalimentación
+**Implementação:**
+1. Definir métricas de impacto en la receita
+2. Implementar insights de IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão y aumento de receita
+5. Refinar continuamente baseado em feedback
 
 **Resultados Esperados:**
-- 10-25% aumento de ingresos
-- Puntuaciones de satisfacción del cliente más altas
-- Tasas de conversión mejoradas
-- Relaciones con clientes más fuertes
+- 10-25% aumento de receita
+- Pontuações de satisfação del cliente mais altas
+- Taxas de conversão melhoradas
+- Relacionamentos con clientes mais fortes
 
 ### Playbook 4: Personalize offers based on likelihood to convert
-**Objetivo:** Lograr excelencia operacional mediante IA.
+**Objetivo:** Alcançar excelência operacional através de IA.
 
-**Implementación:**
-1. Establecer métricas de línea base
-2. Integrar conocimientos de IA en operaciones diarias
-3. Automatizar toma de decisiones repetitivas
-4. Monitorear KPIs y ajustar umbrales
-5. Compartir aprendizajes entre equipos
+**Implementação:**
+1. Estabelecer métricas de linha de base
+2. Integrar insights de IA em operações diárias
+3. Automatizar tomada de decisão repetitiva
+4. Monitorar KPIs y ajustar limites
+5. Compartilhar aprendizados entre equipes
 
 **Resultados Esperados:**
-- 25-50% reducción en esfuerzo manual
-- Precisión y consistencia mejoradas
-- Tiempo hasta conocimiento más rápido
-- Procesos escalables
+- 25-50% redução em esforço manual
+- Precisão y consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
 
 ## Relacionado
 
-- Los endpoints relacionados se listarán aquí según la categoría
+- Os endpoints relacionados serão listados aqui con base en la categoria
 
 ## Referencias
 

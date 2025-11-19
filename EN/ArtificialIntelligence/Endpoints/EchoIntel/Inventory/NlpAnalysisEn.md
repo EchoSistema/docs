@@ -1,4 +1,4 @@
-# Artificial Intelligence – NLP Analysis (EN)
+# Artificial Intelligence – Inventory NLP Analysis (English)
 
 ## Endpoint
 
@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/inventory/nlp-analysis-en
 ```
 
-NLP Analysis (EN) English version.
+English-specific NLP analysis for inventory data with optimized language models and entity recognition.
 
 ## Authentication
 
@@ -17,213 +17,304 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-> **Note:** Parameters accept both `snake_case` and `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
+### Corpo of the Requisição
 
-## HTTP Status
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns NLP analysis results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+## Examples
 
-## Errors
+### Exemplo of Requisição (curl)
 
-### Common Error Responses
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-Customer-Api-Id: <tenant-uuid>" \
+  -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"id": "001", "value": 100}
+    ],
+    "options": {},
+    "include_metadata": true
+  }' \
+  "https://echosistema.online/api/v1/ai/echointel/inventory/nlp-analysis-en"
+```
 
-#### Missing Required Parameters
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/inventory/nlp-analysis-en"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+```
+
+## Response
+
+### Success `200 OK`
+
 ```json
 {
-  "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
-  "details": {
-    "parameter": "data",
-    "location": "body"
+  "results": [
+    {
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
+    }
+  ],
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
+### Error `400 Bad Request`
 
-#### Invalid Authentication
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+### Error `422 Unprocessable Entity`
 
-## How It Is Computed
+```json
+{
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
+}
+```
 
-The NLP Analysis EN endpoint is specifically optimized for English-language inventory text processing, utilizing English-trained NLP models for higher accuracy on English documents.
+## JSON Structure
 
-### 1. English-Optimized Text Preprocessing
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-**Tokenization:**
-- spaCy English model (en_core_web_sm, en_core_web_lg, or en_core_web_trf)
-- English-specific tokenization rules for contractions (can't, won't, it's)
-- Handling of English abbreviations and acronyms (SKU, EOQ, WMS)
+## Como é Calculado
 
-**Lemmatization:**
-- English WordNet-based lemmatization
-- Context-aware lemmatization using POS tags
-- Irregular verb and noun handling (run→ran, inventory→inventories)
+English-specific NLP analysis for inventory data with optimized language models and entity recognition.
 
-**Stopword Removal:**
-- English stopword list (NLTK, spaCy): a, an, the, is, are, was, were, etc.
-- Preservation of domain-specific terms that may appear as stopwords
-- Customizable stopword list for inventory context
+### Algoritmo Principal
 
-### 2. English-Specific Feature Engineering
+The system employs advanced machine learning and statistical techniques tailored for inventory management and optimization:
 
-**TF-IDF with English Corpus:**
-- Trained on English inventory and supply chain documents
-- Optimized IDF weights for English vocabulary
-- Sublinear term frequency scaling for common English terms
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
 
-**English Word Embeddings:**
-- Pre-trained GloVe embeddings (trained on Wikipedia + Gigaword)
-- FastText English model with subword information
-- Domain-adapted embeddings fine-tuned on inventory texts
+### Passos of Processamento
 
-**Contextualized Embeddings:**
-- BERT-base-uncased or BERT-large-uncased (English)
-- RoBERTa-base/large optimized for English
-- DistilBERT for faster English text processing
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
 
-### 3. English Sentiment Analysis
+### Desempenho
 
-**VADER for English:**
-- Specifically designed for English social media and informal text
-- Handles English-specific phenomena:
-  - Capitalization for emphasis (CRITICAL, URGENT)
-  - Emoticons and emoji interpretation
-  - Punctuation emphasis (!!!, ???)
-  - Negation handling (not good, isn't sufficient)
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
 
-**English Sentiment Lexicons:**
-- Opinion Lexicon (Bing Liu)
-- SentiWordNet (English WordNet-based)
-- AFINN lexicon for English affective ratings
-- Domain-specific inventory sentiment terms
+## Status HTTP
 
-**Negation Detection:**
-- English negation cues: not, no, never, none, neither, nor
-- Scope resolution: identifies negation scope boundaries
-- Polarity reversal within negation scope
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
 
-### 4. English Named Entity Recognition
+## Erros
 
-**Pre-trained English NER:**
-- spaCy English NER: PERSON, ORG, GPE, DATE, CARDINAL, QUANTITY
-- Fine-tuned on inventory domain with English annotations
-- Custom entity types: PRODUCT_CODE, SKU, WAREHOUSE_LOCATION
+**Campos Obrigatórios Faltantes:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Required fields missing",
+  "details": {
+    "data": "The data field is required and must be an array."
+  }
+}
+```
 
-**English-Specific Entity Patterns:**
-- Date formats: MM/DD/YYYY, Month DD, YYYY (US format)
-- Quantity patterns: "5 units", "10 boxes", "500 pieces"
-- Product code patterns: alphanumeric with hyphens (ABC-123-XYZ)
+**Formato of Dados Inválido:**
+```json
+{
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
+}
+```
 
-### 5. English Keyword Extraction
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
 
-**English-Optimized TextRank:**
-- POS filtering: English nouns and adjectives as candidates
-- English phrase patterns: (Adj)*(Noun)+
-- Co-occurrence window tuned for English text structure
+## Notes
 
-**RAKE for English:**
-- English stop words as delimiters
-- Phrase identification using English grammar rules
-- Score calculation: word degree / word frequency
+### Melhores Práticas
 
-### 6. English Text Classification
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-**English Training Data:**
-- Models trained on English-labeled inventory documents
-- Transfer learning from general English text classifiers
-- Fine-tuning on domain-specific English inventory corpus
+### Otimização of Desempenho
 
-**Classification Categories:**
-- Standard English labels: "excess stock", "shortage", "quality issue"
-- Confidence calibration for English text
-- Threshold optimization on English validation set
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-### 7. English Syntax and Dependency Parsing
+### Considerações of Segurança
 
-**Dependency Relations:**
-- English grammatical relations (nsubj, dobj, amod, prep)
-- SVO (Subject-Verb-Object) extraction for English sentences
-- Relationship triples specific to English syntax
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-**English Grammar Patterns:**
-- Noun phrases: "the excess inventory in warehouse A"
-- Verb phrases: "has been depleted", "needs reordering"
-- Prepositional phrases: "shortage of SKU-123"
+## Perguntas Frequentes
 
-### 8. Performance Characteristics
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-- **Processing Time:** 180-500ms per English document (100-500 words)
-- **Throughput:** 90-130 English documents per minute
-- **Accuracy Metrics (English-specific):**
-  - Sentiment F1: 0.88-0.93 (improved vs. multilingual)
-  - NER F1: 0.91-0.96 (English entities)
-  - Classification Accuracy: 0.89-0.94
-  - Keyword Precision@5: 0.85-0.91
-- **Model Size:** English-only models are smaller and faster
-- **Latency:** 15-20% lower than multilingual models
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-## Related
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
 
-### Related Endpoints
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
 
-- **[NLP Analysis](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpAnalysis.md)** - Multilingual version (en/es/pt)
-- **[Excess Inventory NLP](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/ExcessInventoryNlp.md)** - Excess detection with NLP
-- **[Excess Inventory Report](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpOpenaiExcessInventoryReport.md)** - AI-generated English reports
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
 
-### Related Domain Concepts
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
 
-- **English NLP:** Language-specific tokenization, POS tagging, parsing
-- **English Lexical Resources:** WordNet, VerbNet, FrameNet
-- **Transfer Learning:** Pre-trained English models (BERT, GPT, RoBERTa)
-- **Sentiment Analysis:** VADER, English sentiment lexicons
+## Manuais Comerciais
 
-### Integration Points
+### Playbook 1: Reduce excess inventory carrying costs
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
 
-- **English Documentation Systems:** Process English product descriptions
-- **US/UK Inventory Systems:** Optimized for English-speaking markets
-- **English Support Tickets:** Analyze English customer service data
-- **English Reports:** Generate and analyze English inventory reports
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
 
-### When to Use This Endpoint
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
 
-- **Use NLP Analysis EN when:**
-  - All input text is in English
-  - Highest accuracy for English text is required
-  - Processing speed is critical (English-only models are faster)
-  - US/UK English dialect-specific handling needed
+### Playbook 2: Optimize stock levels and reorder points
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
 
-- **Use NLP Analysis (multilingual) when:**
-  - Text may be in Spanish or Portuguese
-  - Language is unknown or mixed
-  - System must handle multiple languages dynamically
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
+
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
+
+### Playbook 3: Identify slow-moving and obsolete items
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
+
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Improve inventory turnover ratios
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:281`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:275`

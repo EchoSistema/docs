@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/customer-intelligence/churn-risk
 ```
 
-Analyzes customer churn risk (cancellation/abyonment) using machine learning predictive models to identify customers at risk of leaving y provide actionable retention recommendations.
+Analyzes customer churn risk (cancellation/abeonment) using machine learning predictive models to identify customers at risk of leaving y provide actionable retention recommendations.
 
 ## Autenticación
 
@@ -17,23 +17,23 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | Encabezado          | Tipo   | Requerido | Descripción |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Requerido if not configured on the server. |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. Requerido if not configured on the server. |
-| Accept-Language    | string | No         | Idioma de respuesta (`en`, `es`, `pt`). Por Defecto: `en`. |
+| X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Idioma de resposta (`en`, `es`, `pt`). Predeterminado: `en`. |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud
+### Corpo de la Requisição
 
-| Parámetro         | Tipo    | Requerido | Descripción | Por Defecto |
+| Parámetro         | Tipo    | Requerido | Descripción | Padrão |
 | ----------------- | ------- | -------- | ----------- | ------- |
 | customer_data     | array   | Sí      | array of customer data objects for churn analysis. Each object contains customer attributes y behavior metrics. | - |
-| model_type        | string  | No       | Machine learning algorithm to use: `logistic`, `ryom_forest`, `xgboost`, `catboost`. | `xgboost` |
+| model_type        | string  | No       | Machine learning algorithm to use: `logistic`, `reom_forest`, `xgboost`, `catboost`. | `xgboost` |
 | threshold         | float   | No       | Probability threshold for churn classification (0-1). Customers with probability above this value are classified as high risk. | `0.5` |
-| include_training  | boolean | No       | Include model training metrics y evaluation in Respuesta. | `false` |
+| include_training  | boolean | No       | Include model training metrics y evaluation in Resposta. | `false` |
 
 ### Customer Data object Fields
 
@@ -45,17 +45,17 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | service_tickets   | integer | Sí      | Number of support tickets opened in the last 12 meses. | `3` |
 | nps               | integer | No       | Net Promoter Score (-100 to 100). | `45` |
 | payment_events    | array   | No       | Payment history events (e.g., late payments, failed payments). | `["late_payment", "failed_payment"]` |
-| churned           | integer | Requerido for training | Historical churn label for model training: `0` (retained) or `1` (churned). Only Requerido when training new models. | `0` |
+| churned           | integer | Requerido for training | Historical churn label for model training: `0` (retained) or `1` (churned). Only Obrigatório when training new models. | `0` |
 | contract_type     | string  | No       | Contract Tipo: `month-to-month`, `annual`, `two-year`. | `"month-to-month"` |
 | monthly_charges   | float   | No       | Average monthly charges. | `79.99` |
 | total_charges     | float   | No       | Total charges to date. | `1919.76` |
 | payment_method    | string  | No       | Payment method: `credit_card`, `electronic_check`, `bank_transfer`. | `"electronic_check"` |
-| tech_support      | string  | No       | Tech support subscription: `Sí`, `No`. | `"No"` |
-| online_security   | string  | No       | Online security subscription: `Sí`, `No`. | `"No"` |
+| tech_support      | string  | No       | Tech support subscription: `Sim`, `Não`. | `"Não"` |
+| online_security   | string  | No       | Online security subscription: `Sim`, `Não`. | `"Não"` |
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -87,7 +87,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/customer-intelligence/churn-risk"
 ```
 
-### Ejemplo de Solicitud (JavaScript)
+### Exemplo de Requisição (JavaScript)
 
 ```javascript
 const response = await fetch('https://echosistema.online/api/v1/ai/echointel/customer-intelligence/churn-risk', {
@@ -122,7 +122,7 @@ const response = await fetch('https://echosistema.online/api/v1/ai/echointel/cus
 const result = await response.json();
 ```
 
-### Ejemplo de Solicitud (PHP)
+### Exemplo de Requisição (PHP)
 
 ```php
 <?php
@@ -231,7 +231,7 @@ $result = $response->json();
 }
 ```
 
-### Error `500 Internal Server Error`
+### Error `500 Internal Server Erro`
 
 ```json
 {
@@ -253,7 +253,7 @@ $result = $response->json();
 | `predictions[].risk_factors[].importance`    | float   | Feature importance score (0-1). Higher values indicate greater impact on churn prediction. |
 | `predictions[].retention_recommendations`    | array   | Actionable recommendations for customer retention. |
 | `model_info`                                 | object  | Information about the model used for predictions. |
-| `model_info.best_algorithm`                  | string  | Algorithm selected as champion (e.g., "XGBoost", "Ryom Forest", "Logistic Regression", "CatBoost"). |
+| `model_info.best_algorithm`                  | string  | Algorithm selected as champion (e.g., "XGBoost", "Reom Forest", "Logistic Regression", "CatBoost"). |
 | `model_info.model_version`                   | string  | Version of the trained model. |
 | `model_info.training_date`                   | string  | ISO 8601 timestamp of when the model was last trained. |
 | `evaluation_metrics`                         | object  | Model performance metrics from cross-validation. |
@@ -263,13 +263,13 @@ $result = $response->json();
 | `evaluation_metrics.recall`                  | float   | Recall score (0-1). Ratio of true positives to actual positives. |
 | `evaluation_metrics.f1_score`                | float   | F1 score (0-1). Harmonic mean of precision y recall. |
 
-## Cómo se Calcula
+## Como é Calculado
 
 The churn prediction system uses an automated machine learning approach:
 
 1. **Algorithm Testing:** Tests 4 classification algorithms in parallel:
    - Logistic Regression (baseline linear model)
-   - Ryom Forest (ensemble decision trees)
+   - Reom Forest (ensemble decision trees)
    - XGBoost (gradient boosting)
    - CatBoost (categorical boosting)
 
@@ -285,27 +285,27 @@ The churn prediction system uses an automated machine learning approach:
    - Feature importance scores for interpretability
    - Actionable retention recommendations
 
-**Rendimiento:** Processing latency is approximately 250ms for 5,000 customer registros.
+**Desempenho:** Processing latency is approximately 250ms for 5,000 customer registros.
 
 **Model Retraining:** Models are automatically retrained when new labeled data (`churned` Campo) is provided, ensuring predictions stay current with business dynamics.
 
-## Estado HTTP
+## Status HTTP
 
 | Código | Descripción |
 |------|-------------|
-| 200  | Éxito - Predictions generated successfully |
-| 400  | Bad Request - Missing or invalid Parámetros |
-| 401  | Unauthorized - Token de autenticación inválido o faltante |
-| 403  | Forbidden - Permisos insuficientes o tenant inválido |
-| 422  | Unprocessable Entity - Validation Errores in customer data |
-| 429  | Too Many Requests - Límite de tasa excedido |
-| 500  | Internal Server Error - AI service communication failure |
+| 200  | Sucesso - Predictions generated successfully |
+| 400  | Bad Request - Missing or invalid Parâmetros |
+| 401  | Unauthorized - Token de autenticação inválido o faltante |
+| 403  | Forbidden - Permissões insuficientes o tenant inválido |
+| 422  | Unprocessable Entity - Validation Erros in customer data |
+| 429  | Too Many Requests - Limite de taxa excedido |
+| 500  | Internal Server Erro - AI service communication failure |
 
-## Errores
+## Erros
 
-Common Error scenarios:
+Common Erro scenarios:
 
-**Campos Requeridos Faltantes:**
+**Campos Obrigatórios Faltantes:**
 ```json
 {
   "error": "Validation failed",
@@ -354,74 +354,74 @@ Common Error scenarios:
 |-----------|-----------|-------------------|
 | High | >= 0.60 | Immediate retention campaign, personal outreach, special offers, priority support |
 | Medium | 0.25-0.59 | Monitor closely, targeted marketing, survey feedback, engagement campaigns |
-| Low | < 0.25 | Styard engagement, upsell opportunities, loyalty programs |
+| Low | < 0.25 | Steard engagement, upsell opportunities, loyalty programs |
 
 ### Implementation Details
 
 - **Maximum Payload:** 20MB (~250,000 customer rows per request)
 - **Missing Values:** Automatically imputed using median for numerical fields y mode for categorical fields
-- **PII Hyling:** Customer IDs are hashed internally for security y privacy compliance
-- **Async Bulk Endpoint:** Planned for Q4 2025 to hyle conjuntos de datos más gryes with webhook notifications
+- **PII Heling:** Customer IDs are hashed internally for security y privacy compliance
+- **Async Bulk Endpoint:** Planned for Q4 2025 to hele conjuntos de dados mayores with webhook notifications
 
 ### Industry-Specific Churn Definitions
 
 Different industries define churn differently. Use the appropriate definition for your business:
 
 - **SaaS/Subscription:** Churn = subscription cancellation or non-renewal
-- **E-commerce:** Churn = No purchase activity in the last 6 meses
+- **E-commerce:** Churn = Não purchase activity in the last 6 meses
 - **Telecommunications:** Churn = service termination or port-out to competitor
-- **Pre-paid Services:** Churn = No balance top-up or usage in the last 3 meses
-- **Financial Services:** Churn = account closure or 90+ días of inactivity
+- **Pre-paid Services:** Churn = Não balance top-up or usage in the last 3 meses
+- **Financial Services:** Churn = account closure or 90+ dias of inactivity
 
-### Model Training Mejores Prácticas
+### Model Training Melhores Práticas
 
 When providing historical churn labels for model training:
 
 - **Minimum Dataset Size:** At least 1,000 customer registros with 100+ churn cases
 - **Class Balance:** Aim for 10-40% churn rate in training data (avoid extreme imbalance)
-- **Feature Quality:** Ensure all Requerido fields are populated y accurate
-- **Time Window:** Use consistent time windows for feature calculation (e.g., last 90 días)
+- **Feature Quality:** Ensure all Obrigatório fields are populated y accurate
+- **Time Window:** Use consistent time windows for feature calculation (e.g., last 90 dias)
 - **Regular Updates:** Retrain models monthly or when business conditions change significantly
 
-### Processing y Rendimiento
+### Processing y Desempenho
 
 - **Timeout:** Maximum processing time is 300 seconds (5 minutes)
-- **Rate Limiting:** 100 solicitudes por minuto por tenant
+- **Rate Limiting:** 100 requisições por minuto por tenant
 - **Batch Recommendations:** For >10,000 customers, split into multiple requests or contact support for bulk processing
 - **Caching:** Model predictions are not cached; each request generates fresh predictions
 
 ### Security y Compliance
 
-- The Encabezados `X-Customer-Api-Id` y `X-Secret` can be configured on the server via `.env`
-- The secret must be rotated every 90 días according to security policy
-- All customer data is encrypted in transit (TLS 1.3) y en reposo
-- Data retention: Training data is retained for 90 días, predictions are not stored
+- The Cabeçalhos `X-Customer-Api-Id` e `X-Secret` can be configured on the server via `.env`
+- The secret must be rotated every 90 dias according to security policy
+- All customer data is encrypted in transit (TLS 1.3) y em repouso
+- Data retention: Training data is retained for 90 dias, predictions are not stored
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: What's the minimum dataset size for reliable churn predictions?
 **A:** We recommend at least 1,000 customer registros with a minimum of 100 churned cases for model training. For scoring existing customers, you can process any number of registros per request (up to 250,000 due to 20MB payload limit). The model performs best when training data spans 6-12 meses of consistent customer behavior.
 
 ### Q: How often should the churn model be retrained?
-**A:** Retrain the model monthly or whenever significant business changes occur (pricing changes, product updates, market shifts). Monitor model performance metrics (ROC-AUC, precision, recall) mensual. If ROC-AUC drops below 0.85, prioritize retraining with fresh labeled data. We automatically retrain when new labeled churn data is provided via the `churned` Campo.
+**A:** Retrain the model monthly or whenever significant business changes occur (pricing changes, product updates, market shifts). Monitor model performance metrics (ROC-AUC, precision, recall) mensal. If ROC-AUC drops below 0.85, prioritize retraining with fresh labeled data. We automatically retrain when new labeled churn data is provided via the `churned` Campo.
 
-### Q: How do I interpret a churn probability of 0.65?
+### Q: How del I interpret a churn probability of 0.65?
 **A:** A probability of 0.65 (or 65%) indicates the customer has a 65% likelihood of churning within your defined churn window. This maps to the "high" risk category (>= 0.60). Recommended immediate actions: personal outreach within 48 hours, special retention offers (10-20% discount), upgrade to premium features, or assign to dedicated retention specialist. The higher the probability, the more urgent the intervention.
 
-### Q: Can I customize the risk by thresholds?
-**A:** Sí! Use the `threshold` Parámetro to set your custom classification boundary (0-1 range). For example, `threshold: 0.4` will classify customers above 0.4 as high-risk. However, the Por Defecto 0.5 is optimized for balanced precision-recall. If you want to catch more at-risk customers, lower to 0.4-0.45 (higher recall, slightly lower precision). The Respuesta always includes raw probabilities, so you can analyze at any threshold.
+### Q: Can I customize the risk be thresholds?
+**A:** Sim! Use the `threshold` Parâmetro to set your custom classification boundary (0-1 range). For example, `threshold: 0.4` will classify customers above 0.4 as high-risk. However, the Padrão 0.5 is optimized for balanced precision-recall. If you want to catch more at-risk customers, lower to 0.4-0.45 (higher recall, slightly lower precision). The Resposta always includes raw probabilities, so you can analyze at any threshold.
 
 ### Q: Is my customer data stored or used for training other tenants?
-**A:** No. Customer data is strictly isolated per tenant y never used for cross-tenant model training. Training data is retained for 90 días for model retraining purposes only, then deleted. Predictions are not stored. All data in transit uses TLS 1.3 encryption, y sensitive fields (like customer IDs) are hashed internally for additional security. We comply with GDPR y offer data deletion upon request.
+**A:** Não. Customer data is strictly isolated per tenant y never used for cross-tenant model training. Training data is retained for 90 dias for model retraining purposes only, then deleted. Predictions are not stored. All data in transit uses TLS 1.3 encryption, y sensitive fields (like customer IDs) are hashed internally for additional security. We comply with GDPR y offer data deletion upon request.
 
-### Q: What happens if I'm missing some Requerido customer fields?
-**A:** Missing values in Requerido fields (tenure, usage_frequency, service_tickets) will cause validation Errores (422 Unprocessable Entity). However, optional fields (nps, contract_type, payment_method, etc.) are hyled automatically: numerical fields use median imputation, categorical fields use mode imputation. Ensure at minimum the 3 Requerido fields are populated for all customers.
+### Q: What happens if I'm missing some Obrigatório customer fields?
+**A:** Missing values in Obrigatório fields (tenure, usage_frequency, service_tickets) will cause validation Erros (422 Unprocessable Entity). However, optional fields (nps, contract_type, payment_method, etc.) are heled automatically: numerical fields use median imputation, categorical fields use mode imputation. Ensure at minimum the 3 Obrigatório fields are populated for all customers.
 
 ### Q: What's the processing latency for large customer batches?
-**A:** Processing latency is approximately 250ms for 5,000 customer registros. Scaling is roughly linear: 10,000 customers = ~500ms, 50,000 = ~2.5 seconds. Maximum timeout is 300 seconds (5 minutes). For >100,000 customers, consider splitting into multiple requests or contacting support for bulk processing options. Rate limit is 100 solicitudes por minuto por tenant.
+**A:** Processing latency is approximately 250ms for 5,000 customer registros. Scaling is roughly linear: 10,000 customers = ~500ms, 50,000 = ~2.5 seconds. Maximum timeout is 300 seconds (5 minutes). For >100,000 customers, consider splitting into multiple requests or contacting support for bulk processing options. Rate limit is 100 requisições por minuto por tenant.
 
 ### Q: Which algorithm typically performs best y why?
-**A:** XGBoost is the most frequently selected champion model in production, followed by Ryom Forest. XGBoost excels at capturing non-linear relationships between features (e.g., interaction between contract Tipo y payment method). The system automatically tests all 4 algorithms (logistic regression, ryom forest, XGBoost, CatBoost) via 5-fold cross-validation y selects the one with highest ROC-AUC. The `model_info.best_algorithm` Campo in the Respuesta shows which algorithm was chosen for your specific request.
+**A:** XGBoost is the most frequently selected champion model in production, followed by Reom Forest. XGBoost excels at capturing non-linear relationships between features (e.g., interaction between contract Tipo y payment method). The system automatically tests all 4 algorithms (logistic regression, reom forest, XGBoost, CatBoost) via 5-fold cross-validation y selects the one with highest ROC-AUC. The `model_info.best_algorithm` Campo in the Resposta shows which algorithm was chosen for your specific request.
 
 ## Relacionado
 

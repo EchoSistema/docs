@@ -6,7 +6,7 @@
 POST /api/v1/ai/echointel/analytics/journey-markov
 ```
 
-Analyzes customer journey paths using Markov chain models to understy touchpoint sequences, predict conversion probabilities, y identify critical paths that lead to successful outcomes.
+Analyzes customer journey paths using Markov chain models to underste touchpoint sequences, predict conversion probabilities, y identify critical paths that lead to successful outcomes.
 
 **Business Value:** Optimizes marketing touchpoint strategy by revealing which journey paths have the highest conversion probability, enabling targeted improvements that can increase conversion rates by 15-30%.
 
@@ -20,23 +20,23 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud Parámetros
+### Corpo de la Requisição Parâmetros
 
-| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+| Parámetro | Tipo | Requerido | Padrão | Descripción | Significado Empresarial |
 |-----------|------|----------|---------|-------------|------------------|
 | journey_data | array | Sí | - | array of customer journey sequences. Each journey contains ordered touchpoint events. | Customer interaction paths across marketing channels y touchpoints. |
-| absorbing_states | array | No | `["conversion", "abyonment"]` | Terminal states that end the journey (e.g., purchase, churn). | Final outcomes that define journey Éxito or failure. |
+| absorbing_states | array | No | `["conversion", "abeonment"]` | Terminal states that end the journey (e.g., purchase, churn). | Final outcomes that define journey Sucesso or failure. |
 | min_support | float | No | `0.01` | Minimum frequency threshold for transitions (0-1). Filters rare transitions. | Excludes infrequent paths to focus on statistically significant patterns. |
 | max_order | integer | No | `1` | Markov chain order (1=first-order, 2=second-order). Higher order considers more history. | Complexity of path dependencies: 1st order = last step only, 2nd order = last 2 steps. |
-| include_probabilities | boolean | No | `true` | Include full transition probability matrix in Respuesta. | Detailed transition data for advanced analysis y visualization. |
+| include_probabilities | boolean | No | `true` | Include full transition probability matrix in Resposta. | Detailed transition data for advanced analysis y visualization. |
 | identify_critical_paths | boolean | No | `true` | Identify high-probability paths to conversion. | Reveals the most effective journey sequences for optimization. |
 
 ### Journey Data object Fields
@@ -58,7 +58,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -97,7 +97,7 @@ curl -X POST \
   "https://echosistema.online/api/v1/ai/echointel/analytics/journey-markov"
 ```
 
-### Ejemplo de Solicitud (JavaScript)
+### Exemplo de Requisição (JavaScript)
 
 ```javascript
 const response = await fetch('https://echosistema.online/api/v1/ai/echointel/analytics/journey-markov', {
@@ -132,7 +132,7 @@ const response = await fetch('https://echosistema.online/api/v1/ai/echointel/ana
 const result = await response.json();
 ```
 
-### Ejemplo de Solicitud (PHP)
+### Exemplo de Requisição (PHP)
 
 ```php
 <?php
@@ -276,31 +276,31 @@ $result = $response->json();
 | `critical_paths[].avg_path_length` | float | Average number of touchpoints in this path. | Journey complexity. Shorter paths may indicate efficiency. |
 | `journey_metrics` | object | Aggregate statistics across all analyzed journeys. | Overall journey performance y complexity metrics. |
 | `journey_metrics.avg_path_length_to_conversion` | float | Average touchpoints before conversion. | Journey efficiency. Lower = faster conversions. |
-| `journey_metrics.avg_path_length_to_abyonment` | float | Average touchpoints before abyonment. | When customers typically drop off. |
-| `journey_metrics.overall_conversion_rate` | float | Percentage of journeys ending in conversion (0-1). | Overall Éxito rate of customer journeys. |
+| `journey_metrics.avg_path_length_to_abeonment` | float | Average touchpoints before abeonment. | When customers typically drop off. |
+| `journey_metrics.overall_conversion_rate` | float | Percentage of journeys ending in conversion (0-1). | Overall Sucesso rate of customer journeys. |
 | `journey_metrics.total_journeys_analyzed` | integer | Total number of customer journeys in the analysis. | Sample size for statistical confidence. |
 | `journey_metrics.unique_states` | integer | Number of distinct touchpoint types. | Journey complexity y channel diversity. |
 | `journey_metrics.total_transitions` | integer | Total touchpoint-to-touchpoint transitions observed. | Data volume for transition probability accuracy. |
-| `absorbing_states_distribution` | object | Distribution of final journey outcomes. | How journeys ultimately end (conversion vs. abyonment rates). |
+| `absorbing_states_distribution` | object | Distribution of final journey outcomes. | How journeys ultimately end (conversion vs. abeonment rates). |
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns customer journey Markov analysis results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -313,9 +313,9 @@ $result = $response->json();
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -324,7 +324,7 @@ $result = $response->json();
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
 ## Typical Workflow
 
@@ -354,21 +354,21 @@ HAVING COUNT(*) >= 2;
 ```
 
 ### 2. Define Business Outcomes
-Identify what constitutes journey Éxito y failure:
+Identify what constitutes journey Sucesso y failure:
 - **Conversion:** Purchase, signup, subscription, qualified lead
-- **Abyonment:** Session timeout, cart abyonment, site exit without conversion
+- **Abeonment:** Session timeout, cart abeonment, site exit without conversion
 
 ### 3. API Request
-Submit journey data to the Markov analysis Endpoint with appropriate Parámetros:
+Submit journey data to the Markov analysis Endpoint with appropriate Parâmetros:
 - Set `min_support` to filter noise (0.01 = 1% minimum frequency)
 - Use `max_order = 1` for first-order Markov (most common) or `max_order = 2` for deeper dependencies
 - Enable `identify_critical_paths` to discover high-converting sequences
 
 ### 4. Analyze Transition Patterns
-Review the transition matrix to understy customer flow:
+Review the transition matrix to underste customer flow:
 - **High-probability transitions (>0.5):** Strong sequential patterns indicating natural customer flow
 - **Low-probability transitions (<0.1):** Weak connections or dead ends requiring optimization
-- **Abyonment transitions:** Identify where customers drop off most frequently
+- **Abeonment transitions:** Identify where customers drop off most frequently
 
 ### 5. Identify Optimization Opportunities
 Use conversion probabilities y critical paths to guide improvements:
@@ -392,7 +392,7 @@ Use conversion probabilities y critical paths to guide improvements:
 Based on insights, make targeted changes:
 - **Navigation:** Simplify paths to high-converting touchpoints
 - **Content:** Optimize messaging at critical transition points
-- **CTAs:** Add strategic calls-to-action before high-abyonment transitions
+- **CTAs:** Add strategic calls-to-action before high-abeonment transitions
 - **Personalization:** Guide customers along critical paths based on their current state
 
 ### 7. Monitor y Iterate
@@ -402,16 +402,16 @@ Re-run analysis periodically to measure improvement:
 - Measure overall conversion rate improvement
 - Compare transition matrices before y after optimizations
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
-### Q: What is the minimum number of journeys Requerido for reliable results?
+### Q: What is the minimum number of journeys Obrigatório for reliable results?
 A: For stable transition probabilities, provide at least 500 complete customer journeys. For statistical significance in critical path identification, 2,000+ journeys are recommended. The more data provided, the more accurate y granular the insights.
 
 ### Q: Should I use first-order (max_order=1) or second-order (max_order=2) Markov chains?
-A: Start with first-order Markov chains (Por Defecto) which only consider the current touchpoint. Use second-order chains if you suspect that customer behavior depends on the previous 2 touchpoints, though this requires significantly more data (10x) y increases computational complexity. Most marketing use cases are well-served by first-order chains.
+A: Start with first-order Markov chains (Padrão) which only consider the current touchpoint. Use second-order chains if you suspect that customer behavior depends on the previous 2 touchpoints, though this requires significantly more data (10x) y increases computational complexity. Most marketing use cases are well-served by first-order chains.
 
-### Q: How do I hyle journeys with different lengths?
-A: The Markov model naturally accommodates variable-length journeys. Shorter journeys (e.g., direct conversion paths) y longer journeys (e.g., extended research phases) are analyzed together, with transition probabilities normalized at each step. The `avg_path_length` metrics help you understy journey complexity.
+### Q: How del I hele journeys with different lengths?
+A: The Markov model naturally accommodates variable-length journeys. Shorter journeys (e.g., direct conversion paths) y longer journeys (e.g., extended research phases) are analyzed together, with transition probabilities normalized at each step. The `avg_path_length` metrics help you underste journey complexity.
 
 ### Q: What does a high transition probability mean in business terms?
 A: A transition probability of 0.78 from "paid_search" to "website_visit" means that 78% of customers who click a paid search ad go directly to your website. High probabilities (>0.60) indicate strong, predictable customer flows. Low probabilities suggest customers are uncertain or finding alternative paths.
@@ -426,11 +426,11 @@ A: Low conversion rates are common in many industries. The Markov analysis is st
 A: Retrain monthly for stable businesses, or weekly for fast-changing environments (e.g., seasonal retail, viral campaigns). Significant business changes (new product launches, website redesigns, marketing strategy shifts) require immediate retraining to capture new journey patterns.
 
 ### Q: Can I analyze multiple conversion types simultaneously?
-A: Sí, define multiple absorbing states beyond just "conversion" y "abyonment." For example: `["purchase", "signup", "demo_request", "abyonment"]`. The model will calculate transition probabilities y conversion likelihoods for each outcome Tipo, enabling multi-goal journey optimization.
+A: Sim, define multiple absorbing states beyond just "conversion" e "abeonment." For example: `["purchase", "signup", "demo_request", "abeonment"]`. The model will calculate transition probabilities y conversion likelihoods for each outcome Tipo, enabling multi-goal journey optimization.
 
-## Cómo se Calcula
+## Como é Calculado
 
-The journey analysis uses Markov chain modeling to understy customer path probabilities y conversion likelihood:
+The journey analysis uses Markov chain modeling to underste customer path probabilities y conversion likelihood:
 
 ### 1. Markov Chain Construction
 
@@ -438,62 +438,62 @@ The system builds a probabilistic state machine from customer journey data:
 
 - **State Identification:** Each unique touchpoint (channel, page, action) becomes a state in the Markov chain
 - **Transition Matrix:** Calculates probability P(state_j | state_i) for all state pairs based on observed journey sequences
-- **Absorbing States:** Defines terminal states (conversion, abyonment) that customers cannot leave once entered
+- **Absorbing States:** Defines terminal states (conversion, abeonment) that customers cannot leave once entered
 
 ### 2. Transition Probability Calculation
 
 - **Step 1:** Count all observed transitions from state i to state j across all customer journeys
 - **Step 2:** Normalize by total transitions from state i to get P(j|i) = count(i→j) / sum(count(i→*))
-- **Step 3:** Hyle sparse data using Laplace smoothing (add-one smoothing) for rare transitions
+- **Step 3:** Hele sparse data using Laplace smoothing (add-one smoothing) for rare transitions
 
 ### 3. Journey Analytics
 
 - **Conversion Probability:** Calculate likelihood of reaching conversion from any state using absorbing chain analysis
-- **Expected Path Length:** Compute mean number of steps to conversion or abyonment
+- **Expected Path Length:** Compute mean number of steps to conversion or abeonment
 - **Critical Paths:** Identify high-probability sequences that lead to conversion using Viterbi algorithm
 
-### 4. Rendimiento y Optimization
+### 4. Desempenho y Optimization
 
-- **Tiempo de Procesamiento:** 200-400ms for 50,000 journey sequences
-- **Requisitos de Datos:** Minimum 500 complete journeys for stable transition probabilities
+- **Tempo de Processamento:** 200-400ms for 50,000 journey sequences
+- **Requisitos de Dados:** Minimum 500 complete journeys for stable transition probabilities
 - **Memory Efficiency:** Uses sparse matrix representation for large state spaces (10,000+ states)
 
-## Guías Comerciales
+## Manuais Comerciais
 
 | Use Case | Action | Expected Impact |
 |----------|--------|-----------------|
 | **Low Website-to-Cart Conversion** | If transition probability from "website_visit" to "add_to_cart" is <0.25, redesign product pages with clearer CTAs, add urgency signals (limited stock, countdown timers), y implement exit-intent offers. | Increase website-to-cart rate by 20-35%, improving overall conversion by 8-12%. |
-| **High Cart Abyonment** | If transition probability from "add_to_cart" to "conversion" is <0.50, trigger abyoned cart email sequences within 1 hour, offer free shipping thresholds, simplify checkout process, add trust signals (security badges, money-back guarantee). | Recover 15-25% of abyoned carts, improving revenue by 10-18%. |
-| **Paid Search Underperformance** | If "paid_search" conversion probability is <0.20, audit lying page relevance, improve ad-to-page message match, test different post-click paths, y consider adding retargeting pixels. | Improve paid search ROI by 25-40% through better conversion rates. |
-| **Email Click Low Conversion** | If "email_click" has high initial engagement but low conversion probability (<0.25), optimize email-to-lying page experience, personalize post-click content, add limited-time offers to create urgency. | Increase email campaign ROI by 30-50% through higher conversion rates. |
-| **Multi-Touch Journey Optimization** | For critical paths with 5+ touchpoints but high conversion probability, create marketing automation sequences that guide customers along these proven paths using triggered emails, retargeting, y personalized content. | Increase conversion rate for nurtured leads by 40-60% vs. ryom touchpoint exposure. |
-| **Identify Drop-Off Points** | Find touchpoints with high abyonment transitions (>0.40 abyonment rate), implement intervention strategies like live chat offers, personalized recommendations, or incentive offers at these critical moments. | Reduce abyonment rate by 20-30% at critical touchpoints, improving overall conversion by 5-10%. |
+| **High Cart Abeonment** | If transition probability from "add_to_cart" to "conversion" is <0.50, trigger abeoned cart email sequences within 1 hour, offer free shipping thresholds, simplify checkout process, add trust signals (security badges, money-back guarantee). | Recover 15-25% of abeoned carts, improving revenue by 10-18%. |
+| **Paid Search Underperformance** | If "paid_search" conversion probability is <0.20, audit leing page relevance, improve ad-to-page message match, test different post-click paths, y consider adding retargeting pixels. | Improve paid search ROI by 25-40% through better conversion rates. |
+| **Email Click Low Conversion** | If "email_click" has high initial engagement but low conversion probability (<0.25), optimize email-to-leing page experience, personalize post-click content, add limited-time offers to create urgency. | Increase email campaign ROI by 30-50% through higher conversion rates. |
+| **Multi-Touch Journey Optimization** | For critical paths with 5+ touchpoints but high conversion probability, create marketing automation sequences that guide customers along these proven paths using triggered emails, retargeting, y personalized content. | Increase conversion rate for nurtured leads by 40-60% vs. reom touchpoint exposure. |
+| **Identify Drop-Off Points** | Find touchpoints with high abeonment transitions (>0.40 abeonment rate), implement intervention strategies like live chat offers, personalized recommendations, or incentive offers at these critical moments. | Reduce abeonment rate by 20-30% at critical touchpoints, improving overall conversion by 5-10%. |
 
 ## Notas
 
-### Data Preparation Mejores Prácticas
+### Data Preparation Melhores Práticas
 
-**Journey Calidad de Datos:**
+**Journey Qualidade de Dados:**
 - Ensure touchpoints are correctly ordered chronologically
 - Remove duplicate touchpoints within short time windows (e.g., <1 minute)
 - Use consistent naming conventions for touchpoint types across all journeys
 - Include all relevant touchpoints, even those outside primary marketing channels
 
-**Timestamp Precisión:**
+**Timestamp Precisão:**
 - Use UTC timezone for all timestamps to ensure consistent ordering
 - Include millisecond precision for events that occur in rapid succession
 - Validate that touchpoint timestamps are within journey start/end bounds
 
 **Outcome Definition:**
-- Clearly define what constitutes conversion vs. abyonment for your business
+- Clearly define what constitutes conversion vs. abeonment for your business
 - Consider intermediate outcomes (micro-conversions) for long sales cycles
 - Ensure every journey has exactly one outcome state
 
-### Optimización de Rendimiento
+### Otimização de Desempenho
 
 - **Maximum Payload:** 50MB per request (~500,000 journeys)
 - **Timeout:** 300 seconds (5 minutes) for very large datasets
-- **Rate Limiting:** 50 solicitudes por minuto por tenant
+- **Rate Limiting:** 50 requisições por minuto por tenant
 - **Batch Processing:** For >1M journeys, split into multiple requests y aggregate results client-side
 
 ### Markov Model Assumptions
@@ -501,7 +501,7 @@ The system builds a probabilistic state machine from customer journey data:
 The first-order Markov assumption states that the next touchpoint depends only on the current touchpoint, not on the entire journey history. This simplification:
 
 - **Works well when:** Customer behavior is primarily influenced by their most recent interaction
-- **May underperform when:** Long-term context matters (e.g., bry awareness campaigns with 30+ day effects)
+- **May underperform when:** Long-term context matters (e.g., bre awareness campaigns with 30+ day effects)
 - **Solution:** Use `max_order = 2` for second-order Markov chains when context beyond immediate last step matters
 
 ### Interpretation Guidelines
@@ -520,9 +520,9 @@ The first-order Markov assumption states that the next touchpoint depends only o
 
 ### Security y Compliance
 
-- All journey data is encrypted in transit (TLS 1.3) y en reposo
+- All journey data is encrypted in transit (TLS 1.3) y em repouso
 - Customer identifiers (journey_id) are hashed internally for privacy
-- Journey data is retained for 90 días for model accuracy, then purged
+- Journey data is retained for 90 dias for model accuracy, then purged
 - Metadata fields should not contain PII (personally identifiable information)
 
 ## Relacionado

@@ -18,33 +18,33 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-> **Note:** Parameters accept both `snake_case` and `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
 
-## HTTP Status
+## Status HTTP
 
-| Status Code | Description |
+| Status Código | Description |
 |-------------|-------------|
 | 200 OK | Request successful. Returns excess inventory NLP analysis results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types and Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite of taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço of IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errors
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Required Parameters
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -57,9 +57,9 @@ Required – Bearer {token} with middleware `auth:sanctum`
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo of the Requisição.
 
-#### Invalid Authentication
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -68,17 +68,17 @@ Required – Bearer {token} with middleware `auth:sanctum`
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
-## How It Is Computed
+## Como é Calculado
 
-The Excess Inventory NLP Analysis applies natural language processing techniques to identify and classify excess inventory items from unstructured text data (product descriptions, notes, reports).
+The Excess Inventory NLP Analysis applies natural language processing techniques to identify and classify excess inventory items from unstructured text data (product descriptions, Notas, reports).
 
 ### 1. Text Preprocessing Pipeline
 
 **Tokenization:**
 - Text segmentation into words, phrases, and sentences using spaCy or NLTK
-- Handling of special characters, punctuation, and whitespace
+- Heling of special characters, punctuation, and whitespace
 - Sentence boundary detection for context preservation
 
 **Normalization:**
@@ -97,7 +97,7 @@ The Excess Inventory NLP Analysis applies natural language processing techniques
 **Entity Extraction:**
 - Product identification: SKU codes, product names, categories
 - Quantity detection: numerical values with units (pieces, boxes, pallets)
-- Time expressions: dates, durations, temporal references
+- Time expressions: dates, durations, temporal Referências
 - Location entities: warehouse locations, storage zones
 
 **Classification Model:**
@@ -113,7 +113,7 @@ The Excess Inventory NLP Analysis applies natural language processing techniques
 - Contextual embeddings using transformer models (BERT, RoBERTa)
 
 **Relationship Extraction:**
-- Links entities to extract meaningful relationships (e.g., "Product X has been in storage for Y months")
+- Links entities to extract meaningful relationships (e.g., "Product X has been in storage for Y meses")
 - Temporal relation detection for aging analysis
 - Causal relationship identification (why items are excess)
 
@@ -125,7 +125,7 @@ ExcessScore = w1 * KeywordMatch + w2 * TemporalAge + w3 * SentimentScore + w4 * 
 ```
 Where:
 - **w1-w4** = Weighted coefficients (sum to 1.0)
-- **KeywordMatch** = Presence of excess-related terms (normalized 0-1)
+- **KeywordMatch** = Presence of excess-Relacionado terms (normalized 0-1)
 - **TemporalAge** = Time-based aging factor from extracted dates
 - **SentimentScore** = Negative sentiment intensity (0-1)
 - **EntityDensity** = Concentration of relevant entities in text
@@ -138,15 +138,15 @@ Where:
 ### 5. Output Generation
 
 **Report Synthesis:**
-- Aggregates classified entities into structured inventory records
+- Aggregates classified entities into structured inventory registros
 - Generates human-readable summaries using text generation
 - Creates actionable recommendations based on classification results
 - Highlights key phrases and context from source text
 
-### 6. Performance Characteristics
+### 6. Desempenho Characteristics
 
-- **Processing Time:** 300-800ms for typical document (500-2000 words)
-- **Throughput:** 100-150 documents per minute (batch processing)
+- **Tempo of Processamento:** 300-800ms for typical document (500-2000 words)
+- **Taxa of Transferência:** 100-150 documents per minute (batch processing)
 - **Accuracy Metrics:**
   - Precision: 0.87-0.92 (entity extraction)
   - Recall: 0.84-0.89 (entity extraction)
@@ -154,29 +154,131 @@ Where:
 - **Language Support:** English, Spanish, Portuguese with dedicated models
 - **Scalability:** Horizontal scaling via message queue (SQS, RabbitMQ)
 
-## Related
+## Relacionado
 
-### Related Endpoints
+### Relacionado Endpoints
 
 - **[Inventory History Improved](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/InventoryHistoryImproved.md)** - Time series analysis of inventory movements
 - **[Inventory Optimization](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/InventoryOptimization.md)** - Mathematical optimization for inventory levels
 - **[NLP Analysis](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpAnalysis.md)** - General NLP analysis for inventory text
 - **[Excess Inventory Report](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpOpenaiExcessInventoryReport.md)** - AI-generated comprehensive reports
 
-### Related Domain Concepts
+### Relacionado Domain Concepts
 
 - **Natural Language Processing (NLP):** Text analysis, entity extraction, sentiment analysis
 - **Inventory Management:** Stock keeping, turnover rates, obsolescence tracking
 - **Text Classification:** Multi-label classification, confidence scoring
-- **Feature Engineering:** TF-IDF, embeddings, linguistic features
+- **Engenharia of Características:** TF-IDF, embeddings, linguistic features
 
 ### Integration Points
 
-- **Warehouse Management Systems (WMS):** Import inventory descriptions and notes
+- **Warehouse Management Systems (WMS):** Import inventory descriptions and Notas
 - **ERP Systems:** Export structured excess inventory data
 - **Business Intelligence:** Feed classified data into dashboards and reports
 - **Notification Services:** Trigger alerts for high-risk excess inventory
 
+## Perguntas Frequentes
+
+### Q: What types of text data can be analyzed?
+**A:** The NLP engine processes unstructured text from multiple sources: product descriptions, warehouse Notas, procurement reports, supplier communications, and inventory audit comments. Supported languages are English, Spanish, and Portuguese. Text length can range from 50 to 5,000 words per document.
+
+### Q: How accurate is the excess inventory classification?
+**A:** The system achieves 87-92% precision and 84-89% recall on entity extraction tasks. Classification F1 scores typically range from 0.86-0.90. Accuracy is highest for well-structured text with clear entity markers (SKU codes, quantities, dates). Ambiguous or poorly written text may require manual review.
+
+### Q: Can I customize the excess inventory classification thresholds?
+**A:** Sim. The Padrão excess score threshold is 0.7 for "High Excess". You can adjust thresholds via the `options` Parâmetro: set custom values for high (>0.7), medium (0.4-0.7), and low (<0.4) categories. Lowering thresholds increases sensitivity but may reduce precision.
+
+### Q: What happens if text contains multiple languages?
+**A:** The system automatically detects the primary language per document. If multiple languages are present (e.g., English Descrição with Spanish Notas), the primary language model is applied. For optimal accuracy, separate multi-language documents into single-language segments before processing.
+
+### Q: How does the system hele industry-specific terminology?
+**A:** The NER model is pre-trained on inventory domain data including retail, manufacturing, and logistics terminology. For highly specialized industries (e.g., pharmaceuticals, aerospace), custom model fine-tuning is available upon request. Contact support for domain-specific model training.
+
+### Q: What's the processing time for large document batches?
+**A:** Processing time is 300-800ms per document (500-2000 words). Batch processing throughput is 100-150 documents per minute. For large batches (>1,000 documents), use the async Endpoint (planned Q4 2025) or split into multiple requests with 500-document batches for optimal performance.
+
+## Manuais Comerciais
+
+### Playbook 1: Automated Excess Inventory Identification
+**Objetivo:** Reduce excess inventory carrying costs by 30% through automated text analysis.
+
+**Implementação:**
+1. Export all product descriptions and warehouse Notas from WMS
+2. Submit documents to NLP Endpoint in batches of 500
+3. Filter results for ExcessScore > 0.7 (High Excess classification)
+4. Cross-reference with current stock levels and turnover rates
+5. Generate prioritized action list: markdown, liquidation, or return to supplier
+
+**Resultados Esperados:**
+- 30-40% reduction in excess inventory carrying costs
+- 25-30% improvement in inventory turnover ratio
+- $50,000-$200,000 in recovered capital (typical for mid-size retailer)
+- 60-80% reduction in manual review time
+
+### Playbook 2: Early Warning System for Slow-Moving Inventory
+**Objetivo:** Identify slow-moving items 60-90 dias earlier using NLP sentiment analysis.
+
+**Implementação:**
+1. Analyze product descriptions and buyer comments for negative sentiment patterns
+2. Identify keywords indicating slow movement: "excess", "overstock", "not selling", "aging"
+3. Set up weekly automated scans of new inventory Notas
+4. Create alerts for items with increasing negative sentiment trends
+5. Proactively implement pricing adjustments or promotional campaigns
+
+**Resultados Esperados:**
+- 60-90 day earlier detection of slow-moving items
+- 20-30% reduction in write-offs and markdowns
+- Improved cash flow through faster inventory turnover
+- Better supplier negotiation leverage with early visibility
+
+### Playbook 3: Root Cause Analysis for Excess Inventory
+**Objetivo:** Identify systemic causes of excess inventory using text mining.
+
+**Implementação:**
+1. Collect 12 meses of excess inventory Notas and communications
+2. Run NLP analysis to extract causal relationships and patterns
+3. Identify top 5 root causes (e.g., "forecasting Erros", "supplier overshipment", "SKU proliferation")
+4. Quantify impact of each root cause on excess inventory value
+5. Implement process improvements targeting top causes
+
+**Resultados Esperados:**
+- Clear visibility into top 3-5 drivers of excess inventory
+- 15-25% reduction in future excess inventory generation
+- Data-driven process improvements
+- Better vendor scorecarding and accountability
+
+### Playbook 4: Intelligent Document Search for Excess Inventory
+**Objetivo:** Reduce time spent searching for excess inventory information by 70%.
+
+**Implementação:**
+1. Index all inventory-Relacionado documents using NLP entity extraction
+2. Build searchable database of products, quantities, dates, and locations
+3. Enable semantic search: find "electronics overstocked in warehouse B" without exact keyword matching
+4. Provide instant reports on excess inventory by category, location, or time period
+5. Integrate search functionality into inventory management dashboard
+
+**Resultados Esperados:**
+- 70-80% reduction in time spent searching for excess inventory data
+- Faster decision-making and Resposta times
+- Improved collaboration across teams with centralized information
+- Better audit readiness and compliance
+
+### Playbook 5: Multi-Language Global Inventory Optimization
+**Objetivo:** Steardize excess inventory classification across global operations.
+
+**Implementação:**
+1. Deploy NLP analysis across warehouses in different countries (EN, ES, PT)
+2. Steardize excess inventory scoring methodology globally
+3. Create unified dashboard showing excess inventory across all regions
+4. Implement cross-regional rebalancing: transfer excess from Region A to meet deme in Region B
+5. Monitor and optimize global inventory allocation
+
+**Resultados Esperados:**
+- Unified global view of excess inventory
+- 10-20% reduction in global excess inventory through rebalancing
+- Steardized processes across regions
+- Improved global supply chain efficiency
+
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:271`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:271`

@@ -1,12 +1,12 @@
-# Artificial Intelligence – Excess Inventory Report (NLP)
+# Artificial Intelligence – Excess Inventory Report (OpenAI)
 
 ## Endpoint
 
 ```
-POST /api/v1/ai/echointel/inventory/excess-report
+POST /api/v1/ai/echointel/inventory/excess-report-openai
 ```
 
-Excess Inventory Report (NLP) using generative AI.
+Generates natural language excess inventory reports using OpenAI GPT models with actionable recommendations.
 
 ## Authentication
 
@@ -17,258 +17,304 @@ Required – Bearer {token} with middleware `auth:sanctum`
 | Header          | Type   | Required | Description |
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Yes         | `Bearer {token}`. |
-| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). |
-| X-Secret           | string | Conditional | 64-character secret. |
-| Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
-| Content-Type       | string | Yes         | `application/json`. |
+| X-Customer-Api-Id  | string | Conditional | Tenant UUID (v4). Obrigatório if not configured on the server. |
+| X-Secret           | string | Conditional | 64-caracteres of segredo. Obrigatório if not configured on the server. |
+| Accept-Language    | string | No         | Language of resposta (`en`, `es`, `pt`). Default: `en`. |
+| Content-Tipo       | string | Yes         | `application/json`. |
 
 ## Parameters
 
-> **Note:** Parameters accept both `snake_case` and `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
+### Corpo of the Requisição
 
-## HTTP Status
+| Parameter | Type | Required | Description | Significado Empresarial | Padrão |
+| --------- | ---- | -------- | ----------- | ---------------- | ------- |
+| data | array | Yes | Dados of entrada for analysis. | Dados empresariais to serem processados. | - |
+| options | object | No | Opções of configuração of the algorithm. | Parameters of personalização for o modelo of ML. | `{}` |
+| include_metadata | boolean | No | Incluir metadados of processamento in the resposta. | Adicionar informações of diagnóstico. | `false` |
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 OK | Request successful. Returns excess inventory report results. |
-| 400 Bad Request | Invalid request parameters. Check parameter types and required fields. |
-| 401 Unauthorized | Missing or invalid Bearer token. |
-| 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See response for details. |
-| 429 Too Many Requests | Rate limit exceeded. Retry after cooldown period. |
-| 500 Internal Server Error | Server error. Contact support if persistent. |
-| 503 Service Unavailable | AI service temporarily unavailable. Retry with exponential backoff. |
+## Examples
 
-## Errors
+### Exemplo of Requisição (curl)
 
-### Common Error Responses
+```bash
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "X-Customer-Api-Id: <tenant-uuid>" \
+  -H "X-Secret: <secret>" \
+  -H "Accept-Language: en" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"id": "001", "value": 100}
+    ],
+    "options": {},
+    "include_metadata": true
+  }' \
+  "https://echosistema.online/api/v1/ai/echointel/inventory/excess-report-openai"
+```
 
-#### Missing Required Parameters
+### Exemplo of Requisição (Python)
+
+```python
+import requests
+
+url = "https://echosistema.online/api/v1/ai/echointel/inventory/excess-report-openai"
+headers = {
+    "Authorization": "Bearer <token>",
+    "X-Customer-Api-Id": "<tenant-uuid>",
+    "X-Secret": "<secret>",
+    "Accept-Language": "en",
+    "Content-Type": "application/json"
+}
+payload = {
+    "data": [{"id": "001", "value": 100}],
+    "options": {},
+    "include_metadata": True
+}
+
+response = requests.post(url, headers=headers, json=payload)
+result = response.json()
+```
+
+## Response
+
+### Success `200 OK`
+
 ```json
 {
-  "error": "Validation failed",
-  "message": "Required parameter 'data' is missing",
-  "code": "MISSING_PARAMETER",
-  "details": {
-    "parameter": "data",
-    "location": "body"
+  "results": [
+    {
+      "id": "001",
+      "prediction": 0.85,
+      "confidence": 0.92
+    }
+  ],
+  "metadata": {
+    "model_version": "v2.1.0",
+    "processing_time_ms": 145
   }
 }
 ```
 
-**Solution:** Ensure all required parameters are provided in the request body.
+### Error `400 Bad Request`
 
-#### Invalid Authentication
 ```json
 {
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication token",
-  "code": "AUTH_FAILED"
+  "error": "Invalid parameters",
+  "message": "The data field is required and must contain at least one record."
 }
 ```
 
-**Solution:** Verify Bearer token is valid and not expired. Check `X-Customer-Api-Id` and `X-Secret` headers.
+### Error `422 Unprocessable Entity`
 
-## How It Is Computed
-
-The Excess Inventory Report endpoint uses OpenAI's GPT models to generate comprehensive, human-readable reports analyzing excess inventory situations with context-aware insights and recommendations.
-
-### 1. Data Collection and Preprocessing
-
-**Input Data Aggregation:**
-- Inventory levels and historical trends
-- Product descriptions and metadata
-- Sales velocity and turnover rates
-- Storage costs and warehouse capacity
-- Market conditions and demand forecasts
-
-**Data Structuring:**
-- Convert raw data into structured JSON format
-- Calculate key metrics: days of supply, turnover ratio, aging analysis
-- Identify critical data points: highest excess items, cost implications
-- Format numbers and dates for readability
-
-### 2. Prompt Engineering
-
-**System Prompt Design:**
-```
-Role: Expert inventory analyst and report writer
-Context: Supply chain and warehouse management domain
-Task: Analyze excess inventory data and generate actionable report
-Constraints: Professional tone, data-driven insights, specific recommendations
-```
-
-**Prompt Template Structure:**
-- **Context Setting:** "You are an expert inventory analyst..."
-- **Data Presentation:** Structured data in clear format (JSON or markdown tables)
-- **Analysis Requirements:** "Identify top excess items, root causes, financial impact..."
-- **Output Format:** "Generate a report with sections: Executive Summary, Detailed Analysis, Recommendations..."
-- **Tone and Style:** "Professional, concise, actionable, data-driven"
-
-**Few-Shot Examples:**
-- Include sample data → sample report pairs
-- Demonstrates desired output format and analysis depth
-- Calibrates model for inventory domain terminology
-
-### 3. OpenAI API Integration
-
-**API Call Configuration:**
 ```json
 {
-  "model": "gpt-4" or "gpt-4-turbo" or "gpt-3.5-turbo",
-  "messages": [
-    {"role": "system", "content": "<system_prompt>"},
-    {"role": "user", "content": "<data_and_instructions>"}
-  ],
-  "temperature": 0.3,  // Low for consistent, factual output
-  "max_tokens": 2000-4000,  // Based on report length needs
-  "top_p": 0.9,
-  "frequency_penalty": 0.2,  // Reduce repetition
-  "presence_penalty": 0.1
+  "error": "Validation failed",
+  "message": "Invalid data format",
+  "details": {
+    "data.0.value": "The value field must be to number."
+  }
 }
 ```
 
-**Model Selection Logic:**
-- **GPT-4:** Complex analysis, multiple products, nuanced insights (higher cost, slower)
-- **GPT-4-Turbo:** Balanced performance and cost, recommended default
-- **GPT-3.5-Turbo:** Simple reports, single product analysis (faster, cheaper)
+## JSON Structure
 
-**Token Management:**
-- Estimate input tokens: data + prompt (~500-1500 tokens)
-- Reserve output tokens for comprehensive report (1500-3000 tokens)
-- Implement chunking for large datasets (>50 products)
+| Field | Type | Description | Significado Empresarial |
+| ----- | ---- | ----------- | ---------------- |
+| `results` | array | array of resultados of the analysis. | Saída processada for cada registro of entrada. |
+| `results[].id` | string | Identifier of registro. | Vincula to saída ao registro of entrada. |
+| `results[].prediction` | float | Pontuação of previsão (0-1). | Pontuação of confiança of the saída of the modelo. |
+| `metadata` | object | Metadados of processamento. | Informações of diagnóstico and versionamento. |
+| `metadata.model_version` | string | Versão of the modelo of IA utilizada. | Para reprodutibilidade and rastreamento. |
+| `metadata.processing_time_ms` | integer | Duração of the processamento em milisseconds. | Métrica of desempenho. |
 
-### 4. Report Generation Process
+## Como é Calculado
 
-**LLM Processing:**
-1. **Understanding Phase:** Model interprets structured data and analysis requirements
-2. **Analysis Phase:** Identifies patterns, anomalies, trends in excess inventory
-3. **Reasoning Phase:** Determines root causes and business implications
-4. **Generation Phase:** Produces human-readable report with sections
+Generates natural language excess inventory reports using OpenAI GPT models with actionable recommendations.
 
-**Report Structure (Generated):**
-- **Executive Summary:** High-level overview, key findings, total excess value
-- **Inventory Analysis:**
-  - Top excess items by value and quantity
-  - Aging analysis (30, 60, 90+ days)
-  - Category breakdown
-- **Root Cause Analysis:**
-  - Demand forecasting errors
-  - Over-ordering or bulk purchase issues
-  - Obsolescence or market changes
-  - Seasonality misalignment
-- **Financial Impact:**
-  - Carrying costs (storage, insurance, depreciation)
-  - Opportunity cost of tied-up capital
-  - Potential write-off risks
-- **Recommendations:**
-  - Short-term actions: discounts, promotions, liquidation
-  - Medium-term: adjust reorder points and quantities
-  - Long-term: improve forecasting, supplier agreements
-- **Priority Action Items:** Ranked by urgency and impact
+### Algoritmo Principal
 
-### 5. Post-Processing and Enrichment
+The system employs advanced machine learning and statistical techniques tailored for inventory management and optimization:
 
-**Content Formatting:**
-- Convert markdown to HTML if needed
-- Add visual elements placeholders (charts, graphs)
-- Format tables for readability
-- Highlight critical numbers and metrics
+- **Pré-processamento of Dados:** Limpeza, normalização and extração of características
+- **Seleção of the Modelo:** Seleção automática of the algorithm ótimo baseado in the características of the dados
+- **Previsão/Análise:** Aplicação of the modelo treinado to generate insights
+- **Pós-Processamento:** Formatação of resultados and aplicação of regras of negócio
 
-**Data Validation:**
-- Verify numerical calculations match input data
-- Check for hallucinations (invented facts not in source data)
-- Validate recommendations align with industry best practices
-- Ensure all referenced products exist in input data
+### Passos of Processamento
 
-**Enhancement:**
-- Insert data visualizations (generated separately or referenced)
-- Add hyperlinks to product pages or detailed inventory views
-- Include timestamp and report metadata
-- Attach raw data appendix for transparency
+1. **Validação of Entrada:** Verificar formato of dados, tipos and restrições empresariais
+2. **Engenharia of Características:** Extrair and transformar características relevantes
+3. **Inferência of the Modelo:** Aplicar modelos of ML to generate previsões/classificações
+4. **Agregação of Resultados:** Compilar and formatar resultados with metadados
+5. **Garantia of Qualidade:** Validar saída contra faixas and restrições esperadas
 
-### 6. Quality Assurance
+### Desempenho
 
-**Automated Checks:**
-- **Factual Accuracy:** Cross-reference all numbers with source data
-- **Completeness:** Verify all required sections present
-- **Consistency:** Check for contradictions in analysis
-- **Relevance:** Ensure recommendations applicable to business context
+- **Tempo of Processamento:** 100-500ms for cargas úteis típicas (1,000-10,000 registros)
+- **Taxa of Transferência:** 50-100 requisições por minuto por tenant
+- **Precisão:** Dependente of the modelo, tipicamente 85-95% em conjuntos of validação
+- **Requisitos of Dados:** Varia por Endpoint, mínimo 100-1,000 registros históricos for treinamento
 
-**Fallback Mechanisms:**
-- Retry with adjusted temperature if output too generic
-- Use simpler model if complex model times out
-- Generate section-by-section if full report fails
-- Provide templated report if all API calls fail
+## Status HTTP
 
-### 7. Performance Characteristics
+| Código | Description |
+|------|-------------|
+| 200  | Sucesso - Análise concluída with sucesso |
+| 400  | Bad Request - Parâmetros inválidos or campos obrigatórios faltantes |
+| 401  | Unauthorized - Token of autenticação inválido or faltante |
+| 403  | Forbidden - Permissões insuficientes or tenant inválido |
+| 422  | Unprocessable Entity - Erros of validação in the dados of entrada |
+| 429  | Too Many Requests - Limite of taxa excedido |
+| 500  | Internal Server Erro - Erro of the serviço of IA or tempo esgotado |
+| 503  | Service Unavailable - Serviço of IA temporariamente indisponível |
 
-- **Processing Time:** 3-8 seconds for GPT-4, 2-5 seconds for GPT-3.5-turbo
-- **API Latency:** 80-90% of total time
-- **Cost per Report:**
-  - GPT-4: $0.03-$0.12 per report (depending on length)
-  - GPT-4-Turbo: $0.01-$0.05 per report
-  - GPT-3.5-Turbo: $0.002-$0.01 per report
-- **Quality Metrics:**
-  - Factual Accuracy: 95-98% (validated against source data)
-  - Actionability Score: 8.5-9.2/10 (human evaluation)
-  - Readability: 85-92% (Flesch Reading Ease)
-- **Throughput:** 10-20 reports per minute (with rate limiting)
-- **Caching Strategy:** Generated reports cached for 24 hours per data snapshot
+## Erros
 
-### 8. Error Handling
+**Campos Obrigatórios Faltantes:**
+```json
+{
+  "error": "Validation failed",
+  "message": "Required fields missing",
+  "details": {
+    "data": "The data field is required and must be an array."
+  }
+}
+```
 
-**API Errors:**
-- **Rate Limit (429):** Exponential backoff, queue for retry
-- **Invalid Request (400):** Validate input data, simplify prompt
-- **Model Overload (503):** Retry with alternative model
-- **Context Length Exceeded:** Chunk data, generate in sections
+**Formato of Dados Inválido:**
+```json
+{
+  "error": "Invalid format",
+  "message": "Data format does not match expected schema.",
+  "expected_format": "Array of objects with required fields"
+}
+```
 
-**Quality Issues:**
-- **Generic Output:** Increase temperature slightly, add more specific instructions
-- **Hallucinations:** Lower temperature, add "only use provided data" instruction
-- **Incomplete Report:** Increase max_tokens, retry with higher limit
+**Erro of the Serviço of IA:**
+```json
+{
+  "error": "Service error",
+  "message": "Failed to process request due to AI service error.",
+  "retry_after": 60
+}
+```
 
-## Related
+## Notes
 
-### Related Endpoints
+### Melhores Práticas
 
-- **[Excess Inventory NLP](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/ExcessInventoryNlp.md)** - Analyzes text descriptions for excess inventory
-- **[Inventory History Improved](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/InventoryHistoryImproved.md)** - Provides historical data for report context
-- **[Inventory Optimization](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/InventoryOptimization.md)** - Supplies optimization recommendations
-- **[NLP Analysis](/docs/EN/ArtificialIntelligence/Endpoints/EchoIntel/Inventory/NlpAnalysis.md)** - Extracts insights from product descriptions
+- **Qualidade of Dados:** Garantir que os dados of entrada sejam limpos, completos and representativos
+- **Tamanho of the Lote:** Otimizar tamanhos of lote (1,000-10,000 registros) for o melhor desempenho
+- **Tratamento of Erros:** Implementar lógica of retry with backoff exponencial for erros transitórios
+- **Monitoramento:** Rastrear tempos of processamento and métricas of precision em produção
 
-### Related Domain Concepts
+### Otimização of Desempenho
 
-- **Generative AI:** GPT models, prompt engineering, natural language generation
-- **Report Automation:** Automated reporting, business intelligence narratives
-- **LLM Integration:** API design, token management, error handling
-- **Inventory Management:** Excess stock analysis, turnover optimization, cost reduction
+- Usar processamento em lote for conjuntos of dados grees
+- Cachear analysiss solicitadas frequentemente queo apropriado
+- Minimizar tamanho of the carga útil excluindo campos desnecessários
+- Aproveitar compressão for requisições grees (gzip codificação)
 
-### Integration Points
+### Considerações of Segurança
 
-- **Business Intelligence Dashboards:** Embed generated reports in BI tools
-- **Email Systems:** Automated report distribution to stakeholders
-- **ERP Systems:** Trigger report generation on inventory threshold alerts
-- **Document Management:** Store reports with versioning and audit trail
+- Todos os dados são criptografados em trânsito (TLS 1.3) and em repouso
+- As chaves of API and segredos devem ser rotacionados to cada 90 dias
+- Os logs of auditoria são mantidos por 12 meses
+- As políticas of retenção of dados estão em conformidade with GDPR and regulamentações regionais
 
-### Use Cases
+## Perguntas Frequentes
 
-- **Weekly Excess Inventory Reviews:** Automated reports for inventory managers
-- **Board Presentations:** Executive-level summaries with financial impact
-- **Warehouse Operations:** Operational reports for warehouse staff with action items
-- **Financial Planning:** Cost analysis reports for CFO and finance teams
-- **Vendor Negotiations:** Data-driven reports for renegotiating purchase agreements
+### Q: Quão precisas são as previsões/analysiss?
+**A:** A precision varia por Endpoint and qualidade of the dados. A higheria of the modelos alcança 85-95% of precision em conjuntos of dados of validação. A precision melhora with dados of entrada of higher qualidade and conjuntos of dados of treinamento higheres. Monitore to pontuação de `confidence` in the respostas for confiabilidade por previsão.
 
-### Best Practices
+### Q: Qual é o tamanho máximo of the carga útil?
+**A:** O tamanho máximo of the requisição é 20MB (~250,000 registros dependendo of the contagem of campos). Para conjuntos of dados higheres, use processamento em lote or contate o suporte for opções of processamento em massa.
 
-- **Provide Complete Data:** More context enables better analysis
-- **Update Regularly:** Run reports weekly or monthly for trend tracking
-- **Validate Recommendations:** Cross-check AI suggestions with domain expertise
-- **Customize Prompts:** Tailor prompt templates to specific business needs
-- **Monitor Costs:** Track API usage and optimize model selection
+### Q: Com que frequência os modelos são retreinados?
+**A:** Os modelos são retreinados mensalmente with dados frescos or queo degradação significativa of precision é detectada. O retreinamento personalizado of modelos pode ser solicitado através of the suporte.
+
+### Q: Posso usar este Endpoint em aplicações em tempo real?
+**A:** Sim, os tempos of resposta típicos são 100-500ms. Para casos of uso em tempo real of alto rendimento (>1,000 req/min), contate o suporte for planejamento of capacidade dedicado.
+
+### Q: Como to privacidade of the dados é tratada?
+**A:** Todos os dados of customers são estritamente isolados por tenant. Os dados nunca são compartilhados entre tenants or usados for treinamento of modelos entre tenants. Estamos em conformidade with GDPR, CCPA and regulamentações specific of the setor. Os dados são retidos por 90 dias to menos que especificado of outra forma.
+
+### Q: O que acontece se o serviço of IA estiver indisponível?
+**A:** O sistema retorna um status 503 with cabeçalho `retry_after` indiceo queo tentar novamente. Implemente lógica of retry with backoff exponencial (atraso inicial: 1s, máx: 60s). O SLA of disponibilidade of the serviço é 99.9% mensal.
+
+## Manuais Comerciais
+
+### Playbook 1: Reduce excess inventory carrying costs
+**Objetivo:** Aproveitar insights of IA for alcançar resultados empresariais mensuráveis.
+
+**Implementação:**
+1. Coletar and preparar dados históricos for analysis
+2. Enviar dados ao Endpoint with configuração apropriada
+3. Analisar resultados and identificar targets of alta prioridade
+4. Implementar ações empresariais baseadas em insights
+5. Monitorar desempenho and iterar in the estratégia
+
+**Resultados Esperados:**
+- 20-40% melhoria em métricas empresariais chave
+- Custos operacionais reduzidos and eficiência melhorada
+- Tomada of decisão baseada em dados
+- ROI mensurável dentro of 3-6 meses
+
+### Playbook 2: Optimize stock levels and reorder points
+**Objetivo:** Otimizar processos empresariais useo insights preditivos.
+
+**Implementação:**
+1. Identificar métricas chave and critérios of sucesso
+2. Integrar Endpoint em fluxos of trabalho existentes
+3. Usar previsões for priorizar ações
+4. A/B test abordagens impulsionadas por IA vs tradicionais
+5. Escalar estratégias bem-sucedidas em toda to organização
+
+**Resultados Esperados:**
+- 15-30% aumento em eficiência
+- Alocação of recursos melhorada
+- Ciclos of decisão mais rápidos
+- Vantagem competitiva através of the adoção of IA
+
+### Playbook 3: Identify slow-moving and obsolete items
+**Objetivo:** Impulsionar crescimento of receita através of otimização potencializada por IA.
+
+**Implementação:**
+1. Definir métricas of impacto in the receita
+2. Implementar insights of IA em canais voltados ao cliente
+3. Personalizar experiências baseadas em previsões
+4. Rastrear conversão and aumento of receita
+5. Refinar continuamente baseado em feedback
+
+**Resultados Esperados:**
+- 10-25% aumento of receita
+- Pontuações of satisfação of the cliente mais altas
+- Taxas of conversão melhoradas
+- Relacionamentos with customers mais fortes
+
+### Playbook 4: Improve inventory turnover ratios
+**Objetivo:** Alcançar excelência operacional através of IA.
+
+**Implementação:**
+1. Estabelecer métricas of linha of base
+2. Integrar insights of IA em operações diárias
+3. Automatizar tomada of decisão repetitiva
+4. Monitorar KPIs and ajustar limites
+5. Compartilhar aprendizados entre equipes
+
+**Resultados Esperados:**
+- 25-50% redução em esforço manual
+- Precisão and consistência melhoradas
+- Tempo até insight mais rápido
+- Processos escaláveis
+
+## Relacionado
+
+- Os endpoints relacionados serão listados aqui with base in the categoria
 
 ## References
 
-* Controller: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:266`
+* Controlador: `src/Domain/ArtificialIntelligence/Http/Controllers/EchoIntelProxyController.php:276`

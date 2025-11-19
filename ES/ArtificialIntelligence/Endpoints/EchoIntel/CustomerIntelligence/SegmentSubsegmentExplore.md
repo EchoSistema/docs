@@ -20,22 +20,22 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 | ------------------ | ------ | ----------- | --------- |
 | Authorization      | string | Sí         | `Bearer {token}`. |
 | X-Customer-Api-Id  | string | Condicional | UUID del tenant (v4). |
-| X-Secret           | string | Condicional | 64-caracteres de secreto. |
+| X-Secret           | string | Condicional | 64-caracteres de segredo. |
 | Accept-Language    | string | No         | Language (`en`, `es`, `pt`). |
 | Content-Tipo       | string | Sí         | `application/json`. |
 
 ## Parámetros
 
-> **Note:** Los parámetros aceptan tanto `snake_case` y `camelCase`.
+> **Note:** Os parâmetros aceitam tanto `snake_case` e `camelCase`.
 
-### Cuerpo de la Solicitud Parámetros
+### Corpo de la Requisição Parâmetros
 
-| Parámetro | Tipo | Requerido | Por Defecto | Descripción | Significado Empresarial |
+| Parámetro | Tipo | Requerido | Padrão | Descripción | Significado Empresarial |
 |-----------|------|----------|---------|-------------|------------------|
 | parent_segment_id | string | Sí | - | ID of parent segment to explore for subsegments. | Which existing segment to drill into. |
 | customer_data | array | Sí | - | Customers belonging to parent segment with features. | Customer attributes for subsegmentation. |
 | num_subsegments | integer | No | `3` | Number of subsegments to create within parent segment (2-10). | Granularity of subdivision. 3-5 typical. |
-| clustering_algorithm | string | No | `"kmeans"` | Algorithm: `kmeans`, `dbscan`, `hierarchical`. | How to discover subsegments. KMeans is styard. |
+| clustering_algorithm | string | No | `"kmeans"` | Algorithm: `kmeans`, `dbscan`, `hierarchical`. | How to discover subsegments. KMeans is steard. |
 | min_subsegment_size | integer | No | `50` | Minimum customers per subsegment. | Prevents tiny, non-actionable groups. |
 | include_profiles | boolean | No | `true` | Return detailed subsegment profiles with differentiating characteristics. | Enables subsegment interpretation y naming. |
 
@@ -49,7 +49,7 @@ Requerido – Bearer {token} con middleware `auth:sanctum`
 
 ## Ejemplos
 
-### Ejemplo de Solicitud (curl)
+### Exemplo de Requisição (curl)
 
 ```bash
 curl -X POST \
@@ -137,7 +137,7 @@ Choose high-value or strategically important parent segment for drill-down.
 Set num_subsegments (3-5 typical) based on campaign capacity.
 
 ### 4. Analyze Subsegment Profiles
-Review differentiators y descriptions to understy what makes each subsegment unique.
+Review differentiators y descriptions to underste what makes each subsegment unique.
 
 ### 5. Name y Document Subsegments
 Assign business-friendly names based on characteristics (e.g., "Champions", "Loyalists").
@@ -148,7 +148,7 @@ Develop segment-specific messaging y offers for each subsegment.
 ### 7. Iterate as Needed
 Further drill into subsegments to create micro-segments for 1:1 personalization.
 
-## Preguntas Frecuentes
+## Perguntas Frequentes
 
 ### Q: When should I use subsegment exploration vs. hierarchical segmentation?
 A: Use subsegment exploration for interactive, ad-hoc drill-down (explore one segment at a time). Use hierarchical segmentation for planned multi-level structures (all levels computed upfront). Exploration is better for iterative discovery, hierarchy for systematic planning.
@@ -160,12 +160,12 @@ A: Start with 3-4 subsegments. Too few (2) = insufficient granularity, too many 
 A: This indicates low variance within the parent segment. Either: (1) reduce num_subsegments, (2) add more discriminating features to customer_data, or (3) accept that this parent segment is homogeneous y doesn't need subdivision.
 
 ### Q: Can I drill into subsegments repeatedly?
-A: Sí. Take a subsegment y submit it as the parent_segment for another level of drill-down. Typical depth: 2-3 levels before segments become too small to be actionable.
+A: Sim. Take a subsegment y submit it as the parent_segment for another level of drill-down. Typical depth: 2-3 levels before segments become too small to be actionable.
 
 ## Notas
 
-### Rendimiento
-- **Tiempo de Procesamiento:** 200-800ms per segment exploration
+### Desempenho
+- **Tempo de Processamento:** 200-800ms per segment exploration
 - **Maximum Customers:** 100,000 per parent segment
 - **Rate Limiting:** 30 requests per minute
 
@@ -179,26 +179,26 @@ A: Sí. Take a subsegment y submit it as the parent_segment for another level of
 - **Silhouette score 0.50-0.70:** Good subsegmentation
 - **Silhouette score <0.50:** Weak subsegmentation, consider fewer subsegments or different features
 
-## Cómo se Calcula
+## Como é Calculado
 
-## Estado HTTP
+## Status HTTP
 
 | Status Código | Descripción |
 |-------------|-------------|
 | 200 OK | Request successful. Returns segment subsegment exploration results. |
-| 400 Bad Request | Invalid request Parámetros. Check Parámetro types y Requerido fields. |
+| 400 Bad Request | Invalid request Parâmetros. Check Parâmetro types y Obrigatório fields. |
 | 401 Unauthorized | Missing or invalid Bearer token. |
 | 403 Forbidden | Valid token but insufficient permissions. |
-| 422 Unprocessable Entity | Request validation failed. See Respuesta for details. |
-| 429 Too Many Requests | Límite de tasa excedido. Retry after cooldown period. |
-| 500 Internal Server Error | Server Error. Contact support if persistent. |
-| 503 Service Unavailable | Servicio de IA temporalmente No disponible. Retry with exponential backoff. |
+| 422 Unprocessable Entity | Request validation failed. See Resposta for details. |
+| 429 Too Many Requests | Limite de taxa excedido. Retry after cooldown period. |
+| 500 Internal Server Erro | Server Erro. Contact support if persistent. |
+| 503 Service Unavailable | Serviço de IA temporariamente indisponível. Retry with exponential backoff. |
 
-## Errores
+## Erros
 
-### Common Error Responses
+### Common Erro Responses
 
-#### Missing Requerido Parámetros
+#### Missing Obrigatório Parâmetros
 ```json
 {
   "error": "Validation failed",
@@ -211,9 +211,9 @@ A: Sí. Take a subsegment y submit it as the parent_segment for another level of
 }
 ```
 
-**Solution:** Ensure all Requerido Parámetros are provided in the Cuerpo de la Solicitud.
+**Solution:** Ensure all Obrigatório Parâmetros are provided in the Corpo de la Requisição.
 
-#### Invalid Autenticación
+#### Invalid Autenticação
 ```json
 {
   "error": "Unauthorized",
@@ -222,9 +222,9 @@ A: Sí. Take a subsegment y submit it as the parent_segment for another level of
 }
 ```
 
-**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` y `X-Secret` Encabezados.
+**Solution:** Verify Bearer token is valid y not expired. Check `X-Customer-Api-Id` e `X-Secret` Cabeçalhos.
 
-## Cómo se Calcula
+## Como é Calculado
 
 The subsegment exploration system enables drill-down analysis within customer segments:
 
@@ -238,7 +238,7 @@ The system performs iterative clustering to discover subsegments within parent s
 - **Multi-Level Hierarchy:** Supports multiple levels of nesting (segments → subsegments → micro-segments)
 - **Interactive Exploration:** Allows dynamic exploration of any segment branch
 
-### Pasos de Procesamiento
+### Passos de Processamento
 
 1. **Segment Selection:** Choose parent segment to explore for subsegments
 2. **Subset Extraction:** Filter customers belonging to selected parent segment
@@ -246,10 +246,10 @@ The system performs iterative clustering to discover subsegments within parent s
 4. **Subsegment Profiling:** Profile each discovered subsegment with distinguishing characteristics
 5. **Comparison:** Compare subsegments to each other y to parent segment average
 
-### Rendimiento
+### Desempenho
 
-- **Tiempo de Procesamiento:** 200-800ms per segment exploration (depends on segment size)
-- **Requisitos de Datos:** Existing parent segmentation plus customer feature data
+- **Tempo de Processamento:** 200-800ms per segment exploration (depends on segment size)
+- **Requisitos de Dados:** Existing parent segmentation plus customer feature data
 
 ## Relacionado
 
