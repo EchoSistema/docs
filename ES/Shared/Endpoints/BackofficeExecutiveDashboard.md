@@ -62,8 +62,19 @@ curl -X GET \
         }
       ],
       "critical_alerts": {
-        "total_unread": 3,
-        "latest": []
+        "total": 2,
+        "latest": [
+          {
+            "level": "ERROR",
+            "message": "Connection timeout on external API",
+            "timestamp": "2025-11-19T14:20:00.000000Z"
+          },
+          {
+            "level": "ERROR",
+            "message": "Failed to process payment order",
+            "timestamp": "2025-11-19T14:18:00.000000Z"
+          }
+        ]
       },
       "uptime": {
         "last_24h": null,
@@ -140,11 +151,12 @@ curl -X GET \
 - Los usuarios de plataforma necesitan `backoffice.all` en los permisos de sus roles
 
 ### Fuentes de Datos
-- **Usuarios por Área**: Agregación de `users` → `platforms` → `platform_domain_areas`
-- **Alertas Críticas**: Mensajes no leídos en `platform_contact_messages`
-- **Notificaciones del Sistema**: Análisis de las últimas 500 líneas de `storage/logs/laravel.log`
+- **Usuarios por Área**: Conteo DISTINCT de `user_id` en `platform_user_role` agrupados por `domain_area`
+- **Alertas Críticas**: Últimos 5 mensajes de ERROR de las últimas 500 líneas de `storage/logs/laravel.log`
+- **Notificaciones del Sistema**: Análisis de las últimas 500 líneas de `storage/logs/laravel.log` buscando ERROR, WARNING, CRITICAL y EMERGENCY
 - **Ingresos**: Suma de `payment_orders` con `paid_at` no nulo
 - **Recursos**: Métricas del servidor via `sys_getloadavg()`, `memory_get_usage()`, `disk_free_space()`
+- **Tasa de Crecimiento**: Calculada como `((usuarios_mes_actual - usuarios_mes_anterior) / usuarios_mes_anterior) * 100`, puede ser negativa si hay eliminación de usuarios
 
 ### WebSocket/Broadcasting
 - El frontend puede suscribirse al canal `backoffice` para actualizaciones en tiempo real
@@ -170,3 +182,6 @@ curl -X GET \
 - 2025-11-19: Endpoint creado con métricas de sistema, negocio y acciones rápidas
 - 2025-11-19: Agregado análisis de logs del sistema para notificaciones
 - 2025-11-19: Implementado programación cada 10 minutos y broadcasting de eventos
+- 2025-11-19: Cambiado `critical_alerts` para buscar ERRORs del laravel.log en lugar de mensajes no leídos
+- 2025-11-19: Cambiado conteo de usuarios para usar `platform_user_role` con DISTINCT `user_id`
+- 2025-11-19: La tasa de crecimiento puede ser negativa si hay eliminación de usuarios

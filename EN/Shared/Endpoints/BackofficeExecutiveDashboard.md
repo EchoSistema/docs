@@ -62,8 +62,19 @@ curl -X GET \
         }
       ],
       "critical_alerts": {
-        "total_unread": 3,
-        "latest": []
+        "total": 2,
+        "latest": [
+          {
+            "level": "ERROR",
+            "message": "Connection timeout on external API",
+            "timestamp": "2025-11-19T14:20:00.000000Z"
+          },
+          {
+            "level": "ERROR",
+            "message": "Failed to process payment order",
+            "timestamp": "2025-11-19T14:18:00.000000Z"
+          }
+        ]
       },
       "uptime": {
         "last_24h": null,
@@ -97,6 +108,66 @@ curl -X GET \
         "warning_count": 12,
         "critical_count": 1
       }
+    },
+    "help": {
+      "system_health": {
+        "domain_areas": {
+          "what_it_is": "Distribution of users across different business domains (e-commerce, real estate, etc.)",
+          "description": "This metric shows how many active users are registered in each domain area..."
+        },
+        "critical_alerts": {
+          "what_it_is": "Recent error messages from application logs",
+          "description": "This metric displays the last 5 ERROR-level messages found in your laravel.log file..."
+        },
+        "uptime": {
+          "what_it_is": "System availability percentage over different time periods",
+          "description": "This metric tracks how much time your system has been operational..."
+        },
+        "resource_utilization": {
+          "what_it_is": "Server resource consumption (CPU, Memory, Disk)",
+          "description": "This metric provides real-time information about your server's hardware resource usage..."
+        }
+      },
+      "business_metrics": {
+        "active_users": {
+          "what_it_is": "Total number of registered users in the platform",
+          "description": "This metric represents the cumulative count of all users..."
+        },
+        "new_users_month": {
+          "what_it_is": "Number of users who registered during the current calendar month",
+          "description": "This metric shows how many new users joined your platform..."
+        },
+        "growth_rate_mom": {
+          "what_it_is": "Month-over-month user growth percentage",
+          "description": "This metric calculates the percentage change in new user registrations..."
+        },
+        "revenue_total_cents": {
+          "what_it_is": "Total revenue in cents since platform inception",
+          "description": "Sum of all paid orders since platform inception..."
+        },
+        "revenue_month_cents": {
+          "what_it_is": "Revenue generated in the current calendar month",
+          "description": "Revenue generated in the current calendar month only..."
+        },
+        "platform_distribution": {
+          "what_it_is": "How many platforms exist in each domain area",
+          "description": "This metric shows the distribution of your platforms..."
+        }
+      },
+      "quick_actions": {
+        "deploy_status": {
+          "what_it_is": "Current environment and version information",
+          "description": "This metric provides technical details about your running environment..."
+        },
+        "pending_approvals": {
+          "what_it_is": "Number of user role requests awaiting approval",
+          "description": "This metric shows how many users have requested roles or permissions..."
+        },
+        "system_notifications": {
+          "what_it_is": "Count of different log severity levels in your application",
+          "description": "This metric analyzes your laravel.log file (last 500 lines)..."
+        }
+      }
     }
   }
 }
@@ -125,6 +196,110 @@ curl -X GET \
 }
 ```
 
+## Metrics Help
+
+### System Health
+
+#### Domain Areas
+**What it is**: Distribution of users across different business domains (e-commerce, real estate, etc.)
+
+**Help**: This metric shows how many active users are registered in each domain area of your platform ecosystem. Users are counted distinctly by their association through `platform_user_role`, meaning each unique user is counted only once per domain area, regardless of how many roles they have. This helps you understand which business areas are most actively used and where your user base is concentrated.
+
+#### Critical Alerts
+**What it is**: Recent error messages from application logs
+
+**Help**: This metric displays the last 5 ERROR-level messages found in your `laravel.log` file. These are critical issues that occurred in your application and require attention. The system analyzes the last 500 lines of logs to find recent errors. Each alert includes the error level (ERROR, WARNING, CRITICAL, or EMERGENCY), the error message (truncated to 200 characters), and the timestamp when it occurred. Monitor this regularly to catch and resolve issues before they impact users.
+
+#### Uptime
+**What it is**: System availability percentage over different time periods
+
+**Help**: This metric tracks how much time your system has been operational and accessible to users. It's measured as a percentage over three periods: last 24 hours, last 7 days, and last 30 days. Currently returns `null` until integrated with a monitoring system. A value of 99.9% means your system was down for only 0.1% of that time period. This is crucial for understanding your service reliability and meeting SLA commitments.
+
+#### Resource Utilization
+**What it is**: Server resource consumption (CPU, Memory, Disk)
+
+**Help**: This metric provides real-time information about your server's hardware resource usage:
+- **CPU**: Percentage of processing power being used. High values (>80%) may indicate performance bottlenecks.
+- **Memory**: Shows used RAM versus available limit. Memory pressure can slow down your application or cause crashes.
+- **Disk**: Storage space consumption. Running out of disk space can prevent logging, file uploads, and database operations.
+
+These metrics help you identify when you need to scale resources or optimize your application.
+
+### Business Metrics
+
+#### Active Users
+**What it is**: Total number of registered users in the platform
+
+**Help**: This metric represents the cumulative count of all users who have ever registered on your platform across all domains. It's calculated by counting distinct users in the `platform_user_role` table. This is your total user base size and a key indicator of platform growth over time.
+
+#### New Users (Month)
+**What it is**: Number of users who registered during the current calendar month
+
+**Help**: This metric shows how many new users joined your platform from the 1st day of the current month until now. It's calculated by counting users whose `created_at` date falls within the current month. Use this to track user acquisition effectiveness and identify trends in growth patterns.
+
+#### Growth Rate (MoM)
+**What it is**: Month-over-month user growth percentage
+
+**Help**: This metric calculates the percentage change in new user registrations compared to the previous month. Formula: `((current_month - previous_month) / previous_month) × 100`. A positive value indicates growth, while a negative value means fewer users joined this month compared to last month (which can happen due to user deletions or seasonal variations). For example, 25% means you gained 25% more users this month than last month.
+
+#### Revenue (Total & Monthly)
+**What it is**: Total and current month's revenue in cents
+
+**Help**: This metric tracks your platform's financial performance:
+- **Total Revenue**: Sum of all paid orders since platform inception. Calculated from `payment_orders` table where `paid_at` is not null.
+- **Monthly Revenue**: Revenue generated in the current calendar month only.
+
+Values are in cents to avoid floating-point precision issues (e.g., 1500000000 cents = $15,000,000.00). This helps you monitor financial health and identify revenue trends.
+
+#### Platform Distribution
+**What it is**: How many platforms exist in each domain area
+
+**Help**: This metric shows the distribution of your platforms across different business domains. Each entry shows the domain area name, a list of platform names in that domain, and the total count. This helps you understand your platform ecosystem structure and identify which domains have the most or least platform presence.
+
+### Quick Actions
+
+#### Deploy Status
+**What it is**: Current environment and version information
+
+**Help**: This metric provides technical details about your running environment:
+- **Stage**: Whether you're in Production or Staging
+- **Environment**: The Laravel environment name (production, staging, development)
+- **Laravel Version**: The framework version you're running
+- **PHP Version**: The PHP interpreter version
+
+Use this to quickly verify you're looking at the correct environment and ensure you're running expected versions. Critical for troubleshooting and ensuring production stability.
+
+#### Pending Approvals
+**What it is**: Number of user role requests awaiting approval
+
+**Help**: This metric shows how many users have requested roles or permissions that require administrative approval. These are records in `platform_user_role` with status 'requested'. Each pending approval represents a user waiting to gain access to specific platform features. High numbers may indicate a backlog in your approval process that could be frustrating users.
+
+#### System Notifications
+**What it is**: Count of different log severity levels in your application
+
+**Help**: This metric analyzes your `laravel.log` file (last 500 lines) and categorizes issues by severity:
+- **ERROR**: Application errors that need attention but didn't crash the system
+- **WARNING**: Potentially problematic situations that should be investigated
+- **CRITICAL**: Critical conditions that need immediate attention
+- **EMERGENCY**: System is unusable, requires immediate action
+
+The `latest_errors` array shows the 5 most recent ERROR-level messages with full details. Use this to monitor application health and prioritize which issues to address first. High error counts may indicate systemic problems requiring immediate investigation.
+
+### Help Field in Response
+
+The response now includes a `help` field containing descriptions for all metrics. Each metric has:
+- `what_it_is`: A brief one-line summary of what the metric represents
+- `description`: A detailed explanation of how the metric is calculated, what it means, and how to interpret it
+
+This help information is included directly in the API response, making it easy for frontend applications to display contextual help to users without requiring additional API calls or hardcoded descriptions.
+
+**Example usage in frontend:**
+```javascript
+// Display help tooltip when user hovers over a metric
+const help = response.data.help.business_metrics.active_users;
+tooltip.text = `${help.what_it_is}\n\n${help.description}`;
+```
+
 ## Notes
 
 ### Data Updates
@@ -140,11 +315,12 @@ curl -X GET \
 - Platform users need `backoffice.all` in their role permissions
 
 ### Data Sources
-- **Users by Area**: Aggregation of `users` → `platforms` → `platform_domain_areas`
-- **Critical Alerts**: Unread messages in `platform_contact_messages`
-- **System Notifications**: Analysis of last 500 lines from `storage/logs/laravel.log`
+- **Users by Area**: DISTINCT count of `user_id` in `platform_user_role` grouped by `domain_area`
+- **Critical Alerts**: Last 5 ERROR messages from the last 500 lines of `storage/logs/laravel.log`
+- **System Notifications**: Analysis of last 500 lines from `storage/logs/laravel.log` searching for ERROR, WARNING, CRITICAL and EMERGENCY
 - **Revenue**: Sum of `payment_orders` with non-null `paid_at`
 - **Resources**: Server metrics via `sys_getloadavg()`, `memory_get_usage()`, `disk_free_space()`
+- **Growth Rate**: Calculated as `((current_month_users - previous_month_users) / previous_month_users) * 100`, can be negative if users are deleted
 
 ### WebSocket/Broadcasting
 - Frontend can subscribe to `backoffice` channel for real-time updates
@@ -170,3 +346,7 @@ curl -X GET \
 - 2025-11-19: Endpoint created with system, business metrics and quick actions
 - 2025-11-19: Added system log analysis for notifications
 - 2025-11-19: Implemented 10-minute scheduling and event broadcasting
+- 2025-11-19: Changed `critical_alerts` to fetch ERRORs from laravel.log instead of unread messages
+- 2025-11-19: Changed user count to use `platform_user_role` with DISTINCT `user_id`
+- 2025-11-19: Growth rate can be negative if users are deleted
+- 2025-11-19: Added `help` field in response with metric descriptions for frontend tooltips

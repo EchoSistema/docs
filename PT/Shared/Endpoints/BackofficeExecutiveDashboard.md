@@ -68,14 +68,17 @@ curl -X GET \
         }
       ],
       "critical_alerts": {
-        "total_unread": 3,
+        "total": 2,
         "latest": [
           {
-            "uuid": "alert-uuid-1",
-            "type": "bug",
-            "platform_id": 1,
-            "reporter": "João Silva",
-            "created_at": "2025-11-19T14:25:00.000000Z"
+            "level": "ERROR",
+            "message": "Connection timeout on external API",
+            "timestamp": "2025-11-19T14:20:00.000000Z"
+          },
+          {
+            "level": "ERROR",
+            "message": "Failed to process payment order",
+            "timestamp": "2025-11-19T14:18:00.000000Z"
           }
         ]
       },
@@ -159,9 +162,12 @@ curl -X GET \
 | data.system_health.domain_areas[].name | string | Nome da área de domínio |
 | data.system_health.domain_areas[].users | integer | Quantidade de usuários na área |
 | data.system_health.domain_areas[].status | string | Status operacional ("operational") |
-| data.system_health.critical_alerts | object | Alertas críticos não lidos |
-| data.system_health.critical_alerts.total_unread | integer | Total de mensagens não lidas |
-| data.system_health.critical_alerts.latest | array | Últimas 5 mensagens não lidas |
+| data.system_health.critical_alerts | object | Alertas críticos de ERROR do log |
+| data.system_health.critical_alerts.total | integer | Total de ERRORs encontrados |
+| data.system_health.critical_alerts.latest | array | Últimas 5 mensagens de ERROR do laravel.log |
+| data.system_health.critical_alerts.latest[].level | string | Nível do log (ERROR, WARNING, CRITICAL, EMERGENCY) |
+| data.system_health.critical_alerts.latest[].message | string | Mensagem do erro (max 200 chars) |
+| data.system_health.critical_alerts.latest[].timestamp | string\|null | Data e hora do erro (ISO 8601) |
 | data.system_health.uptime | object | Métricas de uptime (null se não disponível) |
 | data.system_health.uptime.last_24h | float\|null | Uptime últimas 24 horas (%) |
 | data.system_health.uptime.last_7d | float\|null | Uptime últimos 7 dias (%) |
@@ -179,7 +185,7 @@ curl -X GET \
 | data.business_metrics | object | Métricas de negócio |
 | data.business_metrics.active_users | integer | Total de usuários ativos |
 | data.business_metrics.new_users_month | integer | Novos usuários no mês atual |
-| data.business_metrics.growth_rate_mom | float | Taxa de crescimento mês a mês (%) |
+| data.business_metrics.growth_rate_mom | float | Taxa de crescimento mês a mês (%, pode ser negativa se houver deleção de usuários) |
 | data.business_metrics.revenue_total_cents | integer | Receita total em centavos |
 | data.business_metrics.revenue_month_cents | integer | Receita do mês em centavos |
 | data.business_metrics.platform_distribution | array | Distribuição de plataformas por área |
@@ -240,11 +246,12 @@ curl -X GET \
 - Usuários de plataforma precisam ter `backoffice.all` nas permissões de suas roles
 
 ### Fontes de Dados
-- **Usuários por Área**: Agregação de `users` → `platforms` → `platform_domain_areas`
-- **Alertas Críticos**: Mensagens não lidas em `platform_contact_messages`
-- **Notificações do Sistema**: Análise das últimas 500 linhas de `storage/logs/laravel.log`
+- **Usuários por Área**: Contagem DISTINCT de `user_id` em `platform_user_role` agrupados por `domain_area`
+- **Alertas Críticos**: Últimas 5 mensagens de ERROR das últimas 500 linhas do `storage/logs/laravel.log`
+- **Notificações do Sistema**: Análise das últimas 500 linhas de `storage/logs/laravel.log` buscando ERROR, WARNING, CRITICAL e EMERGENCY
 - **Receita**: Soma de `payment_orders` com `paid_at` não nulo
 - **Recursos**: Métricas do servidor via `sys_getloadavg()`, `memory_get_usage()`, `disk_free_space()`
+- **Taxa de Crescimento**: Calculada como `((usuários_mês_atual - usuários_mês_anterior) / usuários_mês_anterior) * 100`, pode ser negativa se houver deleção de usuários
 
 ### Uptime Monitoring
 - Campos `uptime` retornam `null` até integração com sistema de monitoramento
@@ -279,3 +286,6 @@ curl -X GET \
 - 2025-11-19: Endpoint criado com métricas de sistema, negócio e ações rápidas
 - 2025-11-19: Adicionada análise de logs do sistema para notificações
 - 2025-11-19: Implementado agendamento a cada 10 minutos e broadcasting de eventos
+- 2025-11-19: Alterado `critical_alerts` para buscar ERRORs do laravel.log ao invés de mensagens não lidas
+- 2025-11-19: Alterado contagem de usuários para usar `platform_user_role` com DISTINCT `user_id`
+- 2025-11-19: Taxa de crescimento pode ser negativa se houver deleção de usuários
