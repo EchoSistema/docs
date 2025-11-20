@@ -102,14 +102,14 @@ curl -X GET \
 
 ## HTTP Status
 
-- 200: OK
+- 200: OK (returns empty arrays if file not found)
 - 401: Invalid or missing token
 - 403: Missing `index.all` permission
-- 404: File not found
 
 ## Notes
 
 - Only files in `storage/logs` are exposed.
+- **If file not found**: returns HTTP 200 with `files: []` and `lines: []` instead of 404 error
 - Provide only the file prefix (without `.log`). The endpoint searches for all files starting with that prefix (e.g., `order`, `order-2025-11-17.log`) and merges the lines.
 - Each line is converted to an object with `timestamp`, `environment`, `type`, `name` (excerpt between `:` and `successfully`), `message` and `context` (when the log is in standard Laravel format). If the line doesn't match the pattern, the `line` field is returned with the raw content.
 - The returned content is a consolidated *tail*; use `lines` to define the maximum number of aggregated lines.

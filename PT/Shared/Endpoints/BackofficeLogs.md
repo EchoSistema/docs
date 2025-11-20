@@ -102,14 +102,14 @@ curl -X GET \
 
 ## Status HTTP
 
-- 200: OK
+- 200: OK (retorna arrays vazios se arquivo não for encontrado)
 - 401: Token inválido ou ausente
 - 403: Sem permissão `index.all`
-- 404: Arquivo não encontrado
 
 ## Notas
 
 - Apenas arquivos em `storage/logs` são expostos.
+- **Se o arquivo não for encontrado**: retorna HTTP 200 com `files: []` e `lines: []` ao invés de erro 404
 - Informe somente o prefixo do arquivo (sem `.log`). O endpoint procura todos os arquivos que começam com esse prefixo (ex.: `order`, `order-2025-11-17.log`) e faz o *merge* das linhas.
 - Cada linha é convertida em um objeto com `timestamp`, `environment`, `type`, `name` (trecho entre o `:` e o `successfully`) , `message` e `context` (quando o log estiver no formato padrão Laravel). Caso a linha não corresponda ao padrão, o campo `line` é retornado com o conteúdo bruto.
 - O conteúdo retornado é um *tail* consolidado; utilize `lines` para definir o número máximo de linhas agregadas.
