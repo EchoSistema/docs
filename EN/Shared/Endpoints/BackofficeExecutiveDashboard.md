@@ -77,9 +77,9 @@ curl -X GET \
         ]
       },
       "uptime": {
-        "last_24h": null,
-        "last_7d": null,
-        "last_30d": null
+        "last_24h": 0,
+        "last_7d": 0,
+        "last_30d": 0
       },
       "resource_utilization": {
         "cpu_percentage": 45.23,
@@ -322,17 +322,32 @@ tooltip.text = `${help.what_it_is}\n\n${help.description}`;
 - **Resources**: Server metrics via `sys_getloadavg()`, `memory_get_usage()`, `disk_free_space()`
 - **Growth Rate**: Calculated as `((current_month_users - previous_month_users) / previous_month_users) * 100`, can be negative if users are deleted
 
+### Uptime Monitoring
+- `uptime` fields return `0` until integration with monitoring system
+- For real monitoring, consider: Uptime Robot, Pingdom, New Relic, AWS CloudWatch, or Laravel Pulse
+
 ### WebSocket/Broadcasting
-- Frontend can subscribe to `backoffice` channel for real-time updates
-- Event: `executive-dashboard-updated`
+- Notifications sent via `PlatformNotificationService` to users with backoffice permissions
+- Event type: `executive_dashboard.updated`
+- Notified users: MASTER, ADMINISTRATOR, SUPERVISOR, COORDINATOR, SUPPORT
+- Channel: Private user notifications (via Laravel Notifications)
 - Event broadcast payload:
   ```json
   {
-    "uuid": "platform-uuid",
-    "generated_at": "2025-11-19T14:30:00.000000Z"
+    "type": "executive_dashboard.updated",
+    "data": {
+      "dashboard": {
+        "id": "...",
+        "generated_at": "2025-11-20T14:30:00.000000Z",
+        "system_health": { ... },
+        "business_metrics": { ... },
+        "quick_actions": { ... }
+      }
+    }
   }
   ```
-- The event notifies when new data is available, allowing frontend to reload the dashboard
+- Event automatically fired when new snapshot is created in MongoDB (via Observer)
+- Complete dashboard data is sent, enabling real-time updates without additional request
 - Useful for dashboards that stay open for long periods
 
 ## Related
@@ -343,6 +358,9 @@ tooltip.text = `${help.what_it_is}\n\n${help.description}`;
 
 ## Changelog
 
+- 2025-11-20: Changed uptime to return `0` instead of `null`
+- 2025-11-20: Refactored broadcasting to use PlatformNotificationService pattern via Observer
+- 2025-11-20: Broadcasting now sends complete dashboard data instead of just UUID
 - 2025-11-19: Endpoint created with system, business metrics and quick actions
 - 2025-11-19: Added system log analysis for notifications
 - 2025-11-19: Implemented 10-minute scheduling and event broadcasting

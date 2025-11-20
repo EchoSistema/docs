@@ -83,9 +83,9 @@ curl -X GET \
         ]
       },
       "uptime": {
-        "last_24h": null,
-        "last_7d": null,
-        "last_30d": null
+        "last_24h": 0,
+        "last_7d": 0,
+        "last_30d": 0
       },
       "resource_utilization": {
         "cpu_percentage": 45.23,
@@ -168,10 +168,10 @@ curl -X GET \
 | data.system_health.critical_alerts.latest[].level | string | Nível do log (ERROR, WARNING, CRITICAL, EMERGENCY) |
 | data.system_health.critical_alerts.latest[].message | string | Mensagem do erro (max 200 chars) |
 | data.system_health.critical_alerts.latest[].timestamp | string\|null | Data e hora do erro (ISO 8601) |
-| data.system_health.uptime | object | Métricas de uptime (null se não disponível) |
-| data.system_health.uptime.last_24h | float\|null | Uptime últimas 24 horas (%) |
-| data.system_health.uptime.last_7d | float\|null | Uptime últimos 7 dias (%) |
-| data.system_health.uptime.last_30d | float\|null | Uptime últimos 30 dias (%) |
+| data.system_health.uptime | object | Métricas de uptime (0 se não disponível) |
+| data.system_health.uptime.last_24h | float | Uptime últimas 24 horas (%) - retorna 0 até integração com sistema de monitoramento |
+| data.system_health.uptime.last_7d | float | Uptime últimos 7 dias (%) - retorna 0 até integração com sistema de monitoramento |
+| data.system_health.uptime.last_30d | float | Uptime últimos 30 dias (%) - retorna 0 até integração com sistema de monitoramento |
 | data.system_health.resource_utilization | object | Utilização de recursos do servidor |
 | data.system_health.resource_utilization.cpu_percentage | float | Uso de CPU (%) |
 | data.system_health.resource_utilization.memory | object | Uso de memória |
@@ -254,8 +254,8 @@ curl -X GET \
 - **Taxa de Crescimento**: Calculada como `((usuários_mês_atual - usuários_mês_anterior) / usuários_mês_anterior) * 100`, pode ser negativa se houver deleção de usuários
 
 ### Uptime Monitoring
-- Campos `uptime` retornam `null` até integração com sistema de monitoramento
-- Não utilize dados falsos - melhor null do que impreciso
+- Campos `uptime` retornam `0` até integração com sistema de monitoramento
+- Para implementar monitoramento real, considere: Uptime Robot, Pingdom, New Relic, AWS CloudWatch ou Laravel Pulse
 
 ### Performance
 - Endpoint otimizado para leitura de cache
@@ -263,16 +263,27 @@ curl -X GET \
 - Queries otimizadas com JOINs e agregações no banco
 
 ### WebSocket/Broadcasting
-- Frontend pode se inscrever no canal `backoffice` para receber atualizações em tempo real
-- Evento: `executive-dashboard-updated`
+- Notificações são enviadas via `PlatformNotificationService` para usuários com permissões de backoffice
+- Evento: `executive_dashboard.updated` (tipo da notificação)
+- Usuários notificados: MASTER, ADMINISTRATOR, SUPERVISOR, COORDINATOR, SUPPORT
+- Canal: Notificação privada por usuário (via Laravel Notifications)
 - Payload do evento broadcast:
   ```json
   {
-    "uuid": "platform-uuid",
-    "generated_at": "2025-11-19T14:30:00.000000Z"
+    "type": "executive_dashboard.updated",
+    "data": {
+      "dashboard": {
+        "id": "...",
+        "generated_at": "2025-11-20T14:30:00.000000Z",
+        "system_health": { ... },
+        "business_metrics": { ... },
+        "quick_actions": { ... }
+      }
+    }
   }
   ```
-- O evento notifica quando novos dados estão disponíveis, permitindo que o frontend recarregue o dashboard
+- O evento é disparado automaticamente quando um novo snapshot é criado no MongoDB (via Observer)
+- Dados completos do dashboard são enviados, permitindo atualização em tempo real sem requisição adicional
 - Útil para dashboards que ficam abertos por longos períodos
 
 ## Relacionados
@@ -283,6 +294,9 @@ curl -X GET \
 
 ## Changelog
 
+- 2025-11-20: Alterado uptime para retornar `0` ao invés de `null`
+- 2025-11-20: Refatorado broadcasting para usar padrão PlatformNotificationService via Observer
+- 2025-11-20: Broadcasting agora envia dados completos do dashboard ao invés de apenas UUID
 - 2025-11-19: Endpoint criado com métricas de sistema, negócio e ações rápidas
 - 2025-11-19: Adicionada análise de logs do sistema para notificações
 - 2025-11-19: Implementado agendamento a cada 10 minutos e broadcasting de eventos
